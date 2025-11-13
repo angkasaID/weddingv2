@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
 @import url("./themes/fonts/java/style.css");
 @import url("./themes/fonts/laraboyok/style.css");
@@ -13,9 +14,65 @@
   --menu-active: #265875;
   --btn-color: #ffffff;
 
+  --font-nama: "Lora", serif;
   --font-base: "Work Sans", sans-serif;
   --font-accent: "Laraboyok", serif;
   --font-latin: "Javassoul", serif;
+}
+
+.floating-action {
+  position: fixed !important;
+  z-index: 101 !important;
+  right: 20px !important;
+  bottom: 120px !important;
+}
+
+@media (min-width: 500px) {
+  .floating-action {
+    right: calc(50% - 250px + 20px) !important;
+  }
+}
+
+.nav-item .text-xs {
+  /* Transisi untuk properti opacity, height, dan margin */
+  transition: opacity 300ms, height 300ms, margin 300ms;
+
+  opacity: 1;
+  height: 16px; /* <-- PENTING: Ganti 'auto' dengan nilai tetap */
+  line-height: 16px; /* Sesuaikan line-height agar teks pas di dalam 16px */
+
+  /* Pastikan overflow disembunyikan agar teks tidak bocor saat height mengecil */
+  overflow: hidden;
+}
+
+/* 2. Sembunyikan Teks saat HOVER ATAU AKTIF */
+.nav-item:hover .text-xs,
+.nav-item.active-nav-style .text-xs {
+  opacity: 0;
+  height: 0;
+  /* line-height akan ikut mengecil karena transisi height */
+}
+
+/* 3. Scale Icon saat AKTIF */
+.nav-item.active-nav-style {
+  transform: scale(1.5);
+}
+
+/* 4. Ganti Warna Icon saat AKTIF */
+.nav-item.active-nav-style i {
+  color: #c6915a; /* Pastikan ini warna aksen yang Anda inginkan */
+}
+.btn-float {
+  height: 40px;
+  width: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  border-radius: 10rem;
+  background-color: var(--inv-accent);
+  border-color: var(--inv-accent);
+  color: var(--btn-color);
 }
 
 .font-base {
@@ -27,8 +84,15 @@
 .font-latin {
   font-family: var(--font-latin);
 }
-.text-base {
+.font-nama {
+  font-family: var(--font-nama);
+}
+
+.text-color-base {
   color: var(--inv-base);
+}
+.text-color-accent {
+  color: var(--inv-accent);
 }
 .btn-utama {
   background-color: var(--inv-accent);
@@ -66,7 +130,7 @@ body {
 .card-cover {
   position: relative;
   overflow: hidden;
-  z-index: 10;
+  z-index: 20;
 }
 
 .text-left {
