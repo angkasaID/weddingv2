@@ -1,0 +1,128 @@
+@import url("https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("./themes/fonts/java/style.css");
+@import url("./themes/fonts/laraboyok/style.css");
+
+:root {
+  /* COLORS */
+  --inv-bg: #f7f7f7;
+  --inv-base: #49312b;
+  --inv-accent: #b88821;
+  --inv-border: #f4ecdd;
+  --menu-bg: #cdd7e2;
+  --menu-inactive: #265875;
+  --menu-active: #265875;
+  --btn-color: #ffffff;
+
+  --font-base: "Work Sans", sans-serif;
+  --font-accent: "Laraboyok", serif;
+  --font-latin: "Javassoul", serif;
+}
+
+.font-base {
+  font-family: var(--font-base);
+}
+.font-accent {
+  font-family: var(--font-accent);
+}
+.font-latin {
+  font-family: var(--font-latin);
+}
+.text-base {
+  color: var(--inv-base);
+}
+.btn-utama {
+  background-color: var(--inv-accent);
+}
+.text-btn {
+  color: var(--btn-color);
+}
+body {
+  overflow: hidden;
+}
+
+.blur-nav {
+  background-color: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.bg-blur {
+  background-color: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--inv-accent);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.blur-card {
+  position: relative;
+  z-index: 10;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--menu-bg);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.card-cover {
+  position: relative;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.text-left {
+  text-align: left !important;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.frame {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 80px;
+  left: 0;
+}
+.frame-tl {
+  width: 50%;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.frame-tr {
+  width: 50%;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.frame-bl {
+  width: 50%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.frame-br {
+  width: 50%;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+.only-cover {
+  display: none;
+}
+
+.angkasa_cover .only-cover {
+  display: block;
+}
+
+.angkasa_cover .frame::after {
+  display: none;
+}

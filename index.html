@@ -1,0 +1,2393 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Undangan Pernikahan | Jawa Modern</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+
+    <link rel="stylesheet" href="./style.css" class="css" />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "navy-modern": "#172554",
+              "rose-gold": "#C6915A",
+              "putih-krem": "#FDFCFB",
+              "bg-modern": "#E2E8F0",
+            },
+            keyframes: {
+              pulse_shadow: {
+                "0%, 100%": { boxShadow: "0 0 0 0 rgba(17, 24, 39, 0.4)" },
+                "50%": { boxShadow: "0 0 0 10px rgba(17, 24, 39, 0)" },
+              },
+            },
+            animation: {
+              "pulse-shadow": "pulse_shadow 2s infinite",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      .no-scrollbar::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, dan Opera */
+      }
+      .no-scrollbar {
+        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none; /* Firefox */
+      }
+
+      /* ---------------------------------------------------- */
+      /* KONTAINER UTAMA BARU: ELEMENT YANG DIMINTA FULLSCREEN */
+      /* ---------------------------------------------------- */
+      #fullscreen-container {
+        /* Pastikan kontainer ini selalu mengambil 100% viewport */
+        width: 100vw;
+        height: 100vh;
+        position: relative; /* Penting untuk elemen fixed/absolute anak */
+      }
+
+      /* Ketika kontainer ini fullscreen, child di dalamnya akan terlihat normal */
+      #fullscreen-container:fullscreen {
+        /* Hanya perlu memastikan ia mengisi layar penuh tanpa modifikasi layout */
+        display: flex; /* Memastikan #mobile-wrapper dan navbar tersusun dengan baik */
+        justify-content: center; /* Membantu sentrasi */
+        align-items: center; /* Membantu sentrasi */
+      }
+
+      #mobile-wrapper {
+        max-width: 500px; /* Batasan Lebar Maksimum untuk tampilan Desktop */
+        margin-left: auto;
+        margin-right: auto;
+        min-height: 100vh;
+        position: relative;
+        z-index: 10;
+        box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+        background-color: #fdfcfb;
+        scroll-snap-type: y mandatory;
+        height: 100vh;
+        overflow-y: hidden;
+        scroll-behavior: smooth;
+        padding-bottom: 0;
+      }
+
+      .background-modern1 {
+        background-image: url("./asset/images/bg.webp");
+        background-size: cover;
+        background-attachment: fixed;
+        background-position: center;
+      }
+
+      .angkasa_slide {
+        height: 100vh;
+        position: relative;
+        overflow: hidden;
+        scroll-snap-align: start;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* ATURAN BARU: Diterapkan oleh JS ke semua section setelah tombol diklik */
+      .scroll-active-section {
+        /* Tinggi dikurangi 70px untuk navbar di bawah */
+        height: calc(100vh - 70px);
+        justify-content: center;
+        padding-bottom: 100px; /* Tambahkan padding bawah agar konten tidak terpotong navbar */
+      }
+      /* Override untuk section cover yang tidak boleh ada padding bawah */
+      #cover.scroll-active-section {
+        padding-bottom: 0px;
+        height: calc(100vh - 70px);
+      }
+
+      /* Ornamen styling */
+      .ornamen-bawah {
+        position: absolute;
+        pointer-events: none;
+        z-index: 5;
+      }
+      .frame-corner {
+        position: absolute;
+        z-index: 6;
+        opacity: 0.9;
+        width: 35%;
+        pointer-events: none;
+      }
+
+      .content-layer {
+        position: relative;
+        z-index: 12;
+      }
+
+      /* Animasi Konten */
+      .animated-content {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+      }
+      .animated-content.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Styling Mempelai */
+      .frame-mempelai {
+        background-image: url("./asset/images/frame-jawa.png");
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        width: 300px;
+        margin: auto;
+      }
+      .image-container {
+        height: 130px;
+        width: 100px;
+        margin: auto;
+        border: 2px solid #c6915a;
+        border-radius: 50px 50px 0 0;
+        overflow: hidden;
+        transform: translateY(-14px);
+      }
+
+      /* Styling Countdown */
+      .countdown-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 65px; /* Lebar tetap */
+        height: 65px; /* Tinggi tetap */
+        background-color: #c6915a; /* rose-gold */
+        color: #fdfcfb; /* putih-krem */
+        border-radius: 8px;
+        font-weight: 700;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .countdown-number {
+        font-size: 1.5rem;
+        line-height: 1.5rem;
+      }
+
+      .countdown-label {
+        font-size: 0.65rem;
+        line-height: 1rem;
+        margin-top: 2px;
+        text-transform: uppercase;
+      }
+
+      /* 2. DEFINISI SKEMA WARNA 
+       Berdasarkan tema 'Jawa Biru' dan 'Rose Gold' (color-accent)
+    */
+      .color-accent {
+        /* Rose Gold atau warna aksen yang menawan */
+        color: #c6915a; /* Contoh: Warna coklat keemasan/rose gold */
+      }
+      .text-navy-modern {
+        color: #2d3a50; /* Warna biru gelap / navy modern */
+      }
+
+      /* 3. STYLING KHUSUS UNTUK TANGGAL & HARI 
+    */
+      .p-8 .animate__zoomIn .font-latin {
+        /* Gaya untuk Hari: "Minggu" */
+        font-weight: 500; /* Medium bold */
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #2d3a50; /* Warna gelap */
+      }
+
+      .p-8 .animate__zoomIn .font-accent {
+        /* Gaya untuk Tanggal: "23.06.24" */
+        font-weight: 700; /* Extra bold */
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      /* 4. STYLING UNTUK DETAIL PENDUKUNG (Akad/Kediaman)
+    */
+      .p-8 .editable {
+        /* Styling umum untuk detail teks kecil */
+        color: #555;
+      }
+
+      .p-8 .editable.font-weight-bold {
+        /* Styling untuk "✤ Akad Pernikahan ✤" dan "✤ Kediaman Wanita ✤" */
+        font-weight: 700 !important;
+        text-transform: uppercase;
+      }
+      /* KEYFRAMES UNTUK ORNAMEN */
+
+      /* Gerakan 1: Goyang Horizontal (Sway) */
+      @keyframes sway {
+        0% {
+          transform: rotate(-1.5deg);
+        }
+        50% {
+          transform: rotate(1.5deg);
+        }
+        100% {
+          transform: rotate(-1.5deg);
+        }
+      }
+
+      /* Gerakan 2: Goyang Terbalik (Sway Reverse) - Untuk elemen di sisi berlawanan */
+      @keyframes sway-reverse {
+        0% {
+          transform: rotate(1.5deg);
+        }
+        50% {
+          transform: rotate(-1.5deg);
+        }
+        100% {
+          transform: rotate(1.5deg);
+        }
+      }
+
+      @keyframes scroll-infinity {
+        0% {
+          transform: translateX(0%); /* Mulai dari posisi awal */
+        }
+        100% {
+          transform: translateX(
+            -15%
+          ); /* Geser ke kiri sejauh 5% dari lebar elemen */
+        }
+      }
+
+      /* Gerakan 3: Mengambang Vertikal (Float) - Untuk memberikan kesan ringan */
+      @keyframes float {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-5px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      /* KELAS PENERAPAN */
+
+      /* Ornamen Kiri */
+      .anim-sway-left {
+        animation: sway 5s ease-in-out infinite;
+        transform-origin: bottom center;
+      }
+      .anim-float-left {
+        animation: float 4s ease-in-out infinite;
+      }
+
+      /* Ornamen Kanan */
+      .anim-sway-right {
+        animation: sway-reverse 5s ease-in-out infinite;
+        transform-origin: bottom center; /* Penting! */
+      }
+      .anim-float-right {
+        animation: float 4s ease-in-out infinite;
+      }
+
+      /* Ornamen Bawah Penuh (tanpa rotasi) */
+      .anim-scroll-infinity {
+        animation: scroll-infinity 5s linear infinite alternate; /* 60s untuk sangat pelan, linear untuk kecepatan konstan, alternate agar bolak-balik */
+      }
+
+      @keyframes wave-left {
+        0% {
+          transform: rotate(-10deg);
+        }
+        100% {
+          transform: rotate(4deg);
+        }
+      }
+
+      @keyframes wave-right {
+        0% {
+          transform: rotate(10deg);
+        }
+        100% {
+          transform: rotate(-4deg);
+        }
+      }
+
+      .animate-left img {
+        animation: wave-left 5s ease-in-out infinite alternate;
+      }
+
+      .animate-right img {
+        animation: wave-right 5s ease-in-out infinite alternate;
+      }
+
+      /* 1. CONTAINER NAVBAR (Memastikan tinggi yang jelas dan jarak dari atas) */
+      #bottom-navbar {
+        padding-top: 0.9rem !important; /* Tailwind: pt-2 */
+        padding-bottom: 1rem !important; /* Tailwind: pb-2 */
+        /* Hapus pt-4 dan py-2/py-3 dari atribut class/style di HTML, gunakan di sini */
+      }
+
+      /* 3. NAV ITEM (Item Default - Hapus semua padding vertikal yang tidak perlu) */
+      .nav-item {
+        /* Padding horizontal tetap ada */
+        padding-left: 0.75rem !important; /* px-3 */
+        padding-right: 0.75rem !important; /* px-3 */
+
+        /* Hapus padding/margin bottom yang sebelumnya menyebabkan masalah */
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        margin: 0 !important;
+
+        /* Penting: Set display ke flex dan align-items ke center */
+        display: flex;
+        flex-direction: column;
+        justify-content: center; /* Memastikan ikon dan teks di tengah */
+        align-items: center;
+
+        /* Warna default */
+        color: #2d3a50;
+        transition: all 0.2s ease-in-out;
+      }
+
+      /* 4. ACTIVE STATE (Tinggi Penuh) */
+      .nav-item.active-nav-style {
+        /* Mengubah warna teks/ikon */
+        color: #c6915a; /* Warna rose-gold Anda */
+      }
+
+      /* 5. MEMASTIKAN IKON DAN TEKS TERPISAH DENGAN RAPI */
+      .nav-item i {
+        margin-bottom: 2px; /* Jarak antara ikon dan teks */
+      }
+      .nav-item div {
+        line-height: 1; /* Teks kecil */
+      }
+      .rose-gold {
+        color: #c6915a;
+      }
+
+      /* KELAS KHUSUS UNTUK BINGKAI PETA */
+      .map-with-accent-frame {
+        /* Menerapkan box-shadow sebagai bingkai berwarna */
+        box-shadow: 0 0 0 4px #c6915a; /* Bingkai 4px solid Rose Gold */
+
+        /* Memastikan bingkai (shadow) juga mengikuti kelengkungan sudut */
+        border-radius: 0.5rem;
+
+        /* Tambahkan sedikit transisi untuk estetika */
+        transition: box-shadow 0.3s ease-in-out;
+      }
+
+      /* Opsional: Efek hover untuk bingkai peta */
+      .map-with-accent-frame:hover {
+        box-shadow: 0 0 0 6px #c6915a; /* Bingkai sedikit menebal saat di-hover */
+      }
+
+      /* ... (Pastikan .relative memiliki overflow: hidden) ... */
+      .relative {
+        overflow: hidden;
+      }
+    </style>
+  </head>
+
+  <body class="font-base text-base">
+    <audio id="background-music" loop preload="auto">
+      <source src="./asset/music/latar.mp3" type="audio/mpeg" />
+      Browser Anda tidak mendukung elemen audio.
+    </audio>
+    <div id="fullscreen-container">
+      <button
+        id="music-control-button"
+        class="fixed z-[101] w-12 h-12 rounded-full shadow-lg bg-blur text-white flex items-center justify-center transition duration-300 transform scale-100 hover:scale-105"
+        style="bottom: 85px; right: 1rem"
+      >
+        <i id="music-icon" class="fas fa-volume-up text-lg"></i>
+      </button>
+      <!-- WRAPPER UTAMA KONTEN (MAX 500PX) -->
+      <div id="mobile-wrapper" class="background-modern1">
+        <!-- SECTION COVER -->
+        <div
+          id="cover"
+          class="angkasa_slide angkasa_cover p-6 relative h-screen flex flex-col justify-center items-center"
+          data-section="cover"
+        >
+          <img
+            class="frame-tl top-0 left-0 absolute animate__animated animate__fadeInTopLeft animate__slower"
+            src="./asset/images/tl.webp"
+            onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Left'"
+            alt="frame top left"
+          />
+          <img
+            class="frame-tr top-0 right-0 absolute animate__animated animate__fadeInTopRight animate__slower"
+            src="./asset/images/tr.webp"
+            onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Right'"
+            alt="frame top right"
+          />
+
+          <div
+            class="ornamen-bawah right-0 bottom-0 w-full md:w-11/12 absolute"
+            style="transform: translate(0, 0)"
+          >
+            <div class="animate__animated animate__fadeInUp animate__slower">
+              <img
+                src="./asset/images/bm.webp"
+                onerror="this.src='https://placehold.co/500x150/C6915A/white?text=Ornamen+Bawah'"
+                alt="flowers"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+
+          <div
+            class="absolute top-0 inset-x-0"
+            style="transform: scale(1.2); transform-origin: top center"
+          >
+            <div class="animate__animated animate__fadeInUp animate__slower">
+              <img
+                src="./asset/images/gunungan.webp"
+                onerror="this.src='https://placehold.co/500x150/C6915A/white?text=Ornamen+Bawah'"
+                alt="flowers"
+                draggable="false"
+              />
+            </div>
+          </div>
+
+          <div
+            class="frame-tl left-0 absolute top-0 animate__animated animate__fadeInTopLeft animate__slower"
+          >
+            <div class="animate-left" style="transform: translate(-5%, 145%)">
+              <img
+                class="w-100"
+                src="./asset/images/tl-2.webp"
+                alt="frame"
+                style="transform-origin: bottom left; animation-delay: 120ms"
+              />
+            </div>
+          </div>
+
+          <div
+            class="frame-tr right-0 absolute top-0 animate__animated animate__fadeInTopRight animate__slower"
+          >
+            <div class="animate-right" style="transform: translate(5%, 145%)">
+              <img
+                class="w-100"
+                src="./asset/images/tr-2.webp"
+                alt="frame"
+                style="transform-origin: bottom right; animation-delay: 120ms"
+              />
+            </div>
+          </div>
+
+          <div
+            class="only-cover frame-bl absolute bottom-0 left-0 animate__animated animate__fadeInBottomLeft animate__slow"
+            style="animation-delay: 2.5s"
+          >
+            <div class="animate-left" style="transform: translate(-29%, -85%)">
+              <img
+                class="w-100"
+                src="./asset/images/bl-1.webp"
+                alt="frame"
+                style="transform-origin: bottom left"
+              />
+            </div>
+          </div>
+
+          <div
+            class="only-cover frame-bl absolute bottom-0 left-0 animate__animated animate__fadeInBottomLeft animate__slow"
+            style="animation-delay: 2.2s"
+          >
+            <div class="animate-left" style="transform: translate(-27%, -87%)">
+              <img
+                class="w-100"
+                src="./asset/images/sinta.webp"
+                alt="frame"
+                style="transform-origin: bottom left; animation-delay: 100ms"
+              />
+            </div>
+          </div>
+
+          <div
+            class="only-cover frame-bl absolute bottom-0 left-0 animate__animated animate__fadeInBottomLeft animate__slow"
+            style="animation-delay: 2s"
+          >
+            <div class="animate-left" style="transform: translate(-16%, -70%)">
+              <img
+                class="w-100"
+                src="./asset/images/bl-3.webp"
+                alt="frame"
+                style="transform-origin: bottom left; animation-delay: 300ms"
+              />
+            </div>
+          </div>
+
+          <div
+            class="only-cover frame-br absolute bottom-0 right-0 animate__animated animate__fadeInBottomRight animate__slow"
+            style="animation-delay: 2.5s"
+          >
+            <div class="animate-right" style="transform: translate(29%, -85%)">
+              <img
+                class="w-100"
+                src="./asset/images/br-1.webp"
+                alt="frame"
+                style="transform-origin: bottom right"
+              />
+            </div>
+          </div>
+
+          <div
+            class="only-cover frame-br absolute bottom-0 right-0 animate__animated animate__fadeInBottomRight animate__slow"
+            style="animation-delay: 2.2s"
+          >
+            <div class="animate-right" style="transform: translate(27%, -87%)">
+              <img
+                class="w-100"
+                src="./asset/images/rama.webp"
+                alt="frame"
+                style="transform-origin: bottom right; animation-delay: 100ms"
+              />
+            </div>
+          </div>
+
+          <div
+            class="only-cover frame-br absolute bottom-0 right-0 animate__animated animate__fadeInBottomRight animate__slow"
+            style="animation-delay: 2s"
+          >
+            <div class="animate-right" style="transform: translate(16%, -70%)">
+              <img
+                class="w-100"
+                src="./asset/images/br-3.webp"
+                alt="frame"
+                style="transform-origin: bottom right; animation-delay: 300ms"
+              />
+            </div>
+          </div>
+
+          <div
+            class="anim-float-left ornamen-bawah left-0 bottom-0 w-[50%] absolute translate-x-[0%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomLeft animate__slower"
+            >
+              <img
+                src="./asset/images/bl-2.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kiri'"
+                alt="Wayang Kiri"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="anim-float-left ornamen-bawah left-0 bottom-0 w-[30%] absolute translate-x-[20%] translate-y-[5%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomLeft animate__slower"
+            >
+              <img
+                src="./asset/images/bunga-kiri.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kiri'"
+                alt="Bunga Kiri"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+
+          <div
+            class="anim-float-right ornamen-bawah right-0 bottom-0 w-[50%] absolute translate-x-[0%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomRight animate__slower"
+            >
+              <img
+                src="./asset/images/br-2.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kanan'"
+                alt="Wayang Kanan"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="anim-float-right ornamen-bawah right-0 bottom-0 w-[30%] absolute translate-x-[-20%] translate-y-[5%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomRight animate__slower"
+            >
+              <img
+                src="./asset/images/bunga-kanan.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kanan'"
+                alt="Bunga Kanan"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+
+          <div
+            class="card-cover p-7 text-center animated-content w-full max-w-sm"
+          >
+            <div class="content-layer">
+              <div
+                class="text-center animate__animated animate__zoomIn animate__slower mt-5 mb-3"
+                style="line-height: 1"
+              >
+                <div class="editable mb-2" style="font-size: 14.4px">
+                  The Wedding Of
+                </div>
+                <div
+                  class="color-accent editable font-latin"
+                  style="font-size: 80px"
+                >
+                  Wanda
+                </div>
+                <div class="editable font-latin mb-2" style="font-size: 30px">
+                  &amp;
+                </div>
+                <div
+                  class="color-accent editable mb-2 font-latin"
+                  style="font-size: 80px"
+                >
+                  Nur Hakim
+                </div>
+              </div>
+
+              <div class="text-center">
+                <div class="text-sm mb-2 animated-content">
+                  Kepada Yth;<br />Bapak/Ibu/Saudara/i
+                </div>
+                <div
+                  id="guestNameSlot"
+                  class="text-xl font-semibold mb-4 animated-content"
+                >
+                  Sang Tamu
+                </div>
+              </div>
+              <button
+                id="open-button"
+                data-target="#ucapan"
+                class="w-60 px- py-3 btn-utama text-btn font-semibold rounded-full shadow-lg transition duration-300 animate-pulse-shadow"
+              >
+                <i class="fas fa-envelope-open-text mr-2"></i> Buka Undangan
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- NEW SECTION: UCAPAN / PROLOG -->
+        <div
+          id="ucapan"
+          class="angkasa_slide px-6 relative min-h-screen flex flex-col justify-center items-center snap-start"
+          data-section="ucapan"
+        >
+          <img
+            class="frame-tl top-0 left-0 absolute z-0 animate__animated animate__fadeInTopLeft animate__slower"
+            src="./asset/images/tl.webp"
+            onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Left'"
+            alt="frame top left"
+          />
+          <img
+            class="frame-tr top-0 right-0 absolute z-0 animate__animated animate__fadeInTopRight animate__slower"
+            src="./asset/images/tr.webp"
+            onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Right'"
+            alt="frame top right"
+          />
+
+          <div
+            class="ornamen-bawah right-0 bottom-0 w-full md:w-11/12 absolute z-0"
+            style="transform: translate(0, 0)"
+          >
+            <div class="animate__animated animate__fadeInUp animate__slower">
+              <img
+                src="./asset/images/bm.webp"
+                onerror="this.src='https://placehold.co/500x150/C6915A/white?text=Ornamen+Bawah'"
+                alt="flowers"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+
+          <div
+            class="absolute top-0 inset-x-0 z-0"
+            style="transform: scale(1.2); transform-origin: top center"
+          >
+            <div class="animate__animated animate__fadeInUp animate__slower">
+              <img
+                src="./asset/images/gunungan.webp"
+                onerror="this.src='https://placehold.co/500x150/C6915A/white?text=Ornamen+Bawah'"
+                alt="flowers"
+                draggable="false"
+              />
+            </div>
+          </div>
+
+          <div
+            class="frame-tl left-0 absolute top-0 z-0 animate__animated animate__fadeInTopLeft animate__slower"
+          >
+            <div class="animate-left" style="transform: translate(-5%, 145%)">
+              <img
+                class="w-100"
+                src="./asset/images/tl-2.webp"
+                alt="frame"
+                style="transform-origin: bottom left; animation-delay: 120ms"
+              />
+            </div>
+          </div>
+
+          <div
+            class="frame-tr right-0 absolute top-0 z-0 animate__animated animate__fadeInTopRight animate__slower"
+          >
+            <div class="animate-right" style="transform: translate(5%, 145%)">
+              <img
+                class="w-100"
+                src="./asset/images/tr-2.webp"
+                alt="frame"
+                style="transform-origin: bottom right; animation-delay: 120ms"
+              />
+            </div>
+          </div>
+
+          <div
+            class="only-cover frame-bl absolute bottom-0 left-0 z-0 animate__animated animate__fadeInBottomLeft animate__slow"
+            style="animation-delay: 2.5s"
+          >
+            <div class="animate-left" style="transform: translate(-29%, -85%)">
+              <img
+                class="w-100"
+                src="./asset/images/bl-1.webp"
+                alt="frame"
+                style="transform-origin: bottom left"
+              />
+            </div>
+          </div>
+          <div
+            class="only-cover frame-bl absolute bottom-0 left-0 z-0 animate__animated animate__fadeInBottomLeft animate__slow"
+            style="animation-delay: 2.2s"
+          >
+            <div class="animate-left" style="transform: translate(-27%, -87%)">
+              <img
+                class="w-100"
+                src="./asset/images/sinta.webp"
+                alt="frame"
+                style="transform-origin: bottom left; animation-delay: 100ms"
+              />
+            </div>
+          </div>
+          <div
+            class="only-cover frame-bl absolute bottom-0 left-0 z-0 animate__animated animate__fadeInBottomLeft animate__slow"
+            style="animation-delay: 2s"
+          >
+            <div class="animate-left" style="transform: translate(-16%, -70%)">
+              <img
+                class="w-100"
+                src="./asset/images/bl-3.webp"
+                alt="frame"
+                style="transform-origin: bottom left; animation-delay: 300ms"
+              />
+            </div>
+          </div>
+
+          <div
+            class="only-cover frame-br absolute bottom-0 right-0 z-0 animate__animated animate__fadeInBottomRight animate__slow"
+            style="animation-delay: 2.5s"
+          >
+            <div class="animate-right" style="transform: translate(29%, -85%)">
+              <img
+                class="w-100"
+                src="./asset/images/br-1.webp"
+                alt="frame"
+                style="transform-origin: bottom right"
+              />
+            </div>
+          </div>
+          <div
+            class="only-cover frame-br absolute bottom-0 right-0 z-0 animate__animated animate__fadeInBottomRight animate__slow"
+            style="animation-delay: 2.2s"
+          >
+            <div class="animate-right" style="transform: translate(27%, -87%)">
+              <img
+                class="w-100"
+                src="./asset/images/rama.webp"
+                alt="frame"
+                style="transform-origin: bottom right; animation-delay: 100ms"
+              />
+            </div>
+          </div>
+          <div
+            class="only-cover frame-br absolute bottom-0 right-0 z-0 animate__animated animate__fadeInBottomRight animate__slow"
+            style="animation-delay: 2s"
+          >
+            <div class="animate-right" style="transform: translate(16%, -70%)">
+              <img
+                class="w-100"
+                src="./asset/images/br-3.webp"
+                alt="frame"
+                style="transform-origin: bottom right; animation-delay: 300ms"
+              />
+            </div>
+          </div>
+
+          <div
+            class="anim-float-left ornamen-bawah left-0 bottom-0 w-[50%] absolute z-0 translate-x-[0%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomLeft animate__slower"
+            >
+              <img
+                src="./asset/images/bl-2.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kiri'"
+                alt="Wayang Kiri"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="anim-float-left ornamen-bawah left-0 bottom-0 w-[30%] absolute z-0 translate-x-[20%] translate-y-[5%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomLeft animate__slower"
+            >
+              <img
+                src="./asset/images/bunga-kiri.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kiri'"
+                alt="Bunga Kiri"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="anim-float-right ornamen-bawah right-0 bottom-0 w-[50%] absolute z-0 translate-x-[0%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomRight animate__slower"
+            >
+              <img
+                src="./asset/images/br-2.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kanan'"
+                alt="Wayang Kanan"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="anim-float-right ornamen-bawah right-0 bottom-0 w-[30%] absolute z-0 translate-x-[-20%] translate-y-[5%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomRight animate__slower"
+            >
+              <img
+                src="./asset/images/bunga-kanan.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kanan'"
+                alt="Bunga Kanan"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+
+          <div
+            class="blur-card rounded-3xl mt-7 h-full w-full flex flex-col justify-center items-center"
+            style="padding-bottom: 30%"
+          >
+            <div class="content-layer"></div>
+            <div
+              class="text-center editable mb-4 animate__animated animate__fadeInDown animate__slower"
+              style="font-size: 14.4px"
+            >
+              ✤ Undangan Manten ✤
+            </div>
+
+            <div
+              class="flex items-center justify-center mb-2 mx-auto animate__animated animate__zoomIn animate__slower relative"
+              style="
+                height: 112px;
+                width: 65px;
+                background-image: url('./asset/images/way-kecil.png');
+                background-repeat: no-repeat;
+                background-size: contain;
+                background-position: center;
+              "
+            >
+              <div
+                class="editable text-left font-latin absolute"
+                style="
+                  font-size: 55px;
+                  line-height: 1;
+
+                  transform: translate(-15px, 0px);
+                "
+              >
+                D
+              </div>
+              <div
+                class="editable text-right font-latin absolute"
+                style="
+                  font-size: 55px;
+                  line-height: 1;
+
+                  transform: translate(15px, 25px);
+                "
+              >
+                F
+              </div>
+            </div>
+
+            <div class="w-full flex items-center justify-center">
+              <div
+                class="text-right animate__animated animate__fadeInLeft animate__slower"
+                style="width: 40%; animation-delay: 1500ms"
+              >
+                <div
+                  class="editable color-accent font-accent"
+                  style="font-size: 40px; line-height: 1"
+                >
+                  Dinda
+                </div>
+                <div class="editable" style="font-size: 14.4px">Palembang</div>
+              </div>
+              <div
+                class="editable px-2 font-latin animate__animated animate__zoomIn animate__slower"
+                style="font-size: 60px; animation-delay: 500ms"
+              >
+                &amp;
+              </div>
+              <div
+                class="text-left animate__animated animate__fadeInRight animate__slower"
+                style="width: 40%; animation-delay: 1500ms"
+              >
+                <div
+                  class="editable color-accent font-accent"
+                  style="line-height: 1; font-size: 40px"
+                >
+                  Fahmi
+                </div>
+                <div class="editable" style="font-size: 14.4px">Surakarta</div>
+              </div>
+            </div>
+
+            <div
+              class="image-editable mx-auto animate__animated animate__fadeInUp animate__slower absolute bottom-0"
+              style="height: auto; width: 300px; overflow: hidden; bottom: 0"
+            >
+              <img
+                src="./asset/images/manten.png"
+                alt="301467-gallery-rNpYuhv9jd.png"
+                class="w-full h-full object-contain"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION MEMPELAI -->
+        <div
+          id="mempelai"
+          class="angkasa_slide px-6 relative snap-start"
+          data-section="mempelai"
+        >
+          <img
+            class="frame-corner top-0 left-0 animate__animated animate__fadeInTopLeft animate__slower"
+            src="./asset/images/tl.webp"
+            onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Left'"
+            alt="frame top left"
+          />
+          <img
+            class="frame-corner top-0 right-0 animate__animated animate__fadeInTopRight animate__slower"
+            src="./asset/images/tr.webp"
+            onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Right'"
+            alt="frame top right"
+          />
+          <div
+            class="anim-scroll-infinity ornamen-bawah right-0 bottom-0 w-full md:w-11/12"
+            style="transform: translate(0, 0)"
+          >
+            <div class="animate__animated animate__fadeInUp animate__slower">
+              <img
+                src="./asset/images/bm.webp"
+                onerror="this.src='https://placehold.co/500x150/C6915A/white?text=Ornamen+Bawah'"
+                alt="flowers"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+
+          <!-- WAYANG DAN BUNGA ORNAMEN (dipercepat di sini untuk estetika) -->
+          <div
+            class="anim-sway-left ornamen-bawah left-0 bottom-0 w-[30%] translate-x-[0%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomLeft animate__slower"
+            >
+              <img
+                src="./asset/images/wayang-l.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kiri'"
+                alt="Wayang Kiri"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="anim-float-left ornamen-bawah left-0 bottom-0 w-[30%] translate-x-[20%] translate-y-[5%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomLeft animate__slower"
+            >
+              <img
+                src="./asset/images/bunga-kiri.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kiri'"
+                alt="Bunga Kiri"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="ornamen-bawah left-0 bottom-0 w-[30%] translate-x-[-30%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomLeft animate__slower"
+            >
+              <div class="anim-sway-right">
+                <img
+                  src="./asset/images/wayang-tegak.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Tegak+Kiri'"
+                  alt="Wayang Tegak Kiri"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="anim-sway-right ornamen-bawah right-0 bottom-0 w-[30%] translate-x-[0%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomRight animate__slower"
+            >
+              <img
+                src="./asset/images/wayang-r.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kanan'"
+                alt="Wayang Kanan"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="anim-float-right ornamen-bawah right-0 bottom-0 w-[30%] translate-x-[-20%] translate-y-[5%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomRight animate__slower"
+            >
+              <img
+                src="./asset/images/bunga-kanan.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kanan'"
+                alt="Bunga Kanan"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="ornamen-bawah right-0 bottom-0 w-[30%] translate-x-[30%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomRight animate__slower"
+            >
+              <div class="anim-sway-left">
+                <img
+                  src="./asset/images/wayang-tegak.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Tegak+Kanan'"
+                  alt="Wayang Tegak Kanan"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="blur-card p-8 text-center animated-content w-full max-w-sm"
+          >
+            <div class="content-layer">
+              <h2
+                class="text-3xl font-serif-elegant text-navy-modern mb-8 border-b-2 border-rose-gold pb-2 inline-block"
+              >
+                Mempelai
+              </h2>
+
+              <div
+                class="animate__animated animate__fadeInLeft animate__slower"
+              >
+                <div class="frame-mempelai">
+                  <div class="image-container">
+                    <img
+                      src="./asset/images/pria.webp"
+                      onerror="this.src='https://placehold.co/100x130/C6915A/white?text=Pria'"
+                      style="width: 100%; height: 100%; object-fit: cover"
+                      alt="Foto Pria"
+                    />
+                  </div>
+                </div>
+                <div class="text-center mb-4">
+                  <div
+                    class="text-2xl font-serif-elegant font-bold text-navy-modern"
+                  >
+                    Irfan
+                  </div>
+                  <div class="text-sm italic text-gray-600">
+                    Putra dari<br />
+                    Bapak H. [Nama Bapak]<br />&amp;Ibu Hj. [Nama Ibu]
+                  </div>
+                </div>
+              </div>
+
+              <div
+                class="text-center animate__animated animate__fadeIn animate__slower my-6"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="50"
+                  height="59.8"
+                  class="block mx-auto"
+                  style="
+                    overflow: visible;
+                    transform: scale(0.7);
+                    enable-background: new 0 0 50 59.8;
+                  "
+                  xml:space="preserve"
+                >
+                  <path
+                    d="M10.4 54.1c2.6 2.5 5.9 3.8 9.8 3.8 2.7 0 5.1-.6 7.4-1.8 2.3-1.2 3.8-2.6 4.6-4.3.8-1.7 1.2-3.6 1.2-5.7 0-4.2-1.3-7.8-4-10.8-.6-.8-2.1-1.5-4.4-2-1-.3-2-.5-3.2-.6 4-.4 6.5-.2 7.7.5 1.9 1.2 3.4 3 4.6 5.4s2.1 3.6 2.6 3.7l5.2.4c2.6.1 4.5.9 5.7 2.3 1.7 2.1 2.4 5.6 2.2 10.6-1-5.5-2.4-8.5-3.9-9.1-1.6-.6-3-.8-4.2-.8-3 0-5.1 1.7-6.3 5.2-3.3 5.9-8.1 8.8-14.4 8.8-5.3 0-10.2-2-14.5-5.9C2.2 49.9 0 45.3 0 40.2c0-3.2 1.6-6.7 4.9-10.5 3.6-4.2 7.8-6.6 12.6-7.2-3.8-.8-6.8-2.4-9.1-4.9C6.1 15.1 5 12.3 5 9.1c0-2.3 1.1-4.4 3.4-6.3C10.4.9 12.5 0 14.7 0c1 0 2.3.3 4.1 1 2.3.9 3.4 1.9 3.4 3 0 .9-.6 1.4-1.7 1.4-.1 0-.5-.4-1.4-1.3-.8-.8-1.8-1.3-2.9-1.4-1.2-.1-2.4.5-3.6 1.8-1.2 1.4-1.8 2.7-1.8 4.1 0 7.2 5.3 12.1 15.8 14.7 1.4.3 2.1.7 2.1 1.3-1.2-.2-2.5-.3-3.9-.3-5.1 0-9.3 1.1-12.6 3.4-4.2 2.9-6.3 7.2-6.3 13 0 5.9 1.5 10.4 4.5 13.4z"
+                    style="fill: #c6915a"
+                  ></path>
+                </svg>
+              </div>
+
+              <div
+                class="animate__animated animate__fadeInRight animate__slower mt-4"
+              >
+                <div class="frame-mempelai">
+                  <div class="image-container">
+                    <img
+                      src="./asset/images/wanita.webp"
+                      onerror="this.src='https://placehold.co/100x130/C6915A/white?text=Wanita'"
+                      style="width: 100%; height: 100%; object-fit: cover"
+                      alt="Foto Wanita"
+                    />
+                  </div>
+                </div>
+                <div class="text-center">
+                  <div
+                    class="text-2xl font-serif-elegant font-bold text-navy-modern"
+                  >
+                    Indah
+                  </div>
+                  <div class="text-sm italic text-gray-600">
+                    Putri dari<br />
+                    Bapak [Nama Bapak]<br />&amp;Ibu [Nama Ibu]
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION ACARA -->
+        <div
+          id="acara"
+          class="angkasa_slide snap-start px-6 relative"
+          data-section="acara"
+        >
+          <img
+            class="frame-corner top-0 left-0 animate__animated animate__fadeInTopLeft animate__slower"
+            src="./asset/images/tl.webp"
+            onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Left'"
+            alt="frame top left"
+          />
+          <img
+            class="frame-corner top-0 right-0 animate__animated animate__fadeInTopRight animate__slower"
+            src="./asset/images/tr.webp"
+            onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Right'"
+            alt="frame top right"
+          />
+          <div
+            class="anim-scroll-infinity ornamen-bawah right-0 bottom-0 w-full md:w-11/12"
+            style="transform: translate(0, 0)"
+          >
+            <div class="animate__animated animate__fadeInUp animate__slower">
+              <img
+                src="./asset/images/bm.webp"
+                onerror="this.src='https://placehold.co/500x150/C6915A/white?text=Ornamen+Bawah'"
+                alt="flowers"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+
+          <!-- WAYANG DAN BUNGA ORNAMEN (dipercepat di sini untuk estetika) -->
+          <div
+            class="anim-sway-left ornamen-bawah left-0 bottom-0 w-[30%] translate-x-[0%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomLeft animate__slower"
+            >
+              <img
+                src="./asset/images/wayang-l.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kiri'"
+                alt="Wayang Kiri"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="anim-float-left ornamen-bawah left-0 bottom-0 w-[30%] translate-x-[20%] translate-y-[5%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomLeft animate__slower"
+            >
+              <img
+                src="./asset/images/bunga-kiri.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kiri'"
+                alt="Bunga Kiri"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="ornamen-bawah left-0 bottom-0 w-[30%] translate-x-[-30%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomLeft animate__slower"
+            >
+              <div class="anim-sway-right">
+                <img
+                  src="./asset/images/wayang-tegak.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Tegak+Kiri'"
+                  alt="Wayang Tegak Kiri"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="anim-sway-right ornamen-bawah right-0 bottom-0 w-[30%] translate-x-[0%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomRight animate__slower"
+            >
+              <img
+                src="./asset/images/wayang-r.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kanan'"
+                alt="Wayang Kanan"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="anim-float-right ornamen-bawah right-0 bottom-0 w-[30%] translate-x-[-20%] translate-y-[5%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomRight animate__slower"
+            >
+              <img
+                src="./asset/images/bunga-kanan.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kanan'"
+                alt="Bunga Kanan"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="ornamen-bawah right-0 bottom-0 w-[30%] translate-x-[30%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomRight animate__slower"
+            >
+              <div class="anim-sway-left">
+                <img
+                  src="./asset/images/wayang-tegak.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Tegak+Kanan'"
+                  alt="Wayang Tegak Kanan"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="p-8 text-center animated-content w-full max-w-sm">
+            <div class="content-layer">
+              <div
+                class="animate__animated animate__fadeInDown animate__slower"
+              >
+                <div
+                  class="image-editable"
+                  style="
+                    width: 158px;
+                    height: 89px;
+                    margin: auto;
+                    overflow: hidden;
+                    padding-bottom: 20px;
+                  "
+                >
+                  <img
+                    src="./asset/images/way-kecil.png"
+                    style="width: 100%; height: 100%; object-fit: contain"
+                    alt="Ornamen Atas"
+                  />
+                </div>
+              </div>
+
+              <div
+                class="text-center animate__animated animate__fadeInDown animate__slower"
+              >
+                <div
+                  class="editable color-accent font-weight-bold"
+                  style="font-size: 14px"
+                >
+                  ✤ Akad Pernikahan ✤
+                </div>
+                <div class="editable" style="font-size: 14px">
+                  Pukul 08.00 WIB - Selesai
+                </div>
+              </div>
+
+              <div
+                class="mt-3 text-center animate__animated animate__zoomIn animate__slower"
+              >
+                <div
+                  class="editable font-latin"
+                  style="font-size: 50px; line-height: 1.2"
+                >
+                  Minggu
+                </div>
+                <div
+                  class="editable color-accent font-accent"
+                  style="font-size: 50px; line-height: 1.2"
+                >
+                  23.06.24
+                </div>
+              </div>
+
+              <div
+                class="mt-2 text-center animate__animated animate__zoomIn animate__slower"
+              >
+                <div
+                  class="editable color-accent font-weight-bold"
+                  style="font-size: 14px"
+                >
+                  ✤ Kediaman Wanita ✤
+                </div>
+                <div class="editable" style="font-size: 14px">
+                  Perum KCVRI<br />Blok A. No. 09 RT 01/RW 07
+                </div>
+              </div>
+
+              <div
+                class="mt-3 image-editable mx-auto animate__animated animate__fadeInUp animate__slower"
+                style="height: auto; width: 130px; overflow: hidden"
+              >
+                <img
+                  src="./asset/images/btm-kecil.png"
+                  style="width: 100%; height: 100%; object-fit: contain"
+                  alt="Ornamen Bawah"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION Maps -->
+        <div
+          id="maps-lokasi"
+          class="angkasa_slide px-6 relative snap-start"
+          data-section="maps-lokasi"
+        >
+          <img
+            class="frame-corner top-0 left-0 animate__animated animate__fadeInTopLeft animate__slower"
+            src="./asset/images/tl.webp"
+            onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Left'"
+            alt="frame top left"
+          />
+          <img
+            class="frame-corner top-0 right-0 animate__animated animate__fadeInTopRight animate__slower"
+            src="./asset/images/tr.webp"
+            onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Right'"
+            alt="frame top right"
+          />
+          <div
+            class="anim-scroll-infinity ornamen-bawah right-0 bottom-0 w-full md:w-11/12"
+            style="transform: translate(0, 0)"
+          >
+            <div class="animate__animated animate__fadeInUp animate__slower">
+              <img
+                src="./asset/images/bm.webp"
+                onerror="this.src='https://placehold.co/500x150/C6915A/white?text=Ornamen+Bawah'"
+                alt="flowers"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+
+          <!-- WAYANG DAN BUNGA ORNAMEN (dipercepat di sini untuk estetika) -->
+          <div
+            class="anim-sway-left ornamen-bawah left-0 bottom-0 w-[30%] translate-x-[0%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomLeft animate__slower"
+            >
+              <img
+                src="./asset/images/wayang-l.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kiri'"
+                alt="Wayang Kiri"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="anim-float-left ornamen-bawah left-0 bottom-0 w-[30%] translate-x-[20%] translate-y-[5%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomLeft animate__slower"
+            >
+              <img
+                src="./asset/images/bunga-kiri.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kiri'"
+                alt="Bunga Kiri"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="ornamen-bawah left-0 bottom-0 w-[30%] translate-x-[-30%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomLeft animate__slower"
+            >
+              <div class="anim-sway-right">
+                <img
+                  src="./asset/images/wayang-tegak.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Tegak+Kiri'"
+                  alt="Wayang Tegak Kiri"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="anim-sway-right ornamen-bawah right-0 bottom-0 w-[30%] translate-x-[0%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomRight animate__slower"
+            >
+              <img
+                src="./asset/images/wayang-r.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kanan'"
+                alt="Wayang Kanan"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="anim-float-right ornamen-bawah right-0 bottom-0 w-[30%] translate-x-[-20%] translate-y-[5%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomRight animate__slower"
+            >
+              <img
+                src="./asset/images/bunga-kanan.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kanan'"
+                alt="Bunga Kanan"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="ornamen-bawah right-0 bottom-0 w-[30%] translate-x-[30%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomRight animate__slower"
+            >
+              <div class="anim-sway-left">
+                <img
+                  src="./asset/images/wayang-tegak.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Tegak+Kanan'"
+                  alt="Wayang Tegak Kanan"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="blur-card p-6 text-center animated-content w-full max-w-sm"
+          >
+            <div class="content-layer space-y-4">
+              <h3
+                class="text-xl font-bold font-accent text-navy-modern border-b border-rose-gold pb-2 mb-4 inline-block animate__animated animate__fadeInDown"
+              >
+                Lokasi Pernikahan
+              </h3>
+
+              <div
+                class="relative w-full overflow-hidden rounded-lg shadow-md map-with-accent-frame animate__animated animate__zoomIn animate__slow"
+                style="padding-top: 56.25%"
+              >
+                <iframe
+                  class="absolute top-0 left-0 w-full h-full border-0"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15843.85764790089!2d107.5458315!3d-6.8997275!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e42f53d82dd3%3A0x676b7185c707d72c!2sCimahi%20Utara%2C%20Cimahi%20City%2C%20West%20Java!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid"
+                  allowfullscreen=""
+                  loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade"
+                >
+                </iframe>
+              </div>
+
+              <p
+                class="text-sm font-semibold text-navy-modern pt-4 animate__animated animate__fadeInUp"
+              >
+                Kediaman Wanita:
+              </p>
+              <p
+                class="text-base font-medium text-gray-700 animate__animated animate__fadeInUp animate__delay-1s"
+              >
+                **Perum KCVRI Blok A. No. 09 RT 01/RW 07**
+                <br />
+                [Pastikan Link Maps Diperbarui]
+              </p>
+
+              <a
+                href="https://maps.app.goo.gl/PLACEHOLDER_LINK_TO_KCVRI"
+                target="_blank"
+                class="inline-block px-6 py-2 mt-4 text-sm font-bold text-white uppercase transition duration-300 rounded-lg shadow-md bg-rose-gold hover:bg-rose-gold/80 animate__animated animate__fadeInUp animate__delay-2s"
+              >
+                <i class="fas fa-map-marked-alt mr-2"></i> Buka di Google Maps
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION RSVP -->
+        <div
+          id="rsvp"
+          class="angkasa_slide px-6 relative snap-start"
+          data-section="rsvp"
+        >
+          <img
+            class="frame-corner top-0 left-0 animate__animated animate__fadeInTopLeft animate__slower"
+            src="./asset/images/tl.webp"
+            onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Left'"
+            alt="frame top left"
+          />
+          <img
+            class="frame-corner top-0 right-0 animate__animated animate__fadeInTopRight animate__slower"
+            src="./asset/images/tr.webp"
+            onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Right'"
+            alt="frame top right"
+          />
+          <div
+            class="anim-scroll-infinity ornamen-bawah right-0 bottom-0 w-full md:w-11/12"
+            style="transform: translate(0, 0)"
+          >
+            <div class="animate__animated animate__fadeInUp animate__slower">
+              <img
+                src="./asset/images/bm.webp"
+                onerror="this.src='https://placehold.co/500x150/C6915A/white?text=Ornamen+Bawah'"
+                alt="flowers"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+
+          <!-- WAYANG DAN BUNGA ORNAMEN (dipercepat di sini untuk estetika) -->
+          <div
+            class="anim-sway-left ornamen-bawah left-0 bottom-0 w-[30%] translate-x-[0%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomLeft animate__slower"
+            >
+              <img
+                src="./asset/images/wayang-l.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kiri'"
+                alt="Wayang Kiri"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="anim-float-left ornamen-bawah left-0 bottom-0 w-[30%] translate-x-[20%] translate-y-[5%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomLeft animate__slower"
+            >
+              <img
+                src="./asset/images/bunga-kiri.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kiri'"
+                alt="Bunga Kiri"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="ornamen-bawah left-0 bottom-0 w-[30%] translate-x-[-30%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomLeft animate__slower"
+            >
+              <div class="anim-sway-right">
+                <img
+                  src="./asset/images/wayang-tegak.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Tegak+Kiri'"
+                  alt="Wayang Tegak Kiri"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="anim-sway-right ornamen-bawah right-0 bottom-0 w-[30%] translate-x-[0%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomRight animate__slower"
+            >
+              <img
+                src="./asset/images/wayang-r.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kanan'"
+                alt="Wayang Kanan"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="anim-float-right ornamen-bawah right-0 bottom-0 w-[30%] translate-x-[-20%] translate-y-[5%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomRight animate__slower"
+            >
+              <img
+                src="./asset/images/bunga-kanan.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kanan'"
+                alt="Bunga Kanan"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="ornamen-bawah right-0 bottom-0 w-[30%] translate-x-[30%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomRight animate__slower"
+            >
+              <div class="anim-sway-left">
+                <img
+                  src="./asset/images/wayang-tegak.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Tegak+Kanan'"
+                  alt="Wayang Tegak Kanan"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="blur-card p-6 text-center animated-content w-full max-w-sm"
+          >
+            <div class="content-layer space-y-6">
+              <h3
+                class="text-3xl font-serif-elegant font-bold text-navy-modern border-b border-rose-gold pb-2 mb-4 inline-block animate__animated animate__fadeInDown"
+              >
+                Doa Restu
+              </h3>
+
+              <div class="space-y-4 pt-2 text-gray-700">
+                <p
+                  class="text-sm italic leading-relaxed animate__animated animate__fadeInUp"
+                >
+                  Doa untuk pengantin baru sesuai sunnah:
+                </p>
+                <p
+                  class="text-base font-serif-elegant font-semibold text-navy-modern leading-relaxed border-y-2 border-rose-gold/50 py-3 animate__animated animate__fadeInUp animate__delay-1s"
+                >
+                  "Barakallahu laka wa baraka 'alaika wa jama'a bainakuma fii
+                  khoir."
+                </p>
+                <p
+                  class="text-xs italic leading-relaxed animate__animated animate__fadeInUp animate__delay-2s"
+                >
+                  "Semoga Allah memberkahimu di waktu senang dan memberkahimu di
+                  waktu susah, serta semoga Allah menyatukan kalian berdua dalam
+                  kebaikan."
+                  <br />
+                  (HR. Abu Daud, Tirmidzi, Ibnu Majah)
+                </p>
+              </div>
+
+              <div class="pt-6">
+                <h4
+                  class="text-sm font-semibold text-navy-modern mb-3 animate__animated animate__fadeInUp"
+                >
+                  Mohon Konfirmasi Kehadiran Anda
+                </h4>
+                <a
+                  href="http://googleusercontent.com/maps.google.com/2"
+                  target="_blank"
+                  class="inline-block w-full max-w-xs px-6 py-3 text-sm font-bold text-white uppercase transition duration-300 rounded-lg shadow-md bg-rose-gold hover:bg-rose-gold/80 animate__animated animate__bounceIn"
+                >
+                  <i class="fas fa-check-circle mr-2"></i> Konfirmasi Kehadiran
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION GIFT -->
+        <div
+          id="gift"
+          class="angkasa_slide px-6 relative snap-start"
+          data-section="gift"
+        >
+          <img
+            class="frame-corner top-0 left-0 animate__animated animate__fadeInTopLeft animate__slower"
+            src="./asset/images/tl.webp"
+            onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Left'"
+            alt="frame top left"
+          />
+          <img
+            class="frame-corner top-0 right-0 animate__animated animate__fadeInTopRight animate__slower"
+            src="./asset/images/tr.webp"
+            onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Right'"
+            alt="frame top right"
+          />
+          <div
+            class="anim-scroll-infinity ornamen-bawah right-0 bottom-0 w-full md:w-11/12"
+            style="transform: translate(0, 0)"
+          >
+            <div class="animate__animated animate__fadeInUp animate__slower">
+              <img
+                src="./asset/images/bm.webp"
+                onerror="this.src='https://placehold.co/500x150/C6915A/white?text=Ornamen+Bawah'"
+                alt="flowers"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+
+          <!-- WAYANG DAN BUNGA ORNAMEN (dipercepat di sini untuk estetika) -->
+          <div
+            class="anim-sway-left ornamen-bawah left-0 bottom-0 w-[30%] translate-x-[0%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomLeft animate__slower"
+            >
+              <img
+                src="./asset/images/wayang-l.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kiri'"
+                alt="Wayang Kiri"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="anim-float-left ornamen-bawah left-0 bottom-0 w-[30%] translate-x-[20%] translate-y-[5%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomLeft animate__slower"
+            >
+              <img
+                src="./asset/images/bunga-kiri.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kiri'"
+                alt="Bunga Kiri"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="ornamen-bawah left-0 bottom-0 w-[30%] translate-x-[-30%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomLeft animate__slower"
+            >
+              <div class="anim-sway-right">
+                <img
+                  src="./asset/images/wayang-tegak.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Tegak+Kiri'"
+                  alt="Wayang Tegak Kiri"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="anim-sway-right ornamen-bawah right-0 bottom-0 w-[30%] translate-x-[0%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomRight animate__slower"
+            >
+              <img
+                src="./asset/images/wayang-r.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kanan'"
+                alt="Wayang Kanan"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="anim-float-right ornamen-bawah right-0 bottom-0 w-[30%] translate-x-[-20%] translate-y-[5%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomRight animate__slower"
+            >
+              <img
+                src="./asset/images/bunga-kanan.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kanan'"
+                alt="Bunga Kanan"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="ornamen-bawah right-0 bottom-0 w-[30%] translate-x-[30%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomRight animate__slower"
+            >
+              <div class="anim-sway-left">
+                <img
+                  src="./asset/images/wayang-tegak.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Tegak+Kanan'"
+                  alt="Wayang Tegak Kanan"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="blur-card p-6 text-center animated-content w-full max-w-sm"
+          >
+            <div class="content-layer space-y-6">
+              <h3
+                class="text-3xl font-serif-elegant font-bold text-navy-modern border-b border-rose-gold pb-2 mb-4 inline-block animate__animated animate__fadeInDown"
+              >
+                Kado Pernikahan
+              </h3>
+
+              <p
+                class="text-gray-700 text-sm italic leading-relaxed animate__animated animate__fadeInDown"
+              >
+                Doa restu dari Bapak/Ibu sudah merupakan karunia. Jika ingin
+                memberikan tanda kasih, silakan pilih opsi di bawah:
+              </p>
+
+              <button
+                onclick="openModal('modal-digital')"
+                class="w-full px-6 py-3 text-sm font-bold text-white uppercase transition duration-300 rounded-lg shadow-md bg-rose-gold hover:bg-rose-gold/80 animate__animated animate__fadeInUp animate__delay-1s"
+              >
+                <i class="fas fa-money-bill-transfer mr-2"></i> Transfer Bank
+              </button>
+
+              <button
+                onclick="openModal('modal-qris')"
+                class="w-full px-6 py-3 text-sm font-bold text-white uppercase transition duration-300 rounded-lg shadow-md bg-navy-modern hover:bg-navy-modern/80 animate__animated animate__fadeInUp animate__delay-1s"
+              >
+                <i class="fas fa-qrcode mr-2"></i> Pembayaran QRIS
+              </button>
+
+              <button
+                onclick="openModal('modal-fisik')"
+                class="w-full px-6 py-3 text-sm font-bold text-white uppercase transition duration-300 rounded-lg shadow-md bg-rose-gold hover:bg-rose-gold/80 animate__animated animate__fadeInUp animate__delay-2s"
+              >
+                <i class="fas fa-gift mr-2"></i> Kirim Kado Fisik
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION AKHIR -->
+        <div
+          id="penutup"
+          class="angkasa_slide px-6 relative snap-start"
+          data-section="penutup"
+        >
+          <img
+            class="frame-corner top-0 left-0 animate__animated animate__fadeInTopLeft animate__slower"
+            src="./asset/images/tl.webp"
+            onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Left'"
+            alt="frame top left"
+          />
+          <img
+            class="frame-corner top-0 right-0 animate__animated animate__fadeInTopRight animate__slower"
+            src="./asset/images/tr.webp"
+            onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Right'"
+            alt="frame top right"
+          />
+          <div
+            class="anim-scroll-infinity ornamen-bawah right-0 bottom-0 w-full md:w-11/12"
+            style="transform: translate(0, 0)"
+          >
+            <div class="animate__animated animate__fadeInUp animate__slower">
+              <img
+                src="./asset/images/bm.webp"
+                onerror="this.src='https://placehold.co/500x150/C6915A/white?text=Ornamen+Bawah'"
+                alt="flowers"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+
+          <!-- WAYANG DAN BUNGA ORNAMEN (dipercepat di sini untuk estetika) -->
+          <div
+            class="anim-sway-left ornamen-bawah left-0 bottom-0 w-[30%] translate-x-[0%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomLeft animate__slower"
+            >
+              <img
+                src="./asset/images/wayang-l.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kiri'"
+                alt="Wayang Kiri"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="anim-float-left ornamen-bawah left-0 bottom-0 w-[30%] translate-x-[20%] translate-y-[5%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomLeft animate__slower"
+            >
+              <img
+                src="./asset/images/bunga-kiri.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kiri'"
+                alt="Bunga Kiri"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="ornamen-bawah left-0 bottom-0 w-[30%] translate-x-[-30%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomLeft animate__slower"
+            >
+              <div class="anim-sway-right">
+                <img
+                  src="./asset/images/wayang-tegak.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Tegak+Kiri'"
+                  alt="Wayang Tegak Kiri"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="anim-sway-right ornamen-bawah right-0 bottom-0 w-[30%] translate-x-[0%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomRight animate__slower"
+            >
+              <img
+                src="./asset/images/wayang-r.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kanan'"
+                alt="Wayang Kanan"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="anim-float-right ornamen-bawah right-0 bottom-0 w-[30%] translate-x-[-20%] translate-y-[5%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomRight animate__slower"
+            >
+              <img
+                src="./asset/images/bunga-kanan.webp"
+                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kanan'"
+                alt="Bunga Kanan"
+                class="w-full"
+                draggable="false"
+              />
+            </div>
+          </div>
+          <div
+            class="ornamen-bawah right-0 bottom-0 w-[30%] translate-x-[30%] translate-y-[10%]"
+          >
+            <div
+              class="animate__animated animate__fadeInBottomRight animate__slower"
+            >
+              <div class="anim-sway-left">
+                <img
+                  src="./asset/images/wayang-tegak.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Tegak+Kanan'"
+                  alt="Wayang Tegak Kanan"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="blur-card p-8 text-center animated-content w-full max-w-sm"
+          >
+            <div class="content-layer space-y-6">
+              <h3
+                class="text-3xl font-serif-elegant font-bold text-navy-modern border-b border-rose-gold pb-2 mb-4 inline-block animate__animated animate__fadeInDown"
+              >
+                Terima Kasih
+              </h3>
+
+              <p
+                class="text-base leading-relaxed text-gray-700 animate__animated animate__fadeInUp"
+              >
+                Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila
+                Bapak/Ibu, Saudara/i berkenan hadir untuk memberikan doa restu.
+              </p>
+
+              <div
+                class="editable color-accent font-weight-bold"
+                style="font-size: 14px"
+              >
+                ✤ ---------------------- ✤
+              </div>
+
+              <p
+                class="text-sm italic text-gray-600 leading-relaxed animate__animated animate__fadeInUp animate__delay-1s"
+              >
+                Atas kehadiran dan doa restu Anda, kami mengucapkan terima
+                kasih. Mohon maaf apabila dalam penyampaian undangan ini
+                terdapat kekeliruan kata dan bahasa.
+              </p>
+
+              <div
+                class="pt-4 animate__animated animate__fadeInUp animate__delay-2s"
+              >
+                <p
+                  class="text-xl font-serif-elegant font-semibold text-rose-gold"
+                >
+                  Wassalamu'alaikum Wr. Wb.
+                </p>
+
+                <p
+                  class="text-4xl font-serif-elegant font-bold text-navy-modern mt-4"
+                >
+                  Irfan & Indah
+                </p>
+              </div>
+
+              <p
+                class="text-xs text-gray-500 mt-6 animate__animated animate__fadeInUp animate__delay-3s"
+              >
+                *Kami yang berbahagia: Keluarga Bapak [Nama Ayah Irfan] & Ibu
+                [Nama Ibu Irfan] serta Keluarga Bapak [Nama Ayah Indah] & Ibu
+                [Nama Ibu Indah]
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          id="modal-digital"
+          class="modal-backdrop hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black bg-opacity-50 transition-opacity duration-300 opacity-0"
+        >
+          <div
+            class="modal-content w-full max-w-xs bg-white rounded-lg shadow-2xl transform scale-95 transition-transform duration-300"
+          >
+            <div class="p-6 text-center">
+              <h4
+                class="text-xl font-serif-elegant font-bold text-rose-gold mb-4"
+              >
+                Transfer Bank
+              </h4>
+
+              <div class="space-y-4 pt-4">
+                <h5
+                  class="text-lg font-bold text-navy-modern border-b border-rose-gold/50 pb-2"
+                >
+                  Detail Rekening
+                </h5>
+
+                <div class="p-3 bg-gray-100 rounded-md border border-gray-200">
+                  <p class="text-sm font-bold text-navy-modern">BANK MANDIRI</p>
+                  <p class="text-xs text-gray-600">A/N: Irfan Alfarizi</p>
+                  <p
+                    id="rekening-irfan"
+                    class="text-lg font-bold text-gray-800 my-1"
+                  >
+                    13100-1234-5678
+                  </p>
+                  <button
+                    onclick="copyAndClose('13100-1234-5678', 'rekening-irfan-btn', 'modal-digital')"
+                    id="rekening-irfan-btn"
+                    class="mt-2 px-3 py-1 text-xs font-semibold text-white bg-rose-gold rounded hover:bg-rose-gold/90 transition duration-150"
+                  >
+                    <i class="fas fa-copy mr-1"></i> Salin & Tutup
+                  </button>
+                </div>
+
+                <div class="p-3 bg-gray-100 rounded-md border border-gray-200">
+                  <p class="text-sm font-bold text-navy-modern">BANK BRI</p>
+                  <p class="text-xs text-gray-600">A/N: Indah Permata</p>
+                  <p
+                    id="rekening-indah"
+                    class="text-lg font-bold text-gray-800 my-1"
+                  >
+                    0890-1234-567-890
+                  </p>
+                  <button
+                    onclick="copyAndClose('0890-1234-567-890', 'rekening-indah-btn', 'modal-digital')"
+                    id="rekening-indah-btn"
+                    class="mt-2 px-3 py-1 text-xs font-semibold text-white bg-rose-gold rounded hover:bg-rose-gold/90 transition duration-150"
+                  >
+                    <i class="fas fa-copy mr-1"></i> Salin & Tutup
+                  </button>
+                </div>
+              </div>
+
+              <button
+                onclick="closeModal('modal-digital')"
+                class="mt-6 text-sm text-gray-500 hover:text-gray-700"
+              >
+                Tutup Daftar Rekening
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div
+          id="modal-qris"
+          class="modal-backdrop hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black bg-opacity-50 transition-opacity duration-300 opacity-0"
+        >
+          <div
+            class="modal-content w-full max-w-xs bg-white rounded-lg shadow-2xl transform scale-95 transition-transform duration-300"
+          >
+            <div class="p-6 text-center">
+              <h4
+                class="text-xl font-serif-elegant font-bold text-rose-gold mb-4"
+              >
+                Pembayaran QRIS
+              </h4>
+
+              <p class="text-sm text-gray-700 italic mb-4">
+                Pindai kode di bawah dari aplikasi pembayaran Anda.
+              </p>
+
+              <div class="p-4 bg-gray-100 rounded-md border border-gray-200">
+                <img
+                  src="./asset/images/qris_placeholder.webp"
+                  id="qris-image"
+                  onerror="this.src='https://placehold.co/200x200/2D3A50/C6915A?text=QRIS'"
+                  alt="QRIS Code"
+                  class="w-48 h-48 mx-auto rounded-md shadow-md"
+                />
+                <p class="text-sm mt-3 font-semibold text-gray-600">
+                  A/N: Irfan & Indah
+                </p>
+              </div>
+
+              <a
+                href="./asset/images/qris_placeholder.webp"
+                download="QRIS-Irfan-Indah.webp"
+                class="inline-block px-4 py-2 mt-5 text-sm font-bold text-white uppercase transition duration-300 rounded-lg shadow-md bg-navy-modern hover:bg-navy-modern/80"
+              >
+                <i class="fas fa-download mr-2"></i> Download Gambar QRIS
+              </a>
+
+              <button
+                onclick="closeModal('modal-qris')"
+                class="mt-6 text-sm text-gray-500 hover:text-gray-700 block mx-auto"
+              >
+                Tutup QRIS
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div
+          id="modal-fisik"
+          class="modal-backdrop hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black bg-opacity-50 transition-opacity duration-300 opacity-0"
+        >
+          <div
+            class="modal-content w-full max-w-xs bg-white rounded-lg shadow-2xl transform scale-95 transition-transform duration-300"
+          >
+            <div class="p-6 text-center">
+              <h4
+                class="text-xl font-serif-elegant font-bold text-rose-gold mb-4"
+              >
+                Kado Fisik
+              </h4>
+
+              <div
+                class="p-3 bg-gray-100 rounded-md border border-gray-200 text-left space-y-2"
+              >
+                <p class="text-sm font-bold text-navy-modern">
+                  Penerima: Indah Permata
+                </p>
+                <p id="alamat-lengkap" class="text-sm text-gray-800">
+                  **Perum KCVRI Blok A. No. 09 RT 01/RW 07, [Kota, Provinsi]**
+                </p>
+                <p class="text-sm text-gray-800">
+                  Nomor Kontak: 0812-3456-7890
+                </p>
+              </div>
+
+              <button
+                onclick="copyAndClose('Perum KCVRI Blok A. No. 09 RT 01/RW 07, [Kota, Provinsi]. Penerima: Indah Permata. No. Telp: 081234567890', 'alamat-fisik-btn', 'modal-fisik')"
+                id="alamat-fisik-btn"
+                class="mt-5 px-4 py-2 text-sm font-bold text-white bg-navy-modern rounded-lg hover:bg-navy-modern/90 transition duration-150"
+              >
+                <i class="fas fa-copy mr-2"></i> Salin Alamat Pengiriman
+              </button>
+
+              <button
+                onclick="closeModal('modal-fisik')"
+                class="mt-5 text-sm text-gray-500 hover:text-gray-700 block mx-auto"
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NAVBAR BAWAH (FIXED relative to the fullscreen container) -->
+      <div
+        id="bottom-navbar"
+        class="fixed bottom-0 left-0 right-0 z-50 py-2 pt-4 w-full blur-nav transition-transform duration-500 transform translate-y-full hidden rounded-t-2xl"
+        style="max-width: 500px; margin-left: auto; margin-right: auto"
+      >
+        <div
+          class="flex flex-nowrap overflow-x-auto whitespace-nowrap justify-start text-navy-modern px-2 no-scrollbar"
+        >
+          <a
+            id="nav-cover"
+            href="#cover"
+            class="nav-item flex-shrink-0 text-center py-1 px-3 rounded-lg transition duration-200"
+            onclick="scrollToSection(event, 'cover')"
+          >
+            <i class="fas fa-home text-lg"></i>
+            <div class="text-xs font-semibold">Beranda</div>
+          </a>
+
+          <a
+            id="nav-ucapan"
+            href="#ucapan"
+            class="nav-item flex-shrink-0 text-center py-1 px-3 rounded-lg transition duration-200"
+            onclick="scrollToSection(event, 'ucapan')"
+          >
+            <i class="fas fa-book-open text-lg"></i>
+            <div class="text-xs font-semibold">Prolog</div>
+          </a>
+
+          <a
+            id="nav-mempelai"
+            href="#mempelai"
+            class="nav-item flex-shrink-0 text-center py-1 px-3 rounded-lg transition duration-200"
+            onclick="scrollToSection(event, 'mempelai')"
+          >
+            <i class="fas fa-user-friends text-lg"></i>
+            <div class="text-xs font-semibold">Mempelai</div>
+          </a>
+
+          <a
+            id="nav-acara"
+            href="#acara"
+            class="nav-item flex-shrink-0 text-center py-1 px-3 rounded-lg transition duration-200"
+            onclick="scrollToSection(event, 'acara')"
+          >
+            <i class="fas fa-calendar-alt text-lg"></i>
+            <div class="text-xs font-semibold">Acara</div>
+          </a>
+
+          <a
+            id="nav-maps-lokasi"
+            href="#maps-lokasi"
+            class="nav-item flex-shrink-0 text-center py-1 px-3 rounded-lg transition duration-200"
+            onclick="scrollToSection(event, 'maps-lokasi')"
+          >
+            <i class="fa-solid fa-map-location-dot text-lg"></i>
+            <div class="text-xs font-semibold">Lokasi</div>
+          </a>
+
+          <a
+            id="nav-gift"
+            href="#gift"
+            class="nav-item flex-shrink-0 text-center py-1 px-3 rounded-lg transition duration-200"
+            onclick="scrollToSection(event, 'gift')"
+          >
+            <i class="fa-solid fa-gift text-lg"></i>
+            <div class="text-xs font-semibold">Gift</div>
+          </a>
+
+          <a
+            id="nav-penutup"
+            href="#penutup"
+            class="nav-item flex-shrink-0 text-center py-1 px-3 rounded-lg transition duration-200"
+            onclick="scrollToSection(event, 'penutup')"
+          >
+            <i class="fas fa-heart text-lg"></i>
+            <div class="text-xs font-semibold">Restu</div>
+          </a>
+        </div>
+      </div>
+    </div>
+    <script src="/app.js"></script>
+  </body>
+</html>
