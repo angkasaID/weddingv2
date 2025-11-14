@@ -2,7 +2,7 @@
 // A. FUNGSI UTILITY (COPY, MODAL)
 // ====================================================================
 
-// FUNGSI COPY TO CLIPBOARD
+// FUNGSI COPY TO CLIPBOARD (Menggunakan JavaScript Native)
 function copyToClipboard(textToCopy, buttonId) {
   const tempInput = document.createElement("input");
   const cleanedText = buttonId.includes("rek")
@@ -71,7 +71,7 @@ window.copyAndClose = copyAndClose;
 window.copyToClipboard = copyToClipboard;
 
 // ====================================================================
-// B. FUNGSI NAMA TAMU DARI URL (FITUR BARU)
+// B. FUNGSI NAMA TAMU DARI URL
 // ====================================================================
 
 function getGuestNameFromUrl() {
@@ -81,11 +81,6 @@ function getGuestNameFromUrl() {
   if (guestName) {
     // Decode URL (misal: "Budi%20Wijaya" menjadi "Budi Wijaya")
     guestName = decodeURIComponent(guestName.replace(/\+/g, " "));
-
-    // Opsional: Buat format kapitalisasi yang lebih rapi
-    // Misal: "BUDI WIJAYA" menjadi "Budi Wijaya" (jika diperlukan)
-    // guestName = guestName.toLowerCase().split(' ').map(s => s.charAt(0).toUpperCase() + s.substring(1)).join(' ');
-
     return guestName;
   }
   return null;
@@ -179,9 +174,80 @@ function initializeMusicControl() {
 
 const mobileWrapper = document.getElementById("mobile-wrapper");
 
+// REVISI: Fungsi untuk mendeteksi apakah layar berada dalam mode mobile
+function isMobileView() {
+  // Menggunakan 768px sebagai batas umum mobile/tablet
+  return window.innerWidth <= 768;
+}
+
+// ====================================================================
+// REVISI: SCROLL SNAP KUSTOM DENGAN DURASI LAMBAT (Hanya di Mobile View)
+// ====================================================================
+function enableCustomScrollSnap() {
+  // 1. KELUAR dan lepas event jika bukan Mobile View
+  if (!isMobileView()) {
+    $(mobileWrapper).off("wheel"); // Pastikan listener dilepas di desktop
+    console.log("Custom Scroll Snap dinonaktifkan. Scroll normal aktif.");
+    return;
+  }
+
+  if (typeof jQuery === "undefined" || !mobileWrapper) {
+    console.error("jQuery atau #mobile-wrapper tidak ditemukan.");
+    return;
+  }
+
+  // 2. Jika Mobile View, pasang event listener Wheel
+  var sectionHeight = mobileWrapper.clientHeight;
+  var isSnapping = false;
+
+  // Lepas event listener lama sebelum memasang yang baru untuk mencegah duplikasi
+  $(mobileWrapper)
+    .off("wheel")
+    .on("wheel", function (e) {
+      // e.preventDefault() hanya dipanggil di sini, yang hanya aktif di Mobile View.
+      e.preventDefault();
+
+      if (isSnapping) {
+        return;
+      }
+      isSnapping = true;
+
+      var delta = e.originalEvent.deltaY;
+      var currentScrollTop = $(mobileWrapper).scrollTop();
+      var targetScroll;
+
+      // Logika penentuan posisi scroll target (Snap logic)
+      if (delta > 0) {
+        targetScroll =
+          Math.ceil(currentScrollTop / sectionHeight) * sectionHeight;
+      } else {
+        targetScroll =
+          Math.floor(currentScrollTop / sectionHeight) * sectionHeight -
+          sectionHeight;
+      }
+
+      if (targetScroll < 0) {
+        targetScroll = 0;
+      }
+
+      // Animasi Scroll dengan Durasi Lambat (1.2 detik)
+      $(mobileWrapper).animate(
+        {
+          scrollTop: targetScroll,
+        },
+        {
+          duration: 1200,
+          easing: "swing",
+          complete: function () {
+            isSnapping = false;
+          },
+        }
+      );
+    });
+}
+// ====================================================================
+
 function centerActiveNavItem(itemId) {
-  // KOREKSI: Menargetkan div yang benar di dalam #bottom-navbar
-  // Struktur: #bottom-navbar > div (yang memiliki overflow-x-auto)
   const navContainer = document.querySelector("#bottom-navbar > div");
   const activeItem = document.getElementById(`nav-${itemId}`);
 
@@ -201,16 +267,14 @@ function centerActiveNavItem(itemId) {
 function scrollToSection(event, sectionId) {
   event.preventDefault();
   const targetSection = document.getElementById(sectionId);
-  if (targetSection && mobileWrapper.style.overflowY === "scroll") {
+  // Cek apakah scroll sudah diizinkan
+  if (targetSection && mobileWrapper.style.overflowY !== "hidden") {
     mobileWrapper.scrollTo({
       top: targetSection.offsetTop,
       behavior: "smooth",
     });
 
-    // Asumsi: Fungsi ini akan mengupdate kelas active-nav-item
     updateNavbarActiveState(sectionId);
-
-    // PENTING: Panggil fungsi untuk menengahkan navbar
     centerActiveNavItem(sectionId);
   }
 }
@@ -218,8 +282,10 @@ window.scrollToSection = scrollToSection;
 
 // Inisialisasi saat DOM siap
 document.addEventListener("DOMContentLoaded", () => {
-  displayGuestName(); // Panggil fungsi menampilkan nama tamu
+  displayGuestName();
   initializeMusicControl();
+
+  // **PENTING:** Pastikan #mobile-wrapper memiliki overflow-y: hidden di CSS awal.
 
   document.getElementById("open-button").addEventListener("click", function () {
     const targetSection = document.getElementById(
@@ -238,8 +304,14 @@ document.addEventListener("DOMContentLoaded", () => {
     openButton.classList.add("hidden");
 
     setTimeout(() => {
-      mobileWrapper.style.overflowY = "scroll";
+      // 1. IZINKAN SCROLL BERGANTUNG PADA VIEW
+      // Mobile: 'scroll' (untuk scroll snap kustom)
+      // Desktop: 'auto' (untuk scroll normal browser)
+      mobileWrapper.style.overflowY = isMobileView() ? "scroll" : "auto";
       mobileWrapper.style.paddingBottom = "70px";
+
+      // 2. AKTIFKAN SCROLL SNAP KUSTOM (Fungsi akan exit jika desktop)
+      enableCustomScrollSnap();
 
       document.querySelectorAll(".angkasa_slide").forEach((section) => {
         section.classList.add("scroll-active-section");
@@ -250,6 +322,7 @@ document.addEventListener("DOMContentLoaded", () => {
         bottomNavbar.classList.remove("translate-y-full");
       }, 50);
 
+      // Scroll ke section pertama setelah dibuka
       if (targetSection) {
         mobileWrapper.scrollTo({
           top: targetSection.offsetTop,
@@ -310,7 +383,8 @@ const observer = new IntersectionObserver((entries, observer) => {
         const entryAnimation = Array.from(el.classList).find(
           (cls) =>
             cls.startsWith("animate__fadeIn") ||
-            cls.startsWith("animate__slideIn")
+            cls.startsWith("animate__slideIn") ||
+            cls.startsWith("animate__jackInTheBox")
         );
         if (entryAnimation) {
           el.classList.remove(entryAnimation);
