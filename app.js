@@ -2,7 +2,6 @@
 // A. FUNGSI UTILITY (COPY, MODAL)
 // ====================================================================
 
-// FUNGSI COPY TO CLIPBOARD (Menggunakan JavaScript Native)
 function copyToClipboard(textToCopy, buttonId) {
   const tempInput = document.createElement("input");
   const cleanedText = buttonId.includes("rek")
@@ -11,12 +10,11 @@ function copyToClipboard(textToCopy, buttonId) {
   tempInput.value = cleanedText;
   document.body.appendChild(tempInput);
 
-  // Gunakan document.execCommand untuk kompatibilitas iframe
-  tempInput.select();
-  document.execCommand("copy");
+  document.execCommand("copy", false, tempInput.select());
   document.body.removeChild(tempInput);
 
   const button = document.getElementById(buttonId);
+  if (!button) return;
   const originalText = button.innerHTML;
 
   // Feedback visual
@@ -30,15 +28,19 @@ function copyToClipboard(textToCopy, buttonId) {
   }, 2000);
 }
 
-// FUNGSI MODAL
 function openModal(modalId) {
   const modal = document.getElementById(modalId);
+  if (!modal) return;
+
   modal.classList.remove("hidden");
 
   setTimeout(() => {
     modal.classList.add("opacity-100");
-    modal.querySelector(".modal-content").classList.remove("scale-95");
-    modal.querySelector(".modal-content").classList.add("scale-100");
+    const modalContent = modal.querySelector(".modal-content");
+    if (modalContent) {
+      modalContent.classList.remove("scale-95");
+      modalContent.classList.add("scale-100");
+    }
   }, 10);
 
   document.body.style.overflow = "hidden";
@@ -46,10 +48,14 @@ function openModal(modalId) {
 
 function closeModal(modalId) {
   const modal = document.getElementById(modalId);
+  if (!modal) return;
 
   modal.classList.remove("opacity-100");
-  modal.querySelector(".modal-content").classList.add("scale-95");
-  modal.querySelector(".modal-content").classList.remove("scale-100");
+  const modalContent = modal.querySelector(".modal-content");
+  if (modalContent) {
+    modalContent.classList.add("scale-95");
+    modalContent.classList.remove("scale-100");
+  }
 
   setTimeout(() => {
     modal.classList.add("hidden");
@@ -57,7 +63,6 @@ function closeModal(modalId) {
   }, 300);
 }
 
-// FUNGSI COPY DAN TUTUP MODAL
 function copyAndClose(textToCopy, buttonId, modalId) {
   copyToClipboard(textToCopy, buttonId);
   setTimeout(() => {
@@ -76,10 +81,9 @@ window.copyToClipboard = copyToClipboard;
 
 function getGuestNameFromUrl() {
   const params = new URLSearchParams(window.location.search);
-  let guestName = params.get("to") || params.get("nama"); // Cek 'to' atau 'nama'
+  let guestName = params.get("to") || params.get("nama");
 
   if (guestName) {
-    // Decode URL (misal: "Budi%20Wijaya" menjadi "Budi Wijaya")
     guestName = decodeURIComponent(guestName.replace(/\+/g, " "));
     return guestName;
   }
@@ -90,162 +94,151 @@ function displayGuestName() {
   const guestName = getGuestNameFromUrl();
   const displayElement = document.getElementById("guest-name-display");
 
-  if (guestName) {
-    displayElement.innerText = guestName;
-  } else {
-    // Jika tidak ada parameter URL, gunakan teks default atau sembunyikan
-    displayElement.innerText = "Kawanku";
+  if (displayElement) {
+    displayElement.innerText = guestName || "Kawanku";
   }
 }
 
 // ====================================================================
-// C. FUNGSI KONTROL MUSIK
+// C. FUNGSI KONTROL MUSIK (Dua Tombol: Play/Pause dan Mute/Unmute)
 // ====================================================================
 
 function initializeMusicControl() {
   const music = document.getElementById("background-music");
-  const controlButton = document.getElementById("music-control-button");
-  const musicIcon = document.getElementById("music-icon");
-  let isPlaying = false;
+  const pauseButton = document.getElementById("music-pause-button");
+  const muteButton = document.getElementById("music-mute-button");
+  const pauseIcon = document.getElementById("pause-icon");
+  const muteIcon = document.getElementById("mute-icon");
+  let isPlaying = false; // Tracks Play/Pause state
 
-  // Fungsi untuk memperbarui ikon tombol
-  function updateIcon(playing) {
+  if (!music || !pauseButton || !muteButton || !pauseIcon || !muteIcon) return;
+
+  // Helper untuk mengupdate ikon Play/Pause
+  function updatePauseIcon(playing) {
     if (playing) {
-      musicIcon.classList.remove("fa-volume-mute");
-      musicIcon.classList.add("fa-volume-up");
+      pauseIcon.classList.remove("fa-play");
+      pauseIcon.classList.add("fa-pause");
     } else {
-      musicIcon.classList.remove("fa-volume-up");
-      musicIcon.classList.add("fa-volume-mute");
+      pauseIcon.classList.remove("fa-pause");
+      pauseIcon.classList.add("fa-play");
     }
   }
 
-  // Fungsi untuk memutar musik otomatis setelah interaksi pertama
+  // Helper untuk mengupdate ikon Mute/Unmute
+  function updateMuteIcon(muted) {
+    if (muted) {
+      muteIcon.classList.remove("fa-volume-up");
+      muteIcon.classList.add("fa-volume-mute");
+    } else {
+      muteIcon.classList.remove("fa-volume-mute");
+      muteIcon.classList.add("fa-volume-up");
+    }
+  }
+
   function autoPlayAfterInteraction() {
-    if (!isPlaying) {
+    if (!isPlaying && music) {
       music.volume = 0.5;
       music
         .play()
         .then(() => {
           isPlaying = true;
-          updateIcon(true);
+          updatePauseIcon(true);
+          updateMuteIcon(music.muted);
         })
         .catch((error) => {
           console.log("Autoplay diblokir:", error);
-          updateIcon(false);
+          updatePauseIcon(false);
         });
+      // Hapus listener setelah interaksi pertama
       document.removeEventListener("click", autoPlayAfterInteraction, true);
+      document.removeEventListener(
+        "touchstart",
+        autoPlayAfterInteraction,
+        true
+      );
     }
   }
 
+  // 1. Initial interaction listener for Autoplay (Click/Touch)
   document.addEventListener("click", autoPlayAfterInteraction, {
     once: true,
     capture: true,
   });
+  document.addEventListener("touchstart", autoPlayAfterInteraction, {
+    once: true,
+    capture: true,
+  });
 
-  // Listener untuk tombol kontrol
-  controlButton.addEventListener("click", (e) => {
+  // 2. Play/Pause Listener
+  pauseButton.addEventListener("click", (e) => {
     e.stopPropagation();
     if (music.paused) {
       music
         .play()
         .then(() => {
           isPlaying = true;
-          updateIcon(true);
+          updatePauseIcon(true);
         })
         .catch((error) => {
-          alert(
-            "Browser memblokir pemutaran otomatis. Silakan cek pengaturan media."
-          );
-          updateIcon(false);
+          console.error("Music play failed on click:", error);
+          updatePauseIcon(false);
         });
     } else {
       music.pause();
       isPlaying = false;
-      updateIcon(false);
+      updatePauseIcon(false);
     }
   });
 
-  updateIcon(false);
+  // 3. Mute/Unmute Listener
+  muteButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    music.muted = !music.muted;
+    updateMuteIcon(music.muted);
+  });
+
+  // Set Initial state
+  updatePauseIcon(false);
+  updateMuteIcon(music.muted);
 }
 
 // ====================================================================
 // D. FUNGSI SCROLL, NAVIGASI & OBSERVER
 // ====================================================================
 
-const mobileWrapper = document.getElementById("mobile-wrapper");
+// Variabel Global untuk DOM dan Observer
+let mobileWrapper;
+let observer;
 
-// REVISI: Fungsi untuk mendeteksi apakah layar berada dalam mode mobile
 function isMobileView() {
-  // Menggunakan 768px sebagai batas umum mobile/tablet
+  // Gunakan 768px sebagai batas umum untuk mobile
   return window.innerWidth <= 768;
 }
 
-// ====================================================================
-// REVISI: SCROLL SNAP KUSTOM DENGAN DURASI LAMBAT (Hanya di Mobile View)
-// ====================================================================
-function enableCustomScrollSnap() {
-  // 1. KELUAR dan lepas event jika bukan Mobile View
-  if (!isMobileView()) {
-    $(mobileWrapper).off("wheel"); // Pastikan listener dilepas di desktop
-    console.log("Custom Scroll Snap dinonaktifkan. Scroll normal aktif.");
-    return;
+function launchFullscreen(element) {
+  if (element.requestFullscreen) {
+    element.requestFullscreen();
+  } else if (element.mozRequestFullScreen) {
+    element.mozRequestFullScreen();
+  } else if (element.webkitRequestFullscreen) {
+    element.webkitRequestFullscreen();
+  } else if (element.msRequestFullscreen) {
+    element.msRequestFullscreen();
   }
-
-  if (typeof jQuery === "undefined" || !mobileWrapper) {
-    console.error("jQuery atau #mobile-wrapper tidak ditemukan.");
-    return;
-  }
-
-  // 2. Jika Mobile View, pasang event listener Wheel
-  var sectionHeight = mobileWrapper.clientHeight;
-  var isSnapping = false;
-
-  // Lepas event listener lama sebelum memasang yang baru untuk mencegah duplikasi
-  $(mobileWrapper)
-    .off("wheel")
-    .on("wheel", function (e) {
-      // e.preventDefault() hanya dipanggil di sini, yang hanya aktif di Mobile View.
-      e.preventDefault();
-
-      if (isSnapping) {
-        return;
-      }
-      isSnapping = true;
-
-      var delta = e.originalEvent.deltaY;
-      var currentScrollTop = $(mobileWrapper).scrollTop();
-      var targetScroll;
-
-      // Logika penentuan posisi scroll target (Snap logic)
-      if (delta > 0) {
-        targetScroll =
-          Math.ceil(currentScrollTop / sectionHeight) * sectionHeight;
-      } else {
-        targetScroll =
-          Math.floor(currentScrollTop / sectionHeight) * sectionHeight -
-          sectionHeight;
-      }
-
-      if (targetScroll < 0) {
-        targetScroll = 0;
-      }
-
-      // Animasi Scroll dengan Durasi Lambat (1.2 detik)
-      $(mobileWrapper).animate(
-        {
-          scrollTop: targetScroll,
-        },
-        {
-          duration: 1200,
-          easing: "swing",
-          complete: function () {
-            isSnapping = false;
-          },
-        }
-      );
-    });
 }
-// ====================================================================
+
+function updateNavbarActiveState(sectionId) {
+  document.querySelectorAll(".nav-item").forEach((item) => {
+    // Menghapus kelas 'active-nav-style'
+    item.classList.remove("active-nav-style");
+  });
+
+  const activeLink = document.getElementById(`nav-${sectionId}`);
+  if (activeLink) {
+    activeLink.classList.add("active-nav-style");
+    centerActiveNavItem(sectionId);
+  }
+}
 
 function centerActiveNavItem(itemId) {
   const navContainer = document.querySelector("#bottom-navbar > div");
@@ -267,8 +260,12 @@ function centerActiveNavItem(itemId) {
 function scrollToSection(event, sectionId) {
   event.preventDefault();
   const targetSection = document.getElementById(sectionId);
-  // Cek apakah scroll sudah diizinkan
-  if (targetSection && mobileWrapper.style.overflowY !== "hidden") {
+
+  if (
+    targetSection &&
+    mobileWrapper &&
+    mobileWrapper.style.overflowY !== "hidden"
+  ) {
     mobileWrapper.scrollTo({
       top: targetSection.offsetTop,
       behavior: "smooth",
@@ -280,129 +277,245 @@ function scrollToSection(event, sectionId) {
 }
 window.scrollToSection = scrollToSection;
 
-// Inisialisasi saat DOM siap
+// ====================================================================
+// E. FUNGSI PRELOADER (Anti-Flicker & Fungsional)
+// ====================================================================
+
+function handlePreloader() {
+  const preloader = document.getElementById("preloader");
+  const progressBar = document.getElementById("progress-bar");
+  if (!preloader || !progressBar) return;
+
+  // Flags dan Timer
+  let allAssetsReady = false;
+  let minTimeMet = false;
+  const MIN_DISPLAY_TIME = 500; // Minimum waktu tampil 500ms (untuk user experience)
+
+  // Aset yang dilacak: Fonts dan Audio
+  const music = document.getElementById("background-music");
+  let assetsToLoad = 2; // Font dan Audio
+
+  // --- 1. Asset Tracking ---
+  const checkCompletion = (assetName) => {
+    assetsToLoad--;
+
+    // Update visual progress bar secara bertahap
+    if (assetsToLoad === 1) {
+      progressBar.style.width = "66%"; // Fonts selesai (sisa 1 asset)
+    } else if (assetsToLoad === 0) {
+      progressBar.style.width = "99%"; // Audio selesai (semua asset dimuat)
+      allAssetsReady = true;
+    }
+
+    checkAndHidePreloader();
+  };
+
+  // a. Track Fonts (Document Fonts Ready API)
+  document.fonts.ready.then(() => {
+    checkCompletion("Fonts");
+  });
+
+  // b. Track Audio (Can Play Through Event)
+  music.oncanplaythrough = () => {
+    checkCompletion("Audio");
+  };
+
+  // --- 2. Minimum Time Tracking ---
+  setTimeout(() => {
+    minTimeMet = true;
+    checkAndHidePreloader();
+  }, MIN_DISPLAY_TIME);
+
+  // --- 3. Initial Visual Simulation (Animasi Awal) ---
+  let progress = 0;
+  const maxSimulatedProgress = 33; // Simulasi awal hingga 33% sebelum aset mulai dilacak
+  const intervalTime = 50;
+
+  const loadingInterval = setInterval(() => {
+    if (progress < maxSimulatedProgress) {
+      progress += 1;
+      progressBar.style.width = `${progress}%`;
+    } else {
+      clearInterval(loadingInterval);
+    }
+  }, intervalTime);
+
+  // --- 4. Hiding Logic (Akan dipanggil oleh Asset Tracker dan Minimum Timer) ---
+  function checkAndHidePreloader() {
+    if (allAssetsReady && minTimeMet) {
+      // Pastikan simulasi berhenti
+      clearInterval(loadingInterval);
+      progressBar.style.width = "100%";
+
+      // 1. Sembunyikan Preloader (Fade-out)
+      preloader.classList.add("opacity-0");
+
+      // 2. Setelah fade-out, sembunyikan sepenuhnya (Anti-Flicker: tidak ada manipulasi display overlay)
+      setTimeout(() => {
+        preloader.classList.add("hidden");
+
+        // Tidak perlu menampilkan coverSectionOverlay karena sudah ada di bawah preloader
+      }, 500); // 0.5s = transition duration
+    }
+  }
+
+  // Memastikan progress bar dimulai dari 0%
+  progressBar.style.width = "0%";
+}
+
+// ====================================================================
+// F. INISIALISASI UTAMA (DOMContentLoaded)
+// ====================================================================
+
 document.addEventListener("DOMContentLoaded", () => {
+  // 1. Definisikan Variabel Utama
+  mobileWrapper = document.getElementById("mobile-wrapper");
+  // coverSectionOverlay tidak perlu disembunyikan/ditampilkan, biarkan z-index yang bekerja
+  const bottomNavbar = document.getElementById("bottom-navbar");
+  const openButton = document.getElementById("open-button");
+  const fullscreenTarget = document.getElementById("fullscreen-container");
+  const musicControls = document.getElementById("floating-music-controls");
+
+  if (!mobileWrapper || !bottomNavbar || !openButton) {
+    console.error(
+      "DOM Initialization Failed: One or more critical elements are missing."
+    );
+    return;
+  }
+
+  // 2. Tampilkan Nama Tamu & Kontrol Musik
   displayGuestName();
   initializeMusicControl();
 
-  // **PENTING:** Pastikan #mobile-wrapper memiliki overflow-y: hidden di CSS awal.
+  // 3. Mulai Preloader (Sekarang Fungsional & Anti-Flicker)
+  handlePreloader();
 
-  document.getElementById("open-button").addEventListener("click", function () {
-    const targetSection = document.getElementById(
-      this.getAttribute("data-target").replace("#", "")
+  // 4. INISIALISASI INTERSECTION OBSERVER
+  const observerOptions = {
+    root: mobileWrapper,
+    rootMargin: "0px",
+    threshold: 0.8,
+  };
+
+  observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      const section = entry.target;
+      const sectionId = section.getAttribute("id");
+      const creditFooter = document.getElementById("credit-footer");
+
+      if (entry.isIntersecting) {
+        // LAZY LOAD ASSET
+        section.querySelectorAll(".lazy-load-img[data-src]").forEach((img) => {
+          if (!img.getAttribute("src")) {
+            img.setAttribute("src", img.getAttribute("data-src"));
+            img.removeAttribute("data-src");
+            img.classList.add("is-loaded");
+          }
+        });
+
+        // LOGIKA NAVBAR
+        if (sectionId) {
+          updateNavbarActiveState(sectionId);
+        }
+
+        // AKTIFKAN: Kelas IS-ACTIVE untuk animasi loop ornamen
+        section.classList.add("is-active");
+
+        // Memicu entry animasi slide-up (animated-content)
+        section.querySelectorAll(".animated-content").forEach((el) => {
+          el.classList.add("is-visible");
+        });
+
+        // LOGIKA KHUSUS: Navbar Transisi dan Footer (saat masuk section closing)
+        if (sectionId === "closing" && creditFooter) {
+          bottomNavbar.classList.remove("navbar-bottom");
+          bottomNavbar.classList.add("navbar-top");
+          creditFooter.classList.remove("opacity-0", "pointer-events-none");
+          creditFooter.classList.add("opacity-100", "pointer-events-auto");
+        }
+      } else {
+        // Logika saat section keluar viewport
+        section.classList.remove("is-active");
+
+        section.querySelectorAll(".animated-content").forEach((el) => {
+          el.classList.remove("is-visible");
+        });
+
+        // LOGIKA KHUSUS: Navbar Transisi dan Footer (saat keluar section closing)
+        if (sectionId === "closing" && creditFooter) {
+          bottomNavbar.classList.remove("navbar-top");
+          bottomNavbar.classList.add("navbar-bottom");
+          creditFooter.classList.remove("opacity-100", "pointer-events-auto");
+          creditFooter.classList.add("opacity-0", "pointer-events-none");
+        }
+      }
+    });
+  }, observerOptions);
+
+  // Mulai mengamati semua section
+  document.querySelectorAll(".angkasa_slide").forEach((section) => {
+    observer.observe(section);
+  });
+
+  // 5. LISTENER TOMBOL BUKA UNDANGAN (Slide Up Logic)
+  openButton.addEventListener("click", function () {
+    const isMobile = isMobileView();
+    const coverSectionOverlay = document.getElementById(
+      "cover-section-overlay"
     );
-    const openButton = document.getElementById("open-button");
-    const bottomNavbar = document.getElementById("bottom-navbar");
-    const fullscreenTarget = document.getElementById("fullscreen-container");
 
-    const isMobile = window.innerWidth <= 768;
-
-    if (isMobile) {
-      launchFullscreen(fullscreenTarget);
+    // Tampilkan kontrol musik
+    if (musicControls) {
+      musicControls.classList.remove("hidden", "opacity-0");
+      musicControls.classList.add("opacity-100");
     }
 
+    // 1. Musik & Fullscreen
+    document
+      .getElementById("background-music")
+      .play()
+      .catch((e) => console.error("Music play blocked:", e));
+    if (isMobile && fullscreenTarget) {
+      launchFullscreen(document.documentElement);
+    }
+
+    // 2. EFEK SLIDE UP
+    coverSectionOverlay.style.transform = "translateY(-100%)";
     openButton.classList.add("hidden");
 
     setTimeout(() => {
-      // 1. IZINKAN SCROLL BERGANTUNG PADA VIEW
-      // Mobile: 'scroll' (untuk scroll snap kustom)
-      // Desktop: 'auto' (untuk scroll normal browser)
-      mobileWrapper.style.overflowY = isMobileView() ? "scroll" : "auto";
-      mobileWrapper.style.paddingBottom = "70px";
+      // 3. Setup Scroll dan Konten Utama
+      coverSectionOverlay.classList.add("hidden"); // Hilangkan elemen sepenuhnya setelah slide up selesai
 
-      // 2. AKTIFKAN SCROLL SNAP KUSTOM (Fungsi akan exit jika desktop)
-      enableCustomScrollSnap();
+      // Membuka scroll di mobileWrapper
+      mobileWrapper.style.overflowY = "scroll";
+      mobileWrapper.style.scrollSnapType = "y mandatory";
 
       document.querySelectorAll(".angkasa_slide").forEach((section) => {
         section.classList.add("scroll-active-section");
       });
 
-      bottomNavbar.classList.remove("hidden");
-      setTimeout(() => {
-        bottomNavbar.classList.remove("translate-y-full");
-      }, 50);
+      // 4. Tampilkan Navbar Bawah
+      if (bottomNavbar.classList.contains("hidden")) {
+        bottomNavbar.classList.remove("hidden");
+      }
+      bottomNavbar.classList.remove("translate-y-full");
+      bottomNavbar.classList.add("translate-y-0");
 
-      // Scroll ke section pertama setelah dibuka
+      // 5. Scroll ke section pertama
+      const firstSectionId = "opening";
+      const targetSection = document.getElementById(firstSectionId);
+
       if (targetSection) {
         mobileWrapper.scrollTo({
           top: targetSection.offsetTop,
           behavior: "smooth",
         });
+        updateNavbarActiveState(firstSectionId);
+
+        // FIX: Untuk Section Opening, pastikan IS-ACTIVE ditambahkan
+        targetSection.classList.add("is-active");
       }
-
-      updateNavbarActiveState("cover");
-    }, 200);
-  });
-});
-
-function launchFullscreen(element) {
-  if (element.requestFullscreen) {
-    element.requestFullscreen();
-  } else if (element.mozRequestFullScreen) {
-    element.mozRequestFullScreen();
-  } else if (element.webkitRequestFullscreen) {
-    element.webkitRequestFullscreen();
-  } else if (element.msRequestFullscreen) {
-    element.msRequestFullscreen();
-  }
-}
-
-function updateNavbarActiveState(sectionId) {
-  document.querySelectorAll(".nav-item").forEach((item) => {
-    item.classList.remove("active-nav-style");
-  });
-
-  const activeLink = document.getElementById(`nav-${sectionId}`);
-  if (activeLink) {
-    activeLink.classList.add("active-nav-style");
-    centerActiveNavItem(sectionId);
-  }
-}
-
-const observerOptions = {
-  root: mobileWrapper,
-  rootMargin: "0px",
-  threshold: 0.8,
-};
-
-const observer = new IntersectionObserver((entries, observer) => {
-  entries.forEach((entry) => {
-    const section = entry.target;
-
-    if (entry.isIntersecting) {
-      const sectionId = section.getAttribute("id");
-      if (sectionId) {
-        updateNavbarActiveState(sectionId);
-      }
-
-      section.querySelectorAll(".animated-content").forEach((el) => {
-        el.classList.add("is-visible");
-      });
-
-      section.querySelectorAll(".animate__animated").forEach((el) => {
-        const entryAnimation = Array.from(el.classList).find(
-          (cls) =>
-            cls.startsWith("animate__fadeIn") ||
-            cls.startsWith("animate__slideIn") ||
-            cls.startsWith("animate__jackInTheBox")
-        );
-        if (entryAnimation) {
-          el.classList.remove(entryAnimation);
-          setTimeout(() => {
-            el.classList.add(entryAnimation);
-          }, 50);
-        }
-      });
-    } else {
-      section.querySelectorAll(".animated-content").forEach((el) => {
-        el.classList.remove("is-visible");
-      });
-    }
-  });
-}, observerOptions);
-
-document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll(".angkasa_slide").forEach((section) => {
-    observer.observe(section);
+    }, 700);
   });
 });
