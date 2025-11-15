@@ -1,16 +1,80 @@
 // ====================================================================
+// H. INJEKSI DATA KONFIGURASI STATIS (FIX TEMPLATING)
+// ====================================================================
+function injectConfigData() {
+  // Pastikan UNDANGAN_CONFIG tersedia secara global
+  if (typeof UNDANGAN_CONFIG === "undefined") {
+    console.error("Configuration data (UNDANGAN_CONFIG) is not available.");
+    return;
+  }
+  const config = UNDANGAN_CONFIG;
+
+  // Helper untuk mendapatkan inisial
+  const initials = `${config.brideName[0]} & ${config.groomName[0]}`;
+
+  // --- PRELOADER & FOOTER ---
+  // Penambahan Null Check di sini untuk mengatasi error (Line 17 yang bermasalah)
+  const initialsDisplayEl = document.getElementById("initials-display");
+  if (initialsDisplayEl) {
+    initialsDisplayEl.innerText = initials;
+  }
+
+  const footerInitialsEl = document.getElementById("footer-initials");
+  if (footerInitialsEl) {
+    footerInitialsEl.innerText = initials;
+  }
+
+  // --- COVER SECTION (HEADER) ---
+  const brideNameCoverEl = document.getElementById("bride-name-cover-display");
+  const groomNameCoverEl = document.getElementById("groom-name-cover-display");
+  if (brideNameCoverEl) {
+    brideNameCoverEl.innerText = config.brideName;
+  }
+  if (groomNameCoverEl) {
+    groomNameCoverEl.innerText = config.groomName;
+  }
+
+  // Tanggal
+  const dateDisplayEl = document.getElementById("date-display");
+  if (dateDisplayEl) {
+    dateDisplayEl.innerText = config.fullDate;
+  }
+
+  // --- COVER OVERLAY ---
+  const brideNameOverlayEl = document.getElementById(
+    "bride-name-overlay-display"
+  );
+  const groomNameOverlayEl = document.getElementById(
+    "groom-name-overlay-display"
+  );
+  if (brideNameOverlayEl) {
+    brideNameOverlayEl.innerText = config.brideName;
+  }
+  if (groomNameOverlayEl) {
+    groomNameOverlayEl.innerText = config.groomName;
+  }
+
+  // --- CLOSING SECTION ---
+  const closingNamesEl = document.getElementById("closing-names");
+  if (closingNamesEl) {
+    closingNamesEl.innerText = `${config.brideName} & ${config.groomName}`;
+  }
+}
+
+// ====================================================================
 // A. FUNGSI UTILITY (COPY, MODAL)
 // ====================================================================
 
 function copyToClipboard(textToCopy, buttonId) {
   const tempInput = document.createElement("input");
-  const cleanedText = buttonId.includes("rek")
-    ? textToCopy.replace(/[-\s,]/g, "")
-    : textToCopy;
+  // Membersihkan teks: menghapus spasi, koma, dsb., agar hanya angka
+  const cleanedText = textToCopy.replace(/[-\s,]/g, "");
   tempInput.value = cleanedText;
   document.body.appendChild(tempInput);
 
-  document.execCommand("copy", false, tempInput.select());
+  // Penggunaan execCommand untuk kompatibilitas di iFrame/browser lama
+  tempInput.select();
+  document.execCommand("copy");
   document.body.removeChild(tempInput);
 
   const button = document.getElementById(buttonId);
@@ -31,6 +95,10 @@ function copyToClipboard(textToCopy, buttonId) {
 function openModal(modalId) {
   const modal = document.getElementById(modalId);
   if (!modal) return;
+
+  if (modalId === "gift-modal") {
+    renderModalGiftDetails();
+  }
 
   modal.classList.remove("hidden");
 
@@ -84,6 +152,7 @@ function getGuestNameFromUrl() {
   let guestName = params.get("to") || params.get("nama");
 
   if (guestName) {
+    // Mengganti semua tanda '+' dengan spasi, lalu decode URI
     guestName = decodeURIComponent(guestName.replace(/\+/g, " "));
     return guestName;
   }
@@ -95,12 +164,119 @@ function displayGuestName() {
   const displayElement = document.getElementById("guest-name-display");
 
   if (displayElement) {
+    // Default text jika tidak ada nama di URL
     displayElement.innerText = guestName || "Kawanku";
   }
 }
 
 // ====================================================================
-// C. FUNGSI KONTROL MUSIK (Dua Tombol: Play/Pause dan Mute/Unmute)
+// C. FUNGSI RENDERING DATA DARI CONFIG
+// ====================================================================
+
+function renderEvents() {
+  if (typeof UNDANGAN_CONFIG === "undefined" || !UNDANGAN_CONFIG.events) return;
+  const container = document.getElementById("events-container");
+  if (!container) return;
+
+  container.innerHTML = UNDANGAN_CONFIG.events
+    .map((event, index) => {
+      const mapButton = event.mapLink
+        ? `
+					<a
+						href="${event.mapLink}"
+						target="_blank"
+						class="mt-4 inline-block bg-accent text-white text-sm py-2 px-4 rounded-full hover:shadow-lg transition-shadow"
+					>
+						<i class="fas fa-map-marked-alt mr-2"></i> Lihat Peta
+					</a>
+				`
+        : "";
+
+      const animationClass =
+        index === 0 ? "animated-content is-visible" : "animated-content";
+
+      return `
+					<div class="bg-gray-50 p-6 rounded-xl shadow-md ${animationClass}" data-index="${index}">
+						<h3 class="font-accent text-3xl color-accent mb-3">${event.type}</h3>
+						<p class="text-gray-700 mb-2">${event.date}</p>
+						<p class="text-lg font-semibold text-[var(--color-dark)] mb-4">${event.time}</p>
+						<div class="border-t border-gray-200 pt-3">
+							<p class="text-sm">${event.location}</p>
+							${mapButton}
+						</div>
+					</div>
+				`;
+    })
+    .join("");
+}
+
+function renderGifts() {
+  if (typeof UNDANGAN_CONFIG === "undefined" || !UNDANGAN_CONFIG.gifts) return;
+  const container = document.getElementById("gifts-container");
+  if (!container) return;
+
+  container.innerHTML = UNDANGAN_CONFIG.gifts
+    .map((gift, index) => {
+      const copyButtonId = `copy-rek-${index}`;
+
+      return `
+					<div class="bg-white p-6 rounded-xl shadow-lg animated-content" data-index="${index}">
+						<h3 class="text-xl font-bold color-accent mb-2">${gift.bank}</h3>
+						<p class="text-sm">Atas Nama: ${gift.name}</p>
+						<p id="rekening-${index}" class="text-2xl font-mono text-[var(--color-dark)] my-3">
+							${gift.number}
+						</p>
+						<button
+							id="${copyButtonId}"
+							onclick="copyToClipboard('${gift.number}', '${copyButtonId}')"
+							class="mt-2 text-sm text-gray-600 bg-gray-100 py-1 px-3 rounded-full hover:bg-gray-200 transition-colors"
+						>
+							<i class="fas fa-copy mr-1"></i> Salin Nomor
+						</button>
+					</div>
+				`;
+    })
+    .join("");
+}
+
+function renderModalGiftDetails() {
+  if (
+    typeof UNDANGAN_CONFIG === "undefined" ||
+    !UNDANGAN_CONFIG.gifts ||
+    UNDANGAN_CONFIG.gifts.length === 0
+  )
+    return;
+  const modalDetailContainer = document.getElementById("modal-gift-detail");
+  const modalCopyButton = document.getElementById("modal-copy-rek-btn");
+  const firstGift = UNDANGAN_CONFIG.gifts[0]; // Ambil data rekening pertama untuk modal
+
+  if (!modalDetailContainer || !modalCopyButton || !firstGift) return;
+
+  modalDetailContainer.innerHTML = `
+			<p class="font-bold">Bank ${firstGift.bank}</p>
+			<p class="text-xl font-mono my-1">${firstGift.number}</p>
+			<p class="text-sm">a/n ${firstGift.name}</p>
+		`;
+
+  // Tambahkan event listener baru untuk tombol Salin di modal
+  // Penting: menggunakan removeEventListener/addEventListener untuk mencegah duplikasi listener
+  const newCopyHandler = (e) => {
+    e.stopPropagation();
+    copyAndClose(firstGift.number, "modal-copy-rek-btn", "gift-modal");
+  };
+
+  // Hapus listener lama jika ada (cara aman)
+  const oldCopyHandler = modalCopyButton.onclick;
+  if (oldCopyHandler) {
+    modalCopyButton.onclick = null; // Menghapus event handler inline
+  }
+
+  // Tambahkan listener baru
+  modalCopyButton.onclick = newCopyHandler;
+}
+
+// ====================================================================
+// D. FUNGSI KONTROL MUSIK
 // ====================================================================
 
 function initializeMusicControl() {
@@ -109,11 +285,10 @@ function initializeMusicControl() {
   const muteButton = document.getElementById("music-mute-button");
   const pauseIcon = document.getElementById("pause-icon");
   const muteIcon = document.getElementById("mute-icon");
-  let isPlaying = false; // Tracks Play/Pause state
+  let isPlaying = false;
 
   if (!music || !pauseButton || !muteButton || !pauseIcon || !muteIcon) return;
 
-  // Helper untuk mengupdate ikon Play/Pause
   function updatePauseIcon(playing) {
     if (playing) {
       pauseIcon.classList.remove("fa-play");
@@ -124,7 +299,6 @@ function initializeMusicControl() {
     }
   }
 
-  // Helper untuk mengupdate ikon Mute/Unmute
   function updateMuteIcon(muted) {
     if (muted) {
       muteIcon.classList.remove("fa-volume-up");
@@ -203,15 +377,13 @@ function initializeMusicControl() {
 }
 
 // ====================================================================
-// D. FUNGSI SCROLL, NAVIGASI & OBSERVER
+// E. FUNGSI SCROLL, NAVIGASI & OBSERVER
 // ====================================================================
 
-// Variabel Global untuk DOM dan Observer
 let mobileWrapper;
 let observer;
 
 function isMobileView() {
-  // Gunakan 768px sebagai batas umum untuk mobile
   return window.innerWidth <= 768;
 }
 
@@ -227,13 +399,6 @@ function launchFullscreen(element) {
   }
 }
 
-// FUNGSI INI DIHAPUS karena tidak digunakan lagi dan untuk membersihkan kode:
-// function lazyLoadAssets(sectionElement) { ... }
-
-/**
- * Handles the resetting and triggering of ornament animations
- * for the given section.
- */
 function triggerOrnamentAnimation(sectionElement) {
   if (!sectionElement) return;
 
@@ -247,12 +412,10 @@ function triggerOrnamentAnimation(sectionElement) {
   });
 
   // 2. Apply animation to ornaments in the current section
-  // Added a small delay to prevent flicker/immediate re-triggering when scrolling quickly
   setTimeout(() => {
     sectionElement.querySelectorAll(".ornament-item").forEach((item) => {
       const animationClass = item.getAttribute("data-animation-class");
       if (animationClass) {
-        // Re-apply classes to trigger animation
         item.classList.add("animate__animated", animationClass);
       }
     });
@@ -261,7 +424,6 @@ function triggerOrnamentAnimation(sectionElement) {
 
 function updateNavbarActiveState(sectionId) {
   document.querySelectorAll(".nav-item").forEach((item) => {
-    // Menghapus kelas 'active-nav-style'
     item.classList.remove("active-nav-style");
   });
 
@@ -306,8 +468,6 @@ function scrollToSection(event, sectionId) {
     updateNavbarActiveState(sectionId);
     centerActiveNavItem(sectionId);
 
-    // Trigger animasi secara manual pada klik navigasi
-    // lazyLoadAssets(targetSection); // <--- Dihapus
     document
       .querySelectorAll(".angkasa_slide")
       .forEach((sec) => sec.classList.remove("is-active"));
@@ -318,41 +478,86 @@ function scrollToSection(event, sectionId) {
 window.scrollToSection = scrollToSection;
 
 // ====================================================================
-// E. FUNGSI PRELOADER (Anti-Flicker & Fungsional) [FIXED]
+// F. FUNGSI PRELOADER (Anti-Flicker & Fungsional) - LOGIK BARU
 // ====================================================================
 
 function handlePreloader() {
   const preloader = document.getElementById("preloader");
-  // FIX: Menghapus dependensi progressBar dan logika asset tracking
-  // yang tidak stabil di mobile dan memerlukan elemen HTML yang hilang.
-  if (!preloader) return;
+  if (!preloader) {
+    console.error("Preloader element with ID 'preloader' tidak ditemukan.");
+    return;
+  }
 
-  // Menggunakan pendekatan berbasis waktu yang stabil (2 detik)
-  // untuk memberi waktu yang cukup bagi font dimuat.
-  const MIN_DISPLAY_TIME = 2500;
+  let loadFired = false;
+  let minTimeElapsed = false;
+  let hasHidden = false;
+  const MIN_DISPLAY_TIME = 2000; // 2 detik minimum tampilan
+  const MAX_WAIT_TIME = 8000; // 8 detik maksimum sebagai JAMINAN fallback
 
-  // 1. Minimum Time Tracking
-  setTimeout(() => {
-    // 2. Hiding Logic
-    // Sembunyikan Preloader (Fade-out)
+  const hidePreloaderVisuals = () => {
+    if (hasHidden) return;
+    hasHidden = true;
+
+    // LANGKAH 1: Mulai efek fade-out
     preloader.classList.add("opacity-0");
 
-    // Setelah fade-out, sembunyikan sepenuhnya (Anti-Flicker)
+    // LANGKAH 2: Nonaktifkan interaksi klik (PENTING!)
+    preloader.style.pointerEvents = "none";
+
+    // LANGKAH 3: Sembunyikan sepenuhnya setelah transisi (0.5s)
     setTimeout(() => {
       preloader.classList.add("hidden");
-    }, 500); // 0.5s = transition duration
+    }, 500);
+  };
+
+  const attemptHide = () => {
+    // Hanya sembunyikan jika MIN_TIME sudah berlalu DAN semua aset sudah dimuat
+    if (loadFired && minTimeElapsed) {
+      hidePreloaderVisuals();
+    }
+  };
+
+  // --- 1. MINIMUM TIME TIMER (Mulai segera saat DOM siap) ---
+  // Timer ini memastikan preloader tampil setidaknya 2 detik
+  setTimeout(() => {
+    minTimeElapsed = true;
+    attemptHide();
   }, MIN_DISPLAY_TIME);
 
-  // FIX: Menghapus semua logika progres bar simulasi
-  // dan tracking aset (font, audio) yang rumit.
+  // --- 2. WINDOW LOAD EVENT (Menunggu semua aset) ---
+  window.addEventListener(
+    "load",
+    () => {
+      loadFired = true;
+      attemptHide();
+    },
+    { once: true }
+  );
+
+  // --- 3. FALLBACK GUARANTEE (Jaminan hilang setelah MAX_WAIT_TIME) ---
+  // Jika load event diblokir (kemungkinan besar penyebab masalah Anda), ini akan memaksa preloader hilang.
+  setTimeout(() => {
+    if (!hasHidden) {
+      console.warn(
+        "Preloader dipaksa hilang setelah 8 detik. Mungkin ada aset yang terblokir."
+      );
+      hidePreloaderVisuals();
+    }
+  }, MAX_WAIT_TIME);
 }
 
 // ====================================================================
-// F. INISIALISASI UTAMA (DOMContentLoaded)
+// G. INISIALISASI UTAMA (DOMContentLoaded)
 // ====================================================================
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Definisikan Variabel Utama
+  // 1. Render data dinamis dari config ke HTML
+  renderEvents();
+  renderGifts();
+
+  // 2. INJEKSI DATA STATIS (Perbaikan error ada di dalam fungsi ini sekarang)
+  injectConfigData();
+
   mobileWrapper = document.getElementById("mobile-wrapper");
   const bottomNavbar = document.getElementById("bottom-navbar");
   const openButton = document.getElementById("open-button");
@@ -366,14 +571,14 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // 2. Tampilkan Nama Tamu & Kontrol Musik
+  // 3. Tampilkan Nama Tamu & Kontrol Musik
   displayGuestName();
   initializeMusicControl();
 
-  // 3. Mulai Preloader (Sekarang Fungsional & Anti-Flicker)
+  // 4. Mulai Preloader (Sekarang lebih tangguh!)
   handlePreloader();
 
-  // 4. INISIALISASI INTERSECTION OBSERVER
+  // 5. INISIALISASI INTERSECTION OBSERVER
   const observerOptions = {
     root: mobileWrapper,
     rootMargin: "0px",
@@ -387,15 +592,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const creditFooter = document.getElementById("credit-footer");
 
       if (entry.isIntersecting) {
-        // LAZY LOAD ASSET (Dihapus karena kode ini tidak ada)
-        // lazyLoadAssets(section); // <--- Dihapus
-
-        // LOGIKA NAVBAR
         if (sectionId) {
           updateNavbarActiveState(sectionId);
         }
 
-        // AKTIFKAN: Kelas IS-ACTIVE untuk animasi loop ornamen
         section.classList.add("is-active");
 
         // Trigger ornament animation on natural scroll
@@ -406,7 +606,7 @@ document.addEventListener("DOMContentLoaded", () => {
           el.classList.add("is-visible");
         });
 
-        // LOGIKA KHUSUS: Navbar Transisi dan Footer (saat masuk section closing)
+        // LOGIKA KHUSUS: Navbar Transisi dan Footer
         if (sectionId === "closing" && creditFooter) {
           bottomNavbar.classList.remove("navbar-bottom");
           bottomNavbar.classList.add("navbar-top");
@@ -414,14 +614,9 @@ document.addEventListener("DOMContentLoaded", () => {
           creditFooter.classList.add("opacity-100", "pointer-events-auto");
         }
       } else {
-        // Logika saat section keluar viewport
         section.classList.remove("is-active");
 
-        section.querySelectorAll(".animated-content").forEach((el) => {
-          el.classList.remove("is-visible");
-        });
-
-        // LOGIKA KHUSUS: Navbar Transisi dan Footer (saat keluar section closing)
+        // LOGIKA KHUSUS: Navbar Transisi dan Footer
         if (sectionId === "closing" && creditFooter) {
           bottomNavbar.classList.remove("navbar-top");
           bottomNavbar.classList.add("navbar-bottom");
@@ -432,71 +627,63 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }, observerOptions);
 
-  // 5. LISTENER TOMBOL BUKA UNDANGAN (Slide Up Logic)
+  // 6. LISTENER TOMBOL BUKA UNDANGAN (Slide Up Logic)
   openButton.addEventListener("click", function () {
     const isMobile = isMobileView();
     const coverSectionOverlay = document.getElementById(
       "cover-section-overlay"
     );
 
-    // Tampilkan kontrol musik
     if (musicControls) {
       musicControls.classList.remove("hidden", "opacity-0");
       musicControls.classList.add("opacity-100");
     }
 
-    // 1. Musik & Fullscreen
     document
       .getElementById("background-music")
       .play()
       .catch((e) => console.error("Music play blocked:", e));
+
+    // Launch fullscreen only if user grants permission
     if (isMobile && fullscreenTarget) {
       launchFullscreen(document.documentElement);
     }
 
-    // 2. EFEK SLIDE UP
     coverSectionOverlay.style.transform = "translateY(-100%)";
     openButton.classList.add("hidden");
 
-    // Tunggu transisi slide up selesai (700ms)
     setTimeout(() => {
-      // 3. Setup Scroll dan Konten Utama
       coverSectionOverlay.classList.add("hidden");
 
-      // Membuka scroll di mobileWrapper
       mobileWrapper.style.overflowY = "scroll";
       mobileWrapper.style.scrollSnapType = "y mandatory";
 
       const firstSectionId = "cover";
       const targetSection = document.getElementById(firstSectionId);
 
-      // Memulai observer untuk semua section setelah cover hilang
       document.querySelectorAll(".angkasa_slide").forEach((section) => {
         section.classList.add("scroll-active-section");
         observer.observe(section);
       });
 
       if (targetSection) {
-        // Scroll ke section pertama
+        // Scroll to the first section after the overlay is hidden
         mobileWrapper.scrollTo({
           top: targetSection.offsetTop,
           behavior: "smooth",
         });
 
-        // lazyLoadAssets(targetSection); // <--- Dihapus
-
-        // Atur state navigasi dan animasi
         updateNavbarActiveState(firstSectionId);
         targetSection.classList.add("is-active");
         triggerOrnamentAnimation(targetSection);
       }
 
-      // 4. Tampilkan Navbar Bawah
+      const bottomNavbar = document.getElementById("bottom-navbar");
       if (bottomNavbar.classList.contains("hidden")) {
         bottomNavbar.classList.remove("hidden");
       }
       bottomNavbar.classList.remove("translate-y-full");
       bottomNavbar.classList.add("translate-y-0");
-    }, 750); // Delay sedikit lebih lama dari transisi (700ms)
+    }, 750);
   });
 });
