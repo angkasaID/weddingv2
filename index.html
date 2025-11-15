@@ -37,7 +37,6 @@
   </head>
 
   <body class="font-base text-color-base">
-    <!-- ⭐️ MODAL: Browser Compatibility Error -->
     <div
       id="compatibility-modal"
       class="modal fixed inset-0 z-[300] hidden opacity-0 flex justify-center items-center p-4"
@@ -82,41 +81,34 @@
       </div>
     </div>
 
-    <!-- ⭐️ PRELOADER OVERLAY -->
-    <!-- Z-index 200 (Paling depan kedua, di bawah modal error) -->
     <div
       id="preloader"
-      class="fixed inset-0 z-[200] flex flex-col justify-center items-center bg-[#f7f3f0] transition-opacity duration-500"
+      class="fixed inset-0 z-[200] flex flex-col justify-center items-center bg-blur transition-opacity duration-500"
     >
       <h1 class="font-accent text-5xl color-accent mb-4 animate-pulse">
         T & Y
       </h1>
       <p class="text-gray-600 mb-6">Mempersiapkan Undangan...</p>
 
-      <!-- Progress Bar Container -->
-      <div
-        class="w-64 h-2 bg-gray-300 rounded-full overflow-hidden shadow-inner"
-      >
-        <!-- Progress Bar Filler -->
+      <!-- Spinner Container (Simple CSS Loader) -->
+      <div class="relative w-12 h-12">
         <div
-          id="progress-bar"
-          class="h-full bg-[#C6915A] transition-all duration-100 ease-linear"
-          style="width: 0%"
+          class="w-12 h-12 rounded-full border-4 border-t-4 border-gray-300 border-t-[var(--color-accent)] animate-spin-slow"
         ></div>
       </div>
+      <!-- End Spinner -->
     </div>
+    <!-- End Preloader -->
     <audio id="background-music" loop preload="auto">
-      <!-- Ganti URL ini dengan URL musik Anda. -->
-      <source src="./asset/music/latar.mp3" type="audio/mp3" />
+      <source src="./themes/music/latar.mp3" type="audio/mp3" />
       Your browser does not support the audio element.
     </audio>
     <div
       id="floating-music-controls"
       class="fixed bottom-6 right-6 z-[110] hidden opacity-0 transition-opacity duration-500"
-    >
-      <!-- Music Control Button -->
-    </div>
+    ></div>
     <div id="fullscreen-container" class="relative">
+      <!-- NEW COVER -->
       <div
         id="cover-section-overlay"
         class="fixed inset-0 z-[101] transition-transform duration-700"
@@ -369,12 +361,12 @@
                   class="text-center animate__animated animate__zoomIn animate__slower mt-5 mb-3"
                   style="line-height: 1"
                 >
-                  <div class="editable mb-2 text-lg">The Wedding Of</div>
+                  <div class="editable mb-2 text-lg">✤ Undangan Manten ✤</div>
                   <div
                     class="color-accent editable font-latin"
                     style="font-size: 80px"
                   >
-                    Wanda
+                    Rohimah
                   </div>
                   <div class="editable font-latin mb-2" style="font-size: 30px">
                     &amp;
@@ -383,7 +375,7 @@
                     class="color-accent editable mb-2 font-latin"
                     style="font-size: 80px"
                   >
-                    Nur Hakim
+                    Saputra
                   </div>
                 </div>
                 <div class="text-center mx-auto" style="max-width: 250px">
@@ -445,431 +437,586 @@
             <i id="mute-icon" class="fas fa-volume-up text-xl"></i>
           </button>
         </div>
+
         <!-- NEW SECTION: opening / Greeting -->
         <div
           id="opening"
           class="angkasa_slide px-6 relative min-h-screen flex flex-col justify-center items-center snap-start"
           data-section="opening"
         >
-          <img
-            class="frame-tl top-0 left-0 absolute z-0 animate__animated animate__fadeInTopLeft animate__slower lazy-load-img"
-            data-src="./asset/images/tl.webp"
-            onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Left'"
-            alt="frame top left"
-          />
-          <img
-            class="frame-tr top-0 right-0 absolute z-0 animate__animated animate__fadeInTopRight animate__slower lazy-load-img"
-            data-src="./asset/images/tr.webp"
-            onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Right'"
-            alt="frame top right"
-          />
+          <div
+            id="opening-ornaments"
+            class="absolute inset-0 pointer-events-none"
+          >
+            <img
+              data-animation-class="animate__fadeInTopLeft"
+              class="ornament-item frame-tl top-0 left-0 absolute z-0 animate__slower lazy-load-img"
+              src="./asset/images/tl.webp"
+              onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Left'"
+              alt="frame top left"
+            />
+            <img
+              data-animation-class="animate__fadeInTopRight"
+              class="ornament-item frame-tr top-0 right-0 absolute z-0 animate__slower lazy-load-img"
+              src="./asset/images/tr.webp"
+              onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Right'"
+              alt="frame top right"
+            />
 
-          <div
-            class="ornamen-bawah right-0 bottom-0 w-full md:w-11/12 absolute z-0"
-            style="transform: translate(0, 0)"
-          >
-            <div class="animate__animated animate__fadeInUp animate__slower">
-              <img
-                data-src="./asset/images/bm.webp"
-                onerror="this.src='https://placehold.co/500x150/C6915A/white?text=Ornamen+Bawah'"
-                alt="flowers"
-                class="w-full lazy-load-img"
-                draggable="false"
-              />
+            <!-- Ornament Bawah (Center Flower) -->
+            <div
+              class="ornamen-bawah right-0 bottom-0 w-full md:w-11/12 absolute z-0"
+              style="transform: translate(0, 0)"
+            >
+              <div
+                data-animation-class="animate__fadeIn"
+                class="ornament-item animate__slower"
+              >
+                <img
+                  src="./asset/images/bm.webp"
+                  alt="flowers"
+                  class="w-full"
+                  draggable="false"
+                  onerror="this.src='https://placehold.co/500x200/C6915A/white?text=Bottom+Flowers'"
+                />
+              </div>
             </div>
-          </div>
 
-          <div
-            class="frame-tl left-0 absolute top-0 z-0 animate__animated animate__fadeInTopLeft animate__slower"
-          >
-            <div class="animate-left" style="transform: translate(-5%, 145%)">
-              <img
-                class="w-100 lazy-load-img"
-                data-src="./asset/images/tl-2.webp"
-                alt="frame"
-                style="transform-origin: bottom left; animation-delay: 120ms"
-              />
+            <div
+              class="frame-tl left-0 absolute top-0 z-0 ornament-item animate__slower"
+              data-animation-class="animate__fadeInTopLeft"
+            >
+              <div class="animate-left" style="transform: translate(-5%, 145%)">
+                <img
+                  class="w-100"
+                  src="./asset/images/tl-2.webp"
+                  alt="frame"
+                  style="transform-origin: bottom left; animation-delay: 120ms"
+                  onerror="this.src='https://placehold.co/150x150/C6915A/white?text=TL+Secondary'"
+                />
+              </div>
             </div>
-          </div>
 
-          <div
-            class="frame-tr right-0 absolute top-0 z-0 animate__animated animate__fadeInTopRight animate__slower"
-          >
-            <div class="animate-right" style="transform: translate(5%, 145%)">
-              <img
-                class="w-100 lazy-load-img"
-                data-src="./asset/images/tr-2.webp"
-                alt="frame"
-                style="transform-origin: bottom right; animation-delay: 120ms"
-              />
+            <div
+              class="frame-tr right-0 absolute top-0 z-0 ornament-item animate__slower"
+              data-animation-class="animate__fadeInTopRight"
+            >
+              <div class="animate-right" style="transform: translate(5%, 145%)">
+                <img
+                  class="w-100"
+                  src="./asset/images/tr-2.webp"
+                  alt="frame"
+                  style="transform-origin: bottom right; animation-delay: 120ms"
+                  onerror="this.src='https://placehold.co/150x150/C6915A/white?text=TR+Secondary'"
+                />
+              </div>
             </div>
-          </div>
 
-          <div
-            class="anim-float-left ornamen-bawah left-0 bottom-0 w-[50%] absolute z-0 translate-x-[0%] translate-y-[10%]"
-          >
+            <!-- Wayang Kiri -->
             <div
-              class="animate__animated animate__fadeInBottomLeft animate__slower"
+              class="anim-float-left ornamen-bawah left-0 bottom-0 w-[50%] absolute z-0 translate-x-[0%] translate-y-[10%]"
             >
-              <img
-                data-src="./asset/images/bl-2.webp"
-                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kiri'"
-                alt="Wayang Kiri"
-                class="w-full lazy-load-img"
-                draggable="false"
-              />
+              <div
+                class="ornament-item animate__slower"
+                data-animation-class="animate__fadeInBottomLeft"
+              >
+                <img
+                  src="./asset/images/bl-2.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kiri'"
+                  alt="Wayang Kiri"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+            <!-- Bunga Kiri -->
+            <div
+              class="anim-float-left ornamen-bawah left-0 bottom-0 w-[30%] absolute z-0 translate-x-[20%] translate-y-[5%]"
+            >
+              <div
+                data-animation-class="animate__fadeInBottomLeft"
+                class="ornament-item animate__slower"
+              >
+                <img
+                  src="./asset/images/bunga-kiri.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kiri'"
+                  alt="Bunga Kiri"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+            <!-- Wayang Kanan -->
+            <div
+              class="anim-float-right ornamen-bawah right-0 bottom-0 w-[50%] absolute z-0 translate-x-[0%] translate-y-[10%]"
+            >
+              <div
+                data-animation-class="animate__fadeInBottomRight"
+                class="ornament-item animate__slower"
+              >
+                <img
+                  src="./asset/images/br-2.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kanan'"
+                  alt="Wayang Kanan"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+            <!-- Bunga Kanan -->
+            <div
+              class="anim-float-right ornamen-bawah right-0 bottom-0 w-[30%] absolute z-0 translate-x-[-20%] translate-y-[5%]"
+            >
+              <div
+                data-animation-class="animate__fadeInBottomRight"
+                class="ornament-item animate__slower"
+              >
+                <img
+                  src="./asset/images/bunga-kanan.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kanan'"
+                  alt="Bunga Kanan"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
             </div>
           </div>
-          <div
-            class="anim-float-left ornamen-bawah left-0 bottom-0 w-[30%] absolute z-0 translate-x-[20%] translate-y-[5%]"
-          >
-            <div
-              class="animate__animated animate__fadeInBottomLeft animate__slower"
-            >
-              <img
-                data-src="./asset/images/bunga-kiri.webp"
-                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kiri'"
-                alt="Bunga Kiri"
-                class="w-full lazy-load-img"
-                draggable="false"
-              />
-            </div>
-          </div>
-          <div
-            class="anim-float-right ornamen-bawah right-0 bottom-0 w-[50%] absolute z-0 translate-x-[0%] translate-y-[10%]"
-          >
-            <div
-              class="animate__animated animate__fadeInBottomRight animate__slower"
-            >
-              <img
-                data-src="./asset/images/br-2.webp"
-                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kanan'"
-                alt="Wayang Kanan"
-                class="w-full lazy-load-img"
-                draggable="false"
-              />
-            </div>
-          </div>
-          <div
-            class="anim-float-right ornamen-bawah right-0 bottom-0 w-[30%] absolute z-0 translate-x-[-20%] translate-y-[5%]"
-          >
-            <div
-              class="animate__animated animate__fadeInBottomRight animate__slower"
-            >
-              <img
-                data-src="./asset/images/bunga-kanan.webp"
-                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kanan'"
-                alt="Bunga Kanan"
-                class="w-full lazy-load-img"
-                draggable="false"
-              />
-            </div>
-          </div>
+          <!--Tutup Container Ornament-->
 
           <div
             class="blur-card backdrop-blur-sm animated-content rounded-3xl mt-7 h-full w-full flex flex-col justify-center items-center"
             style="padding-bottom: 30%"
           >
-            <div class="content-layer"></div>
-            <div
-              class="text-xl editable mb-4 animate__animated animate__fadeInDown animate__slower"
-            >
-              ✤ Undangan Manten ✤
-            </div>
-
-            <div
-              class="flex items-center justify-center mb-2 mx-auto animate__animated animate__zoomIn animate__slower relative"
-              style="
-                height: 112px;
-                width: 65px;
-                background-image: url('./asset/images/way-kecil.png');
-                background-repeat: no-repeat;
-                background-size: contain;
-                background-position: center;
-              "
-            >
+            <div class="content-layer m-5">
               <div
-                class="editable text-left font-accent absolute"
-                style="
-                  font-size: 55px;
-                  line-height: 1;
+                class="text-center mb-4 animate__animated animate__fadeInDown animate__slower"
+              >
+                ✤ Undangan Manten ✤
 
-                  transform: translate(-15px, 0px);
+                <p
+                  class="text-sm text-gray-700 mb-6 animate__animated animate__fadeInDown animate__slow"
+                >
+                  Dengan Rahmat dan Karunia Allah SWT, Kami Mengundang Anda
+                  Dalam Acara Pernikahan
+                </p>
+              </div>
+
+              <div
+                class="flex items-center justify-center mb-2 mx-auto animate__animated animate__zoomIn animate__slower relative"
+                style="
+                  height: 112px;
+                  width: 65px;
+                  background-image: url('./asset/images/way-kecil.png');
+                  background-repeat: no-repeat;
+                  background-size: contain;
+                  background-position: center;
                 "
               >
-                T
-              </div>
-              <div
-                class="editable text-right font-accent absolute"
-                style="
-                  font-size: 55px;
-                  line-height: 1;
-
-                  transform: translate(15px, 25px);
-                "
-              >
-                Y
-              </div>
-            </div>
-
-            <div class="w-full flex items-center justify-center">
-              <div
-                class="text-center animate__animated animate__fadeInLeft animate__slower"
-                style="width: 40%; animation-delay: 1500ms"
-              >
                 <div
-                  class="editable color-accent font-accent text-5xl"
-                  style="line-height: 1"
+                  class="editable text-left font-accent absolute"
+                  style="
+                    font-size: 55px;
+                    line-height: 1;
+
+                    transform: translate(-15px, 0px);
+                  "
                 >
-                  Tia
+                  T
                 </div>
-                <div class="editable" style="font-size: 14.4px">Pemalang</div>
-              </div>
-              <div
-                class="px-2 font-latin text-6xl animate__animated animate__fadeInDown animate__slower"
-              >
-                &amp;
-              </div>
-              <div
-                class="text-center animate__animated animate__fadeInRight animate__slower"
-                style="width: 40%; animation-delay: 1500ms"
-              >
                 <div
-                  class="editable color-accent font-accent text-5xl"
-                  style="line-height: 1"
+                  class="editable text-right font-accent absolute"
+                  style="
+                    font-size: 55px;
+                    line-height: 1;
+
+                    transform: translate(15px, 25px);
+                  "
                 >
-                  Yoga
+                  Y
                 </div>
-                <div class="editable" style="font-size: 14.4px">Pemalang</div>
+              </div>
+
+              <div class="w-full flex items-center justify-center">
+                <div
+                  class="text-center animate__animated animate__fadeInLeft animate__slower"
+                  style="width: 40%; animation-delay: 1500ms"
+                >
+                  <div
+                    class="editable color-accent font-accent text-5xl"
+                    style="line-height: 1"
+                  >
+                    Tia
+                  </div>
+                  <div class="editable" style="font-size: 14.4px">Rokhimah</div>
+                </div>
+                <div
+                  class="px-2 font-latin text-6xl animate__animated animate__fadeInDown animate__slower"
+                >
+                  &amp;
+                </div>
+                <div
+                  class="text-center animate__animated animate__fadeInRight animate__slower"
+                  style="width: 40%; animation-delay: 1500ms"
+                >
+                  <div
+                    class="editable color-accent font-accent text-5xl"
+                    style="line-height: 1"
+                  >
+                    Yoga
+                  </div>
+                  <div class="editable" style="font-size: 14.4px">Saputra</div>
+                </div>
               </div>
             </div>
           </div>
+          <!-- FIX: Membungkus manten.png dalam div agar ukurannya lebih terkontrol saat lazy load -->
           <div
-            class="image-editable mx-auto animate__animated animate__fadeInUp animate__slower absolute z-30"
-            style="height: auto; width: 300px; overflow: hidden; bottom: 30px"
+            class="image-editable mx-auto animated-content absolute z-30"
+            style="height: auto; width: 400px; overflow: hidden; bottom: 30px"
           >
             <img
-              data-src="./asset/images/manten.png"
+              src="./themes/foto/bride.png"
               alt="301467-gallery-rNpYuhv9jd.png"
-              class="w-full h-full object-contain lazy-load-img"
+              class="w-full h-full object-contain anim-float-left"
+              onerror="this.src='https://placehold.co/300x200/C6915A/white?text=MANTEN'"
             />
           </div>
         </div>
+        <!-- QUOTES -->
+        <div
+          id="ucapan"
+          class="angkasa_slide px-6 relative min-h-screen flex flex-col justify-center items-center snap-start"
+          data-section="ucapan"
+        >
+          <div
+            id="opening-ornaments"
+            class="absolute inset-0 pointer-events-none"
+          >
+            <img
+              data-animation-class="animate__fadeInTopLeft"
+              class="ornament-item frame-tl top-0 left-0 absolute z-0 animate__slower lazy-load-img"
+              src="./asset/images/tl.webp"
+              onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Left'"
+              alt="frame top left"
+            />
+            <img
+              data-animation-class="animate__fadeInTopRight"
+              class="ornament-item frame-tr top-0 right-0 absolute z-0 animate__slower lazy-load-img"
+              src="./asset/images/tr.webp"
+              onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Right'"
+              alt="frame top right"
+            />
 
+            <!-- Ornament Bawah (Center Flower) -->
+            <div
+              class="ornamen-bawah right-0 bottom-0 w-full md:w-11/12 absolute z-0"
+              style="transform: translate(0, 0)"
+            >
+              <div
+                data-animation-class="animate__fadeIn"
+                class="ornament-item animate__slower"
+              >
+                <img
+                  src="./asset/images/bm.webp"
+                  alt="flowers"
+                  class="w-full"
+                  draggable="false"
+                  onerror="this.src='https://placehold.co/500x200/C6915A/white?text=Bottom+Flowers'"
+                />
+              </div>
+            </div>
+
+            <div
+              class="frame-tl left-0 absolute top-0 z-0 ornament-item animate__slower"
+              data-animation-class="animate__fadeInTopLeft"
+            >
+              <div class="animate-left" style="transform: translate(-5%, 145%)">
+                <img
+                  class="w-100"
+                  src="./asset/images/tl-2.webp"
+                  alt="frame"
+                  style="transform-origin: bottom left; animation-delay: 120ms"
+                  onerror="this.src='https://placehold.co/150x150/C6915A/white?text=TL+Secondary'"
+                />
+              </div>
+            </div>
+
+            <div
+              class="frame-tr right-0 absolute top-0 z-0 ornament-item animate__slower"
+              data-animation-class="animate__fadeInTopRight"
+            >
+              <div class="animate-right" style="transform: translate(5%, 145%)">
+                <img
+                  class="w-100"
+                  src="./asset/images/tr-2.webp"
+                  alt="frame"
+                  style="transform-origin: bottom right; animation-delay: 120ms"
+                  onerror="this.src='https://placehold.co/150x150/C6915A/white?text=TR+Secondary'"
+                />
+              </div>
+            </div>
+
+            <!-- Wayang Kiri -->
+            <div
+              class="anim-float-left ornamen-bawah left-0 bottom-0 w-[50%] absolute z-0 translate-x-[0%] translate-y-[10%]"
+            >
+              <div
+                class="ornament-item animate__slower"
+                data-animation-class="animate__fadeInBottomLeft"
+              >
+                <img
+                  src="./asset/images/bl-2.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kiri'"
+                  alt="Wayang Kiri"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+            <!-- Bunga Kiri -->
+            <div
+              class="anim-float-left ornamen-bawah left-0 bottom-0 w-[30%] absolute z-0 translate-x-[20%] translate-y-[5%]"
+            >
+              <div
+                data-animation-class="animate__fadeInBottomLeft"
+                class="ornament-item animate__slower"
+              >
+                <img
+                  src="./asset/images/bunga-kiri.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kiri'"
+                  alt="Bunga Kiri"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+            <!-- Wayang Kanan -->
+            <div
+              class="anim-float-right ornamen-bawah right-0 bottom-0 w-[50%] absolute z-0 translate-x-[0%] translate-y-[10%]"
+            >
+              <div
+                data-animation-class="animate__fadeInBottomRight"
+                class="ornament-item animate__slower"
+              >
+                <img
+                  src="./asset/images/br-2.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kanan'"
+                  alt="Wayang Kanan"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+            <!-- Bunga Kanan -->
+            <div
+              class="anim-float-right ornamen-bawah right-0 bottom-0 w-[30%] absolute z-0 translate-x-[-20%] translate-y-[5%]"
+            >
+              <div
+                data-animation-class="animate__fadeInBottomRight"
+                class="ornament-item animate__slower"
+              >
+                <img
+                  src="./asset/images/bunga-kanan.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kanan'"
+                  alt="Bunga Kanan"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+          </div>
+          <!--Tutup Container Ornament-->
+
+          <div
+            class="blur-card animated-content rounded-3xl mt-7 h-full w-full flex flex-col justify-center items-center"
+          >
+            <div class="content-layer text-center m-5">
+              <div
+                class="image-editable"
+                style="
+                  width: 158px;
+                  height: 89px;
+                  margin: auto;
+                  overflow: hidden;
+                  padding-bottom: 20px;
+                "
+              >
+                <img
+                  src="./asset/images/wayang-kecil.png"
+                  alt="27897-gallery-1672939613.png"
+                  style="width: 100%; height: 100%; object-fit: contain"
+                />
+              </div>
+
+              <div
+                class="editable mb-4 animate__animated animate__fadeInDown animate__slower"
+                style="font-size: 14.4px"
+              >
+                ✤ Adz-Dzariyat : 49 ✤
+              </div>
+
+              <div
+                class="color-accent editable quotes mb-3 animate__animated animate__zoomIn animate__slower"
+                style="font-size: 40px"
+              >
+                وَمِنْ كُلِّ شَيْءٍ خَلَقْنَا<br />زَوْجَيْنِ لَعَلَّكُمْ
+                تَذَكَّرُوْنَ
+              </div>
+
+              <div
+                class="editable quotes animate__animated animate__fadeInUp animate__slower"
+                style="font-size: 13px"
+              >
+                "Dan segala sesuatu Kami ciptakan berpasang-pasangan <br />
+                agar kamu mengingat (kebesaran Allah)."
+              </div>
+            </div>
+          </div>
+        </div>
         <!-- SECTION MEMPELAI -->
         <div
           id="mempelai"
           class="angkasa_slide px-6 relative min-h-screen flex flex-col justify-center items-center snap-start"
           data-section="mempelai"
         >
-          <img
-            class="frame-tl top-0 left-0 absolute z-0 animate__animated animate__fadeInTopLeft animate__slower"
-            src="./asset/images/tl.webp"
-            onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Left'"
-            alt="frame top left"
-          />
-          <img
-            class="frame-tr top-0 right-0 absolute z-0 animate__animated animate__fadeInTopRight animate__slower"
-            src="./asset/images/tr.webp"
-            onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Right'"
-            alt="frame top right"
-          />
+          <div
+            id="opening-ornaments"
+            class="absolute inset-0 pointer-events-none"
+          >
+            <img
+              data-animation-class="animate__fadeInTopLeft"
+              class="ornament-item frame-tl top-0 left-0 absolute z-0 animate__slower lazy-load-img"
+              src="./asset/images/tl.webp"
+              onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Left'"
+              alt="frame top left"
+            />
+            <img
+              data-animation-class="animate__fadeInTopRight"
+              class="ornament-item frame-tr top-0 right-0 absolute z-0 animate__slower lazy-load-img"
+              src="./asset/images/tr.webp"
+              onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Right'"
+              alt="frame top right"
+            />
 
-          <div
-            class="ornamen-bawah right-0 bottom-0 w-full md:w-11/12 absolute z-0"
-            style="transform: translate(0, 0)"
-          >
-            <div class="animate__animated animate__fadeInUp animate__slower">
-              <img
-                src="./asset/images/bm.webp"
-                onerror="this.src='https://placehold.co/500x150/C6915A/white?text=Ornamen+Bawah'"
-                alt="flowers"
-                class="w-full"
-                draggable="false"
-              />
-            </div>
-          </div>
-
-          <div
-            class="absolute top-0 inset-x-0 z-0 only-cover"
-            style="transform: scale(1.2); transform-origin: top center"
-          >
-            <div class="animate__animated animate__fadeInUp animate__slower">
-              <img
-                src="./asset/images/gunungan.webp"
-                onerror="this.src='https://placehold.co/500x150/C6915A/white?text=Ornamen+Bawah'"
-                alt="flowers"
-                draggable="false"
-              />
-            </div>
-          </div>
-
-          <div
-            class="frame-tl left-0 absolute top-0 z-0 animate__animated animate__fadeInTopLeft animate__slower"
-          >
-            <div class="animate-left" style="transform: translate(-5%, 145%)">
-              <img
-                class="w-100"
-                src="./asset/images/tl-2.webp"
-                alt="frame"
-                style="transform-origin: bottom left; animation-delay: 120ms"
-              />
-            </div>
-          </div>
-
-          <div
-            class="frame-tr right-0 absolute top-0 z-0 animate__animated animate__fadeInTopRight animate__slower"
-          >
-            <div class="animate-right" style="transform: translate(5%, 145%)">
-              <img
-                class="w-100"
-                src="./asset/images/tr-2.webp"
-                alt="frame"
-                style="transform-origin: bottom right; animation-delay: 120ms"
-              />
-            </div>
-          </div>
-
-          <div
-            class="only-cover frame-bl absolute bottom-0 left-0 z-0 animate__animated animate__fadeInBottomLeft animate__slow"
-            style="animation-delay: 2.5s"
-          >
-            <div class="animate-left" style="transform: translate(-29%, -85%)">
-              <img
-                class="w-100"
-                src="./asset/images/bl-1.webp"
-                alt="frame"
-                style="transform-origin: bottom left"
-              />
-            </div>
-          </div>
-          <div
-            class="only-cover frame-bl absolute bottom-0 left-0 z-0 animate__animated animate__fadeInBottomLeft animate__slow"
-            style="animation-delay: 2.2s"
-          >
-            <div class="animate-left" style="transform: translate(-27%, -87%)">
-              <img
-                class="w-100"
-                src="./asset/images/sinta.webp"
-                alt="frame"
-                style="transform-origin: bottom left; animation-delay: 100ms"
-              />
-            </div>
-          </div>
-          <div
-            class="only-cover frame-bl absolute bottom-0 left-0 z-0 animate__animated animate__fadeInBottomLeft animate__slow"
-            style="animation-delay: 2s"
-          >
-            <div class="animate-left" style="transform: translate(-16%, -70%)">
-              <img
-                class="w-100"
-                src="./asset/images/bl-3.webp"
-                alt="frame"
-                style="transform-origin: bottom left; animation-delay: 300ms"
-              />
-            </div>
-          </div>
-
-          <div
-            class="only-cover frame-br absolute bottom-0 right-0 z-0 animate__animated animate__fadeInBottomRight animate__slow"
-            style="animation-delay: 2.5s"
-          >
-            <div class="animate-right" style="transform: translate(29%, -85%)">
-              <img
-                class="w-100"
-                src="./asset/images/br-1.webp"
-                alt="frame"
-                style="transform-origin: bottom right"
-              />
-            </div>
-          </div>
-          <div
-            class="only-cover frame-br absolute bottom-0 right-0 z-0 animate__animated animate__fadeInBottomRight animate__slow"
-            style="animation-delay: 2.2s"
-          >
-            <div class="animate-right" style="transform: translate(27%, -87%)">
-              <img
-                class="w-100"
-                src="./asset/images/rama.webp"
-                alt="frame"
-                style="transform-origin: bottom right; animation-delay: 100ms"
-              />
-            </div>
-          </div>
-          <div
-            class="only-cover frame-br absolute bottom-0 right-0 z-0 animate__animated animate__fadeInBottomRight animate__slow"
-            style="animation-delay: 2s"
-          >
-            <div class="animate-right" style="transform: translate(16%, -70%)">
-              <img
-                class="w-100"
-                src="./asset/images/br-3.webp"
-                alt="frame"
-                style="transform-origin: bottom right; animation-delay: 300ms"
-              />
-            </div>
-          </div>
-
-          <div
-            class="anim-float-left ornamen-bawah left-0 bottom-0 w-[50%] absolute z-0 translate-x-[0%] translate-y-[10%]"
-          >
+            <!-- Ornament Bawah (Center Flower) -->
             <div
-              class="animate__animated animate__fadeInBottomLeft animate__slower"
+              class="ornamen-bawah right-0 bottom-0 w-full md:w-11/12 absolute z-0"
+              style="transform: translate(0, 0)"
             >
-              <img
-                src="./asset/images/bl-2.webp"
-                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kiri'"
-                alt="Wayang Kiri"
-                class="w-full"
-                draggable="false"
-              />
+              <div
+                data-animation-class="animate__fadeIn"
+                class="ornament-item animate__slower"
+              >
+                <img
+                  src="./asset/images/bm.webp"
+                  alt="flowers"
+                  class="w-full"
+                  draggable="false"
+                  onerror="this.src='https://placehold.co/500x200/C6915A/white?text=Bottom+Flowers'"
+                />
+              </div>
             </div>
-          </div>
-          <div
-            class="anim-float-left ornamen-bawah left-0 bottom-0 w-[30%] absolute z-0 translate-x-[20%] translate-y-[5%]"
-          >
+
             <div
-              class="animate__animated animate__fadeInBottomLeft animate__slower"
+              class="frame-tl left-0 absolute top-0 z-0 ornament-item animate__slower"
+              data-animation-class="animate__fadeInTopLeft"
             >
-              <img
-                src="./asset/images/bunga-kiri.webp"
-                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kiri'"
-                alt="Bunga Kiri"
-                class="w-full"
-                draggable="false"
-              />
+              <div class="animate-left" style="transform: translate(-5%, 145%)">
+                <img
+                  class="w-100"
+                  src="./asset/images/tl-2.webp"
+                  alt="frame"
+                  style="transform-origin: bottom left; animation-delay: 120ms"
+                  onerror="this.src='https://placehold.co/150x150/C6915A/white?text=TL+Secondary'"
+                />
+              </div>
             </div>
-          </div>
-          <div
-            class="anim-float-right ornamen-bawah right-0 bottom-0 w-[50%] absolute z-0 translate-x-[0%] translate-y-[10%]"
-          >
+
             <div
-              class="animate__animated animate__fadeInBottomRight animate__slower"
+              class="frame-tr right-0 absolute top-0 z-0 ornament-item animate__slower"
+              data-animation-class="animate__fadeInTopRight"
             >
-              <img
-                src="./asset/images/br-2.webp"
-                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kanan'"
-                alt="Wayang Kanan"
-                class="w-full"
-                draggable="false"
-              />
+              <div class="animate-right" style="transform: translate(5%, 145%)">
+                <img
+                  class="w-100"
+                  src="./asset/images/tr-2.webp"
+                  alt="frame"
+                  style="transform-origin: bottom right; animation-delay: 120ms"
+                  onerror="this.src='https://placehold.co/150x150/C6915A/white?text=TR+Secondary'"
+                />
+              </div>
             </div>
-          </div>
-          <div
-            class="anim-float-right ornamen-bawah right-0 bottom-0 w-[30%] absolute z-0 translate-x-[-20%] translate-y-[5%]"
-          >
+
+            <!-- Wayang Kiri -->
             <div
-              class="animate__animated animate__fadeInBottomRight animate__slower"
+              class="anim-float-left ornamen-bawah left-0 bottom-0 w-[50%] absolute z-0 translate-x-[0%] translate-y-[10%]"
             >
-              <img
-                src="./asset/images/bunga-kanan.webp"
-                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kanan'"
-                alt="Bunga Kanan"
-                class="w-full"
-                draggable="false"
-              />
+              <div
+                class="ornament-item animate__slower"
+                data-animation-class="animate__fadeInBottomLeft"
+              >
+                <img
+                  src="./asset/images/bl-2.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kiri'"
+                  alt="Wayang Kiri"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+            <!-- Bunga Kiri -->
+            <div
+              class="anim-float-left ornamen-bawah left-0 bottom-0 w-[30%] absolute z-0 translate-x-[20%] translate-y-[5%]"
+            >
+              <div
+                data-animation-class="animate__fadeInBottomLeft"
+                class="ornament-item animate__slower"
+              >
+                <img
+                  src="./asset/images/bunga-kiri.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kiri'"
+                  alt="Bunga Kiri"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+            <!-- Wayang Kanan -->
+            <div
+              class="anim-float-right ornamen-bawah right-0 bottom-0 w-[50%] absolute z-0 translate-x-[0%] translate-y-[10%]"
+            >
+              <div
+                data-animation-class="animate__fadeInBottomRight"
+                class="ornament-item animate__slower"
+              >
+                <img
+                  src="./asset/images/br-2.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kanan'"
+                  alt="Wayang Kanan"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+            <!-- Bunga Kanan -->
+            <div
+              class="anim-float-right ornamen-bawah right-0 bottom-0 w-[30%] absolute z-0 translate-x-[-20%] translate-y-[5%]"
+            >
+              <div
+                data-animation-class="animate__fadeInBottomRight"
+                class="ornament-item animate__slower"
+              >
+                <img
+                  src="./asset/images/bunga-kanan.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kanan'"
+                  alt="Bunga Kanan"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
             </div>
           </div>
+          <!--Tutup Container Ornament-->
 
           <div
             class="blur-card animated-content rounded-3xl mt-7 h-full w-full flex flex-col justify-center items-center"
@@ -954,214 +1101,144 @@
           class="angkasa_slide px-6 relative min-h-screen flex flex-col justify-center items-center snap-start"
           data-section="acara"
         >
-          <img
-            class="frame-tl top-0 left-0 absolute z-0 animate__animated animate__fadeInTopLeft animate__slower"
-            src="./asset/images/tl.webp"
-            onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Left'"
-            alt="frame top left"
-          />
-          <img
-            class="frame-tr top-0 right-0 absolute z-0 animate__animated animate__fadeInTopRight animate__slower"
-            src="./asset/images/tr.webp"
-            onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Right'"
-            alt="frame top right"
-          />
+          <div
+            id="opening-ornaments"
+            class="absolute inset-0 pointer-events-none"
+          >
+            <img
+              data-animation-class="animate__fadeInTopLeft"
+              class="ornament-item frame-tl top-0 left-0 absolute z-0 animate__slower lazy-load-img"
+              src="./asset/images/tl.webp"
+              onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Left'"
+              alt="frame top left"
+            />
+            <img
+              data-animation-class="animate__fadeInTopRight"
+              class="ornament-item frame-tr top-0 right-0 absolute z-0 animate__slower lazy-load-img"
+              src="./asset/images/tr.webp"
+              onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Right'"
+              alt="frame top right"
+            />
 
-          <div
-            class="ornamen-bawah right-0 bottom-0 w-full md:w-11/12 absolute z-0"
-            style="transform: translate(0, 0)"
-          >
-            <div class="animate__animated animate__fadeInUp animate__slower">
-              <img
-                src="./asset/images/bm.webp"
-                onerror="this.src='https://placehold.co/500x150/C6915A/white?text=Ornamen+Bawah'"
-                alt="flowers"
-                class="w-full"
-                draggable="false"
-              />
-            </div>
-          </div>
-
-          <div
-            class="absolute top-0 inset-x-0 z-0 only-cover"
-            style="transform: scale(1.2); transform-origin: top center"
-          >
-            <div class="animate__animated animate__fadeInUp animate__slower">
-              <img
-                src="./asset/images/gunungan.webp"
-                onerror="this.src='https://placehold.co/500x150/C6915A/white?text=Ornamen+Bawah'"
-                alt="flowers"
-                draggable="false"
-              />
-            </div>
-          </div>
-
-          <div
-            class="frame-tl left-0 absolute top-0 z-0 animate__animated animate__fadeInTopLeft animate__slower"
-          >
-            <div class="animate-left" style="transform: translate(-5%, 145%)">
-              <img
-                class="w-100"
-                src="./asset/images/tl-2.webp"
-                alt="frame"
-                style="transform-origin: bottom left; animation-delay: 120ms"
-              />
-            </div>
-          </div>
-
-          <div
-            class="frame-tr right-0 absolute top-0 z-0 animate__animated animate__fadeInTopRight animate__slower"
-          >
-            <div class="animate-right" style="transform: translate(5%, 145%)">
-              <img
-                class="w-100"
-                src="./asset/images/tr-2.webp"
-                alt="frame"
-                style="transform-origin: bottom right; animation-delay: 120ms"
-              />
-            </div>
-          </div>
-
-          <div
-            class="only-cover frame-bl absolute bottom-0 left-0 z-0 animate__animated animate__fadeInBottomLeft animate__slow"
-            style="animation-delay: 2.5s"
-          >
-            <div class="animate-left" style="transform: translate(-29%, -85%)">
-              <img
-                class="w-100"
-                src="./asset/images/bl-1.webp"
-                alt="frame"
-                style="transform-origin: bottom left"
-              />
-            </div>
-          </div>
-          <div
-            class="only-cover frame-bl absolute bottom-0 left-0 z-0 animate__animated animate__fadeInBottomLeft animate__slow"
-            style="animation-delay: 2.2s"
-          >
-            <div class="animate-left" style="transform: translate(-27%, -87%)">
-              <img
-                class="w-100"
-                src="./asset/images/sinta.webp"
-                alt="frame"
-                style="transform-origin: bottom left; animation-delay: 100ms"
-              />
-            </div>
-          </div>
-          <div
-            class="only-cover frame-bl absolute bottom-0 left-0 z-0 animate__animated animate__fadeInBottomLeft animate__slow"
-            style="animation-delay: 2s"
-          >
-            <div class="animate-left" style="transform: translate(-16%, -70%)">
-              <img
-                class="w-100"
-                src="./asset/images/bl-3.webp"
-                alt="frame"
-                style="transform-origin: bottom left; animation-delay: 300ms"
-              />
-            </div>
-          </div>
-
-          <div
-            class="only-cover frame-br absolute bottom-0 right-0 z-0 animate__animated animate__fadeInBottomRight animate__slow"
-            style="animation-delay: 2.5s"
-          >
-            <div class="animate-right" style="transform: translate(29%, -85%)">
-              <img
-                class="w-100"
-                src="./asset/images/br-1.webp"
-                alt="frame"
-                style="transform-origin: bottom right"
-              />
-            </div>
-          </div>
-          <div
-            class="only-cover frame-br absolute bottom-0 right-0 z-0 animate__animated animate__fadeInBottomRight animate__slow"
-            style="animation-delay: 2.2s"
-          >
-            <div class="animate-right" style="transform: translate(27%, -87%)">
-              <img
-                class="w-100"
-                src="./asset/images/rama.webp"
-                alt="frame"
-                style="transform-origin: bottom right; animation-delay: 100ms"
-              />
-            </div>
-          </div>
-          <div
-            class="only-cover frame-br absolute bottom-0 right-0 z-0 animate__animated animate__fadeInBottomRight animate__slow"
-            style="animation-delay: 2s"
-          >
-            <div class="animate-right" style="transform: translate(16%, -70%)">
-              <img
-                class="w-100"
-                src="./asset/images/br-3.webp"
-                alt="frame"
-                style="transform-origin: bottom right; animation-delay: 300ms"
-              />
-            </div>
-          </div>
-
-          <div
-            class="anim-float-left ornamen-bawah left-0 bottom-0 w-[50%] absolute z-0 translate-x-[0%] translate-y-[10%]"
-          >
+            <!-- Ornament Bawah (Center Flower) -->
             <div
-              class="animate__animated animate__fadeInBottomLeft animate__slower"
+              class="ornamen-bawah right-0 bottom-0 w-full md:w-11/12 absolute z-0"
+              style="transform: translate(0, 0)"
             >
-              <img
-                src="./asset/images/bl-2.webp"
-                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kiri'"
-                alt="Wayang Kiri"
-                class="w-full"
-                draggable="false"
-              />
+              <div
+                data-animation-class="animate__fadeIn"
+                class="ornament-item animate__slower"
+              >
+                <img
+                  src="./asset/images/bm.webp"
+                  alt="flowers"
+                  class="w-full"
+                  draggable="false"
+                  onerror="this.src='https://placehold.co/500x200/C6915A/white?text=Bottom+Flowers'"
+                />
+              </div>
             </div>
-          </div>
-          <div
-            class="anim-float-left ornamen-bawah left-0 bottom-0 w-[30%] absolute z-0 translate-x-[20%] translate-y-[5%]"
-          >
+
             <div
-              class="animate__animated animate__fadeInBottomLeft animate__slower"
+              class="frame-tl left-0 absolute top-0 z-0 ornament-item animate__slower"
+              data-animation-class="animate__fadeInTopLeft"
             >
-              <img
-                src="./asset/images/bunga-kiri.webp"
-                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kiri'"
-                alt="Bunga Kiri"
-                class="w-full"
-                draggable="false"
-              />
+              <div class="animate-left" style="transform: translate(-5%, 145%)">
+                <img
+                  class="w-100"
+                  src="./asset/images/tl-2.webp"
+                  alt="frame"
+                  style="transform-origin: bottom left; animation-delay: 120ms"
+                  onerror="this.src='https://placehold.co/150x150/C6915A/white?text=TL+Secondary'"
+                />
+              </div>
             </div>
-          </div>
-          <div
-            class="anim-float-right ornamen-bawah right-0 bottom-0 w-[50%] absolute z-0 translate-x-[0%] translate-y-[10%]"
-          >
+
             <div
-              class="animate__animated animate__fadeInBottomRight animate__slower"
+              class="frame-tr right-0 absolute top-0 z-0 ornament-item animate__slower"
+              data-animation-class="animate__fadeInTopRight"
             >
-              <img
-                src="./asset/images/br-2.webp"
-                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kanan'"
-                alt="Wayang Kanan"
-                class="w-full"
-                draggable="false"
-              />
+              <div class="animate-right" style="transform: translate(5%, 145%)">
+                <img
+                  class="w-100"
+                  src="./asset/images/tr-2.webp"
+                  alt="frame"
+                  style="transform-origin: bottom right; animation-delay: 120ms"
+                  onerror="this.src='https://placehold.co/150x150/C6915A/white?text=TR+Secondary'"
+                />
+              </div>
             </div>
-          </div>
-          <div
-            class="anim-float-right ornamen-bawah right-0 bottom-0 w-[30%] absolute z-0 translate-x-[-20%] translate-y-[5%]"
-          >
+
+            <!-- Wayang Kiri -->
             <div
-              class="animate__animated animate__fadeInBottomRight animate__slower"
+              class="anim-float-left ornamen-bawah left-0 bottom-0 w-[50%] absolute z-0 translate-x-[0%] translate-y-[10%]"
             >
-              <img
-                src="./asset/images/bunga-kanan.webp"
-                onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kanan'"
-                alt="Bunga Kanan"
-                class="w-full"
-                draggable="false"
-              />
+              <div
+                class="ornament-item animate__slower"
+                data-animation-class="animate__fadeInBottomLeft"
+              >
+                <img
+                  src="./asset/images/bl-2.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kiri'"
+                  alt="Wayang Kiri"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+            <!-- Bunga Kiri -->
+            <div
+              class="anim-float-left ornamen-bawah left-0 bottom-0 w-[30%] absolute z-0 translate-x-[20%] translate-y-[5%]"
+            >
+              <div
+                data-animation-class="animate__fadeInBottomLeft"
+                class="ornament-item animate__slower"
+              >
+                <img
+                  src="./asset/images/bunga-kiri.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kiri'"
+                  alt="Bunga Kiri"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+            <!-- Wayang Kanan -->
+            <div
+              class="anim-float-right ornamen-bawah right-0 bottom-0 w-[50%] absolute z-0 translate-x-[0%] translate-y-[10%]"
+            >
+              <div
+                data-animation-class="animate__fadeInBottomRight"
+                class="ornament-item animate__slower"
+              >
+                <img
+                  src="./asset/images/br-2.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kanan'"
+                  alt="Wayang Kanan"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+            <!-- Bunga Kanan -->
+            <div
+              class="anim-float-right ornamen-bawah right-0 bottom-0 w-[30%] absolute z-0 translate-x-[-20%] translate-y-[5%]"
+            >
+              <div
+                data-animation-class="animate__fadeInBottomRight"
+                class="ornament-item animate__slower"
+              >
+                <img
+                  src="./asset/images/bunga-kanan.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kanan'"
+                  alt="Bunga Kanan"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
             </div>
           </div>
+          <!--Tutup Container Ornament-->
 
           <div
             class="blur-card animated-content rounded-3xl mt-7 h-full w-full flex flex-col justify-center items-center"
@@ -1247,6 +1324,202 @@
           </div>
         </div>
 
+        <!-- LOKASI -->
+        <div
+          id="maps"
+          class="angkasa_slide px-6 relative min-h-screen flex flex-col justify-center items-center snap-start"
+          data-section="maps"
+        >
+          <div
+            id="opening-ornaments"
+            class="absolute inset-0 pointer-events-none"
+          >
+            <img
+              data-animation-class="animate__fadeInTopLeft"
+              class="ornament-item frame-tl top-0 left-0 absolute z-0 animate__slower lazy-load-img"
+              src="./asset/images/tl.webp"
+              onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Left'"
+              alt="frame top left"
+            />
+            <img
+              data-animation-class="animate__fadeInTopRight"
+              class="ornament-item frame-tr top-0 right-0 absolute z-0 animate__slower lazy-load-img"
+              src="./asset/images/tr.webp"
+              onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Right'"
+              alt="frame top right"
+            />
+
+            <!-- Ornament Bawah (Center Flower) -->
+            <div
+              class="ornamen-bawah right-0 bottom-0 w-full md:w-11/12 absolute z-0"
+              style="transform: translate(0, 0)"
+            >
+              <div
+                data-animation-class="animate__fadeIn"
+                class="ornament-item animate__slower"
+              >
+                <img
+                  src="./asset/images/bm.webp"
+                  alt="flowers"
+                  class="w-full"
+                  draggable="false"
+                  onerror="this.src='https://placehold.co/500x200/C6915A/white?text=Bottom+Flowers'"
+                />
+              </div>
+            </div>
+
+            <div
+              class="frame-tl left-0 absolute top-0 z-0 ornament-item animate__slower"
+              data-animation-class="animate__fadeInTopLeft"
+            >
+              <div class="animate-left" style="transform: translate(-5%, 145%)">
+                <img
+                  class="w-100"
+                  src="./asset/images/tl-2.webp"
+                  alt="frame"
+                  style="transform-origin: bottom left; animation-delay: 120ms"
+                  onerror="this.src='https://placehold.co/150x150/C6915A/white?text=TL+Secondary'"
+                />
+              </div>
+            </div>
+
+            <div
+              class="frame-tr right-0 absolute top-0 z-0 ornament-item animate__slower"
+              data-animation-class="animate__fadeInTopRight"
+            >
+              <div class="animate-right" style="transform: translate(5%, 145%)">
+                <img
+                  class="w-100"
+                  src="./asset/images/tr-2.webp"
+                  alt="frame"
+                  style="transform-origin: bottom right; animation-delay: 120ms"
+                  onerror="this.src='https://placehold.co/150x150/C6915A/white?text=TR+Secondary'"
+                />
+              </div>
+            </div>
+
+            <!-- Wayang Kiri -->
+            <div
+              class="anim-float-left ornamen-bawah left-0 bottom-0 w-[50%] absolute z-0 translate-x-[0%] translate-y-[10%]"
+            >
+              <div
+                class="ornament-item animate__slower"
+                data-animation-class="animate__fadeInBottomLeft"
+              >
+                <img
+                  src="./asset/images/bl-2.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kiri'"
+                  alt="Wayang Kiri"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+            <!-- Bunga Kiri -->
+            <div
+              class="anim-float-left ornamen-bawah left-0 bottom-0 w-[30%] absolute z-0 translate-x-[20%] translate-y-[5%]"
+            >
+              <div
+                data-animation-class="animate__fadeInBottomLeft"
+                class="ornament-item animate__slower"
+              >
+                <img
+                  src="./asset/images/bunga-kiri.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kiri'"
+                  alt="Bunga Kiri"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+            <!-- Wayang Kanan -->
+            <div
+              class="anim-float-right ornamen-bawah right-0 bottom-0 w-[50%] absolute z-0 translate-x-[0%] translate-y-[10%]"
+            >
+              <div
+                data-animation-class="animate__fadeInBottomRight"
+                class="ornament-item animate__slower"
+              >
+                <img
+                  src="./asset/images/br-2.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Wayang+Kanan'"
+                  alt="Wayang Kanan"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+            <!-- Bunga Kanan -->
+            <div
+              class="anim-float-right ornamen-bawah right-0 bottom-0 w-[30%] absolute z-0 translate-x-[-20%] translate-y-[5%]"
+            >
+              <div
+                data-animation-class="animate__fadeInBottomRight"
+                class="ornament-item animate__slower"
+              >
+                <img
+                  src="./asset/images/bunga-kanan.webp"
+                  onerror="this.src='https://placehold.co/100x100/C6915A/white?text=Bunga+Kanan'"
+                  alt="Bunga Kanan"
+                  class="w-full"
+                  draggable="false"
+                />
+              </div>
+            </div>
+          </div>
+          <!--Tutup Container Ornament-->
+
+          <div
+            class="blur-card animated-content rounded-3xl mt-7 h-full w-full flex flex-col justify-center items-center"
+          >
+            <div class="content-layer text-center m-5">
+              <div
+                style="
+                  width: 100%;
+                  margin: auto;
+                  border-radius: 10px;
+                  overflow: hidden;
+                  margin-bottom: 20px;
+                  padding-bottom: 100%;
+                  position: relative;
+                "
+                class="animate__animated animate__fadeInDown animate__slow"
+              >
+                <iframe
+                  width="100%"
+                  height="100%"
+                  style="border: 0; position: absolute"
+                  allowfullscreen=""
+                  src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCpV55KNPo55TuxnDFd_dR3MD0luBrN1Gc&amp;zoom=17&amp;q=-6.558613899999999,106.77036269999999"
+                  class="maps-embed"
+                >
+                </iframe>
+              </div>
+
+              <div
+                class="text-center animate__animated animate__fadeInUp animate__slow"
+              >
+                <div class="editable font-weight-bold" style="font-size: 14px">
+                  Harmony Banquet Halls
+                </div>
+
+                <div class="editable mb-3" style="font-size: 14px">
+                  Jl. KH. R. Abdullah Bin Nuh, RT. 06/RW. 02, Curugmekar, Kec.
+                  Bogor Barat, Kota Bogor, Jawa Barat
+                </div>
+
+                <a
+                  href="https://maps.app.goo.gl/PLACEHOLDER_LINK_TO_KCVRI"
+                  target="_blank"
+                  class="inline-block px-6 py-2 mt-4 text-sm font-bold text-white uppercase transition duration-300 rounded-lg shadow-md btn-utama animate__animated animate__fadeInUp animate__delay-2s"
+                >
+                  <i class="fas fa-map-marked-alt mr-2"></i> Buka di Google Maps
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- NEW SECTION: penutup -->
         <div
           id="closing"
@@ -1255,13 +1528,13 @@
         >
           <img
             class="frame-tl top-0 left-0 absolute z-0 animate__animated animate__fadeInTopLeft animate__slower lazy-load-img"
-            data-src="./asset/images/tl.webp"
+            src="./asset/images/tl.webp"
             onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Left'"
             alt="frame top left"
           />
           <img
             class="frame-tr top-0 right-0 absolute z-0 animate__animated animate__fadeInTopRight animate__slower lazy-load-img"
-            data-src="./asset/images/tr.webp"
+            src="./asset/images/tr.webp"
             onerror="this.src='https://placehold.co/150x150/C6915A/white?text=Top+Right'"
             alt="frame top right"
           />
@@ -1271,7 +1544,7 @@
             <div class="animate-left" style="transform: translate(-5%, 145%)">
               <img
                 class="w-100 lazy-load-img"
-                data-src="./asset/images/tl-2.webp"
+                src="./asset/images/tl-2.webp"
                 alt="frame"
                 style="transform-origin: bottom left; animation-delay: 120ms"
               />
@@ -1283,7 +1556,7 @@
             <div class="animate-right" style="transform: translate(5%, 145%)">
               <img
                 class="w-100 lazy-load-img"
-                data-src="./asset/images/tr-2.webp"
+                src="./asset/images/tr-2.webp"
                 alt="frame"
                 style="transform-origin: bottom right; animation-delay: 120ms"
               />
@@ -1296,7 +1569,7 @@
           >
             <div class="animate__animated animate__fadeInUp animate__slower">
               <img
-                data-src="./asset/images/bm.webp"
+                src="./asset/images/bm.webp"
                 onerror="this.src='https://placehold.co/500x150/C6915A/white?text=Ornamen+Bawah'"
                 alt="flowers"
                 class="w-full lazy-load-img"
@@ -1366,23 +1639,24 @@
           >
             <!-- Nav Items -->
             <a
-              id="nav-cover"
-              href="#cover"
-              class="nav-item flex-shrink-0 text-center py-1 px-3 rounded-full transition duration-300 hover:scale-110 active:bg-gray-200"
-              onclick="scrollToSection(event, 'cover')"
-            >
-              <i class="fas fa-home text-lg"></i>
-              <div class="text-xs font-semibold">Beranda</div>
-            </a>
-            <a
               id="nav-opening"
               href="#opening"
               class="nav-item flex-shrink-0 text-center py-1 px-3 rounded-full transition duration-300 hover:scale-110 active:bg-gray-200"
               onclick="scrollToSection(event, 'opening')"
             >
-              <i class="fas fa-book-open text-lg"></i>
-              <div class="text-xs font-semibold">Greeting</div>
+              <i class="fas fa-home text-lg"></i>
+              <div class="text-xs font-semibold">Home</div>
             </a>
+            <a
+              id="nav-ucapan"
+              href="#ucapan"
+              class="nav-item flex-shrink-0 text-center py-1 px-3 rounded-full transition duration-300 hover:scale-110 active:bg-gray-200"
+              onclick="scrollToSection(event, 'ucapan')"
+            >
+              <i class="fas fa-message text-lg"></i>
+              <div class="text-xs font-semibold">Quotes</div>
+            </a>
+
             <a
               id="nav-mempelai"
               href="#mempelai"
@@ -1392,6 +1666,7 @@
               <i class="fas fa-user-friends text-lg"></i>
               <div class="text-xs font-semibold">Mempelai</div>
             </a>
+
             <a
               id="nav-acara"
               href="#acara"
@@ -1402,10 +1677,10 @@
               <div class="text-xs font-semibold">Acara</div>
             </a>
             <a
-              id="nav-maps-lokasi"
-              href="#maps-lokasi"
+              id="nav-maps"
+              href="#maps"
               class="nav-item flex-shrink-0 text-center py-1 px-3 rounded-full transition duration-300 hover:scale-110 active:bg-gray-200"
-              onclick="scrollToSection(event, 'maps-lokasi')"
+              onclick="scrollToSection(event, 'maps')"
             >
               <i class="fa-solid fa-map-location-dot text-lg"></i>
               <div class="text-xs font-semibold">Lokasi</div>

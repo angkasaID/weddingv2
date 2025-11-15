@@ -227,6 +227,38 @@ function launchFullscreen(element) {
   }
 }
 
+// FUNGSI INI DIHAPUS karena tidak digunakan lagi dan untuk membersihkan kode:
+// function lazyLoadAssets(sectionElement) { ... }
+
+/**
+ * Handles the resetting and triggering of ornament animations
+ * for the given section.
+ */
+function triggerOrnamentAnimation(sectionElement) {
+  if (!sectionElement) return;
+
+  // 1. Reset ALL ornaments' animation classes globally (important for re-triggering)
+  document.querySelectorAll(".ornament-item").forEach((item) => {
+    item.classList.remove("animate__animated");
+    const animationClass = item.getAttribute("data-animation-class");
+    if (animationClass) {
+      item.classList.remove(animationClass);
+    }
+  });
+
+  // 2. Apply animation to ornaments in the current section
+  // Added a small delay to prevent flicker/immediate re-triggering when scrolling quickly
+  setTimeout(() => {
+    sectionElement.querySelectorAll(".ornament-item").forEach((item) => {
+      const animationClass = item.getAttribute("data-animation-class");
+      if (animationClass) {
+        // Re-apply classes to trigger animation
+        item.classList.add("animate__animated", animationClass);
+      }
+    });
+  }, 50);
+}
+
 function updateNavbarActiveState(sectionId) {
   document.querySelectorAll(".nav-item").forEach((item) => {
     // Menghapus kelas 'active-nav-style'
@@ -273,94 +305,46 @@ function scrollToSection(event, sectionId) {
 
     updateNavbarActiveState(sectionId);
     centerActiveNavItem(sectionId);
+
+    // Trigger animasi secara manual pada klik navigasi
+    // lazyLoadAssets(targetSection); // <--- Dihapus
+    document
+      .querySelectorAll(".angkasa_slide")
+      .forEach((sec) => sec.classList.remove("is-active"));
+    targetSection.classList.add("is-active");
+    triggerOrnamentAnimation(targetSection);
   }
 }
 window.scrollToSection = scrollToSection;
 
 // ====================================================================
-// E. FUNGSI PRELOADER (Anti-Flicker & Fungsional)
+// E. FUNGSI PRELOADER (Anti-Flicker & Fungsional) [FIXED]
 // ====================================================================
 
 function handlePreloader() {
   const preloader = document.getElementById("preloader");
-  const progressBar = document.getElementById("progress-bar");
-  if (!preloader || !progressBar) return;
+  // FIX: Menghapus dependensi progressBar dan logika asset tracking
+  // yang tidak stabil di mobile dan memerlukan elemen HTML yang hilang.
+  if (!preloader) return;
 
-  // Flags dan Timer
-  let allAssetsReady = false;
-  let minTimeMet = false;
-  const MIN_DISPLAY_TIME = 500; // Minimum waktu tampil 500ms (untuk user experience)
+  // Menggunakan pendekatan berbasis waktu yang stabil (2 detik)
+  // untuk memberi waktu yang cukup bagi font dimuat.
+  const MIN_DISPLAY_TIME = 2500;
 
-  // Aset yang dilacak: Fonts dan Audio
-  const music = document.getElementById("background-music");
-  let assetsToLoad = 2; // Font dan Audio
-
-  // --- 1. Asset Tracking ---
-  const checkCompletion = (assetName) => {
-    assetsToLoad--;
-
-    // Update visual progress bar secara bertahap
-    if (assetsToLoad === 1) {
-      progressBar.style.width = "66%"; // Fonts selesai (sisa 1 asset)
-    } else if (assetsToLoad === 0) {
-      progressBar.style.width = "99%"; // Audio selesai (semua asset dimuat)
-      allAssetsReady = true;
-    }
-
-    checkAndHidePreloader();
-  };
-
-  // a. Track Fonts (Document Fonts Ready API)
-  document.fonts.ready.then(() => {
-    checkCompletion("Fonts");
-  });
-
-  // b. Track Audio (Can Play Through Event)
-  music.oncanplaythrough = () => {
-    checkCompletion("Audio");
-  };
-
-  // --- 2. Minimum Time Tracking ---
+  // 1. Minimum Time Tracking
   setTimeout(() => {
-    minTimeMet = true;
-    checkAndHidePreloader();
+    // 2. Hiding Logic
+    // Sembunyikan Preloader (Fade-out)
+    preloader.classList.add("opacity-0");
+
+    // Setelah fade-out, sembunyikan sepenuhnya (Anti-Flicker)
+    setTimeout(() => {
+      preloader.classList.add("hidden");
+    }, 500); // 0.5s = transition duration
   }, MIN_DISPLAY_TIME);
 
-  // --- 3. Initial Visual Simulation (Animasi Awal) ---
-  let progress = 0;
-  const maxSimulatedProgress = 33; // Simulasi awal hingga 33% sebelum aset mulai dilacak
-  const intervalTime = 50;
-
-  const loadingInterval = setInterval(() => {
-    if (progress < maxSimulatedProgress) {
-      progress += 1;
-      progressBar.style.width = `${progress}%`;
-    } else {
-      clearInterval(loadingInterval);
-    }
-  }, intervalTime);
-
-  // --- 4. Hiding Logic (Akan dipanggil oleh Asset Tracker dan Minimum Timer) ---
-  function checkAndHidePreloader() {
-    if (allAssetsReady && minTimeMet) {
-      // Pastikan simulasi berhenti
-      clearInterval(loadingInterval);
-      progressBar.style.width = "100%";
-
-      // 1. Sembunyikan Preloader (Fade-out)
-      preloader.classList.add("opacity-0");
-
-      // 2. Setelah fade-out, sembunyikan sepenuhnya (Anti-Flicker: tidak ada manipulasi display overlay)
-      setTimeout(() => {
-        preloader.classList.add("hidden");
-
-        // Tidak perlu menampilkan coverSectionOverlay karena sudah ada di bawah preloader
-      }, 500); // 0.5s = transition duration
-    }
-  }
-
-  // Memastikan progress bar dimulai dari 0%
-  progressBar.style.width = "0%";
+  // FIX: Menghapus semua logika progres bar simulasi
+  // dan tracking aset (font, audio) yang rumit.
 }
 
 // ====================================================================
@@ -370,7 +354,6 @@ function handlePreloader() {
 document.addEventListener("DOMContentLoaded", () => {
   // 1. Definisikan Variabel Utama
   mobileWrapper = document.getElementById("mobile-wrapper");
-  // coverSectionOverlay tidak perlu disembunyikan/ditampilkan, biarkan z-index yang bekerja
   const bottomNavbar = document.getElementById("bottom-navbar");
   const openButton = document.getElementById("open-button");
   const fullscreenTarget = document.getElementById("fullscreen-container");
@@ -404,14 +387,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const creditFooter = document.getElementById("credit-footer");
 
       if (entry.isIntersecting) {
-        // LAZY LOAD ASSET
-        section.querySelectorAll(".lazy-load-img[data-src]").forEach((img) => {
-          if (!img.getAttribute("src")) {
-            img.setAttribute("src", img.getAttribute("data-src"));
-            img.removeAttribute("data-src");
-            img.classList.add("is-loaded");
-          }
-        });
+        // LAZY LOAD ASSET (Dihapus karena kode ini tidak ada)
+        // lazyLoadAssets(section); // <--- Dihapus
 
         // LOGIKA NAVBAR
         if (sectionId) {
@@ -420,6 +397,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // AKTIFKAN: Kelas IS-ACTIVE untuk animasi loop ornamen
         section.classList.add("is-active");
+
+        // Trigger ornament animation on natural scroll
+        triggerOrnamentAnimation(section);
 
         // Memicu entry animasi slide-up (animated-content)
         section.querySelectorAll(".animated-content").forEach((el) => {
@@ -452,11 +432,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }, observerOptions);
 
-  // Mulai mengamati semua section
-  document.querySelectorAll(".angkasa_slide").forEach((section) => {
-    observer.observe(section);
-  });
-
   // 5. LISTENER TOMBOL BUKA UNDANGAN (Slide Up Logic)
   openButton.addEventListener("click", function () {
     const isMobile = isMobileView();
@@ -483,17 +458,38 @@ document.addEventListener("DOMContentLoaded", () => {
     coverSectionOverlay.style.transform = "translateY(-100%)";
     openButton.classList.add("hidden");
 
+    // Tunggu transisi slide up selesai (700ms)
     setTimeout(() => {
       // 3. Setup Scroll dan Konten Utama
-      coverSectionOverlay.classList.add("hidden"); // Hilangkan elemen sepenuhnya setelah slide up selesai
+      coverSectionOverlay.classList.add("hidden");
 
       // Membuka scroll di mobileWrapper
       mobileWrapper.style.overflowY = "scroll";
       mobileWrapper.style.scrollSnapType = "y mandatory";
 
+      const firstSectionId = "cover";
+      const targetSection = document.getElementById(firstSectionId);
+
+      // Memulai observer untuk semua section setelah cover hilang
       document.querySelectorAll(".angkasa_slide").forEach((section) => {
         section.classList.add("scroll-active-section");
+        observer.observe(section);
       });
+
+      if (targetSection) {
+        // Scroll ke section pertama
+        mobileWrapper.scrollTo({
+          top: targetSection.offsetTop,
+          behavior: "smooth",
+        });
+
+        // lazyLoadAssets(targetSection); // <--- Dihapus
+
+        // Atur state navigasi dan animasi
+        updateNavbarActiveState(firstSectionId);
+        targetSection.classList.add("is-active");
+        triggerOrnamentAnimation(targetSection);
+      }
 
       // 4. Tampilkan Navbar Bawah
       if (bottomNavbar.classList.contains("hidden")) {
@@ -501,21 +497,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       bottomNavbar.classList.remove("translate-y-full");
       bottomNavbar.classList.add("translate-y-0");
-
-      // 5. Scroll ke section pertama
-      const firstSectionId = "opening";
-      const targetSection = document.getElementById(firstSectionId);
-
-      if (targetSection) {
-        mobileWrapper.scrollTo({
-          top: targetSection.offsetTop,
-          behavior: "smooth",
-        });
-        updateNavbarActiveState(firstSectionId);
-
-        // FIX: Untuk Section Opening, pastikan IS-ACTIVE ditambahkan
-        targetSection.classList.add("is-active");
-      }
-    }, 700);
+    }, 750); // Delay sedikit lebih lama dari transisi (700ms)
   });
 });
