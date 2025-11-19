@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Aleo:ital,wght@0,100..900;1,100..900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
 @import url("./themes/fonts/java/style.css");
 @import url("./themes/fonts/laraboyok/style.css");
@@ -13,12 +14,12 @@
   --menu-inactive: #265875;
   --menu-active: #265875;
   --btn-color: #ffffff;
-  /* Z-INDEX BARU */
+
   --z-index-cover-content: 500;
   --z-index-overlay: 101;
 
   --font-nama: "Lora", serif;
-  --font-base: "Work Sans", sans-serif;
+  --font-base: "Lora", serif;
   --font-accent: "Laraboyok", serif;
   --font-latin: "Javassoul", serif;
 }
@@ -61,8 +62,8 @@
   transition: opacity 300ms, height 300ms, margin 300ms;
 
   opacity: 1;
-  height: 16px; /* <-- PENTING: Ganti 'auto' dengan nilai tetap */
-  line-height: 16px; /* Sesuaikan line-height agar teks pas di dalam 16px */
+  height: 16px;
+  line-height: 16px;
 
   /* Pastikan overflow disembunyikan agar teks tidak bocor saat height mengecil */
   overflow: hidden;
@@ -73,7 +74,6 @@
 .nav-item.active-nav-style .text-xs {
   opacity: 0;
   height: 0;
-  /* line-height akan ikut mengecil karena transisi height */
 }
 
 /* 3. Scale Icon saat AKTIF */
@@ -159,13 +159,14 @@ body {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 .bg-blur {
-  background-color: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid var(--inv-accent);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--menu-bg);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 .blur-card {
+  overflow: hidden;
   position: relative;
   z-index: 10;
   backdrop-filter: blur(5px);
@@ -177,9 +178,7 @@ body {
 .card-cover {
   position: relative;
   overflow: hidden;
-  z-index: var(
-    --z-index-cover-content
-  ); /* PERBAIKAN: Menggunakan variabel, nilai: 500 */
+  z-index: var(--z-index-cover-content);
 }
 
 .frame {
@@ -273,23 +272,6 @@ body {
   transition: transform 0.3s ease-out;
 }
 
-/* PERBAIKAN: Hapus properti mobile wrapper yang duplikat di sini */
-#cover-section-overlay {
-  /* max-width: 500px; - Hapus */
-  /* margin-left: auto; - Hapus */
-  /* margin-right: auto; - Hapus */
-  min-height: 100vh;
-  overflow-y: hidden;
-  height: 100vh;
-  padding-bottom: 0;
-}
-
-/* PERBAIKAN: Hapus definisi lebar yang seharusnya di HTML/Wrapper */
-/* #cover{
-  max-width: 500px; 
-  box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);"
-} */
-
 .background-modern1 {
   background-image: url("./asset/images/bg.webp");
   background-size: cover;
@@ -362,7 +344,7 @@ body {
 
 .content-layer {
   position: relative;
-  z-index: 501; /* PERBAIKAN: Konsisten dengan prioritas tinggi */
+  z-index: 501;
 }
 
 /* Animasi Konten */
@@ -474,13 +456,13 @@ body {
 /* Gerakan 3: Mengambang Vertikal (Float) - Untuk memberikan kesan ringan */
 @keyframes float {
   0% {
-    transform: translateY(0); /* PERBAIKAN: 0 tanpa unit */
+    transform: translateY(0);
   }
   50% {
     transform: translateY(-5px);
   }
   100% {
-    transform: translateY(0); /* PERBAIKAN: 0 tanpa unit */
+    transform: translateY(0);
   }
 }
 
@@ -506,7 +488,7 @@ body {
 
 /* Ornamen Bawah Penuh (tanpa rotasi) */
 .anim-scroll-infinity {
-  animation: scroll-infinity 5s linear infinite alternate; /* 60s untuk sangat pelan, linear untuk kecepatan konstan, alternate agar bolak-balik */
+  animation: scroll-infinity 5s linear infinite alternate;
 }
 
 @keyframes wave-left {
@@ -567,7 +549,7 @@ body {
   transition: opacity 0.5s ease-in-out;
 }
 
-/* 3. NAV ITEM*/
+/* 3. NAV ITEM (Main Horizontal Navbar)*/
 .nav-item {
   padding-left: 0.75rem !important;
   padding-right: 0.75rem !important;
@@ -593,9 +575,6 @@ body {
 .nav-item div {
   line-height: 1;
 }
-.rose-gold {
-  color: #c6915a;
-}
 
 .map-with-accent-frame {
   box-shadow: 0 0 0 4px #c6915a;
@@ -616,27 +595,45 @@ body {
   transition: opacity 0.5s ease;
 }
 
-/* Lazy Load / Loaded state */
-.lazy-load-img {
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
-.lazy-load-img.loaded {
-  opacity: 1;
-}
-
 /* Apply animate__animated only when the section is active */
 .is-active-section .ornament-item {
   opacity: 1; /* Make visible when active */
 }
 
+/* --- PERBAIKAN COVER SLIDE UP --- */
 #cover-section-overlay {
-  transition: transform 1.5s ease-in-out, opacity 0.5s ease-out;
+  /* Transisi hanya pada transform (untuk geser) dan opacity (untuk fade) */
+  transition: transform 1.2s cubic-bezier(0.65, 0.05, 0.36, 1),
+    opacity 0.4s ease-out;
   width: 100vw;
   height: 100vh;
 }
+/* Ketika transform sudah diterapkan, kelas ini ditambahkan */
 .cover-fade-out {
-  opacity: 0 !important;
-  visibility: hidden;
-  transition: opacity 0.5s ease-out 1.2s, visibility 0s 1.7s; /* Fade setelah 1.2s, hilang setelah 1.7s */
+  opacity: 0;
+  /* Tidak perlu menambahkan visibility: hidden di sini, biarkan JS menanganinya setelah transisi */
+}
+
+/* style.css (Tambahkan kelas ini) */
+
+.floating-menu-item {
+  /* Styling umum */
+  width: 48px;
+  height: 48px;
+  background-color: var(--inv-accent);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 990;
+  transition: all 0.3s ease-out;
+  position: absolute; /* PENTING */
+  cursor: pointer;
+}
+
+.menu-item-start {
+  bottom: 6px;
+  right: 6px;
 }
