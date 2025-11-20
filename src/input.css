@@ -308,6 +308,20 @@ body {
   flex-shrink: 0;
 }
 
+<<<<<<< HEAD
+=======
+.animated-content {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.angkasa_slide.is-active .animated-content {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+>>>>>>> ca1b706fe3e7ce9512f724e8864558e9d01be46b
 /* Custom Keyframe for smooth slow spin */
 @keyframes slow-spin {
   from {
@@ -350,11 +364,35 @@ body {
 .content-layer {
   position: relative;
   z-index: 501;
+<<<<<<< HEAD
+<<<<<<<< HEAD:src/input.css
+========
+=======
+>>>>>>> ca1b706fe3e7ce9512f724e8864558e9d01be46b
+}
+
+/* Animasi Konten */
+.animated-content {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+}
+.animated-content.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+<<<<<<< HEAD
+>>>>>>>> ca1b706fe3e7ce9512f724e8864558e9d01be46b:style.css
+=======
+>>>>>>> ca1b706fe3e7ce9512f724e8864558e9d01be46b
 }
 
 /* Styling Mempelai */
 .frame-mempelai {
+<<<<<<< HEAD
   background-image: url("./themes/foto/frame-jawa.png");
+=======
+  background-image: url("./asset/images/frame-jawa.png");
+>>>>>>> ca1b706fe3e7ce9512f724e8864558e9d01be46b
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -594,10 +632,16 @@ body {
   opacity: 1; /* Make visible when active */
 }
 
+<<<<<<< HEAD
+<<<<<<<< HEAD:src/input.css
 .animate__zoomIn {
   opacity: 1;
 }
 
+========
+>>>>>>>> ca1b706fe3e7ce9512f724e8864558e9d01be46b:style.css
+=======
+>>>>>>> ca1b706fe3e7ce9512f724e8864558e9d01be46b
 /* --- PERBAIKAN COVER SLIDE UP --- */
 #cover-section-overlay {
   /* Transisi hanya pada transform (untuk geser) dan opacity (untuk fade) */
@@ -610,6 +654,36 @@ body {
 .cover-fade-out {
   opacity: 0;
   /* Tidak perlu menambahkan visibility: hidden di sini, biarkan JS menanganinya setelah transisi */
+<<<<<<< HEAD
+<<<<<<<< HEAD:src/input.css
+========
+}
+
+/* style.css (Tambahkan kelas ini) */
+
+.floating-menu-item {
+  /* Styling umum */
+  width: 48px;
+  height: 48px;
+  background-color: var(--inv-accent);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 990;
+  transition: all 0.3s ease-out;
+  position: absolute; /* PENTING */
+  cursor: pointer;
+}
+
+.menu-item-start {
+  bottom: 6px;
+  right: 6px;
+>>>>>>>> ca1b706fe3e7ce9512f724e8864558e9d01be46b:style.css
+=======
+>>>>>>> ca1b706fe3e7ce9512f724e8864558e9d01be46b
 }
 
 /* style.css (Tambahkan kelas ini) */
