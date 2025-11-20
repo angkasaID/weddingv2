@@ -635,24 +635,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const trigger = document.getElementById("floating-menu-trigger");
         const menu = document.getElementById("floating-menu");
 
-<<<<<<< HEAD
         if (entry.isIntersecting) {
           // Sesi Penutup Terlihat: Sembunyikan Bottom Navbar & Tampilkan Trigger
 
-=======
-        // Memicu entry animasi slide-up (animated-content)
-        section.querySelectorAll(".animated-content").forEach((el) => {
-          el.classList.add("is-visible");
-        });
-      }
-      if (entry.target.id === "closing") {
-        const trigger = document.getElementById("floating-menu-trigger");
-        const menu = document.getElementById("floating-menu");
-
-        if (entry.isIntersecting) {
-          // Sesi Penutup Terlihat: Sembunyikan Bottom Navbar & Tampilkan Trigger
-
->>>>>>> ca1b706fe3e7ce9512f724e8864558e9d01be46b
           // 1. COLLAPSE: Sembunyikan Bottom Navbar Penuh
           bottomNavbar.classList.remove(
             "translate-y-0",

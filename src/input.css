@@ -308,8 +308,6 @@ body {
   flex-shrink: 0;
 }
 
-<<<<<<< HEAD
-=======
 .animated-content {
   opacity: 0;
   transform: translateY(20px);
@@ -321,7 +319,6 @@ body {
   transform: translateY(0);
 }
 
->>>>>>> ca1b706fe3e7ce9512f724e8864558e9d01be46b
 /* Custom Keyframe for smooth slow spin */
 @keyframes slow-spin {
   from {
