@@ -1,96 +1,111 @@
 // ====================================================================
-// H. INJEKSI DATA KONFIGURASI STATIS (FIX TEMPLATING)
-// ====================================================================
-function injectConfigData() {
-  // Pastikan UNDANGAN_CONFIG tersedia secara global
-  if (typeof UNDANGAN_CONFIG === "undefined") {
-    console.error("Configuration data (UNDANGAN_CONFIG) is not available.");
-    return;
-  }
-  const config = UNDANGAN_CONFIG;
-
-  // Helper untuk mendapatkan inisial
-  const initials = `${config.brideName[0]} & ${config.groomName[0]}`;
-
-  // --- PRELOADER & FOOTER ---
-  // Penambahan Null Check di sini untuk mengatasi error (Line 17 yang bermasalah)
-  const initialsDisplayEl = document.getElementById("initials-display");
-  if (initialsDisplayEl) {
-    initialsDisplayEl.innerText = initials;
-  }
-
-  const footerInitialsEl = document.getElementById("footer-initials");
-  if (footerInitialsEl) {
-    footerInitialsEl.innerText = initials;
-  }
-
-  // --- COVER SECTION (HEADER) ---
-  const brideNameCoverEl = document.getElementById("bride-name-cover-display");
-  const groomNameCoverEl = document.getElementById("groom-name-cover-display");
-  if (brideNameCoverEl) {
-    brideNameCoverEl.innerText = config.brideName;
-  }
-  if (groomNameCoverEl) {
-    groomNameCoverEl.innerText = config.groomName;
-  }
-
-  // Tanggal
-  const dateDisplayEl = document.getElementById("date-display");
-  if (dateDisplayEl) {
-    dateDisplayEl.innerText = config.fullDate;
-  }
-
-  // --- COVER OVERLAY ---
-  const brideNameOverlayEl = document.getElementById(
-    "bride-name-overlay-display"
-  );
-  const groomNameOverlayEl = document.getElementById(
-    "groom-name-overlay-display"
-  );
-  if (brideNameOverlayEl) {
-    brideNameOverlayEl.innerText = config.brideName;
-  }
-  if (groomNameOverlayEl) {
-    groomNameOverlayEl.innerText = config.groomName;
-  }
-
-  // --- CLOSING SECTION ---
-  const closingNamesEl = document.getElementById("closing-names");
-  if (closingNamesEl) {
-    closingNamesEl.innerText = `${config.brideName} & ${config.groomName}`;
-  }
-}
-
-// ====================================================================
 // A. FUNGSI UTILITY (COPY, MODAL)
 // ====================================================================
 
-function copyToClipboard(textToCopy, buttonId) {
-  const tempInput = document.createElement("input");
-  // Membersihkan teks: menghapus spasi, koma, dsb., agar hanya angka
-  const cleanedText = textToCopy.replace(/[-\s,]/g, "");
-  tempInput.value = cleanedText;
-  document.body.appendChild(tempInput);
+function initializeFloatingMenu() {
+  const items = document.querySelectorAll("#floating-menu a");
+  // Mengatur status awal semua item agar bertumpuk, tidak terlihat, dan tidak bisa diklik.
+  items.forEach((item) => {
+    item.style.transform = "translate(0, 0)";
+    item.style.opacity = "0";
+    item.style.pointerEvents = "none";
+  });
+}
 
-  // Penggunaan execCommand untuk kompatibilitas di iFrame/browser lama
-  tempInput.select();
-  document.execCommand("copy");
-  document.body.removeChild(tempInput);
+let isFloatingMenuOpen = false;
 
+function toggleFloatingMenu() {
+  const trigger = document.getElementById("floating-menu-trigger");
+  const icon = document.getElementById("trigger-icon");
+  const bottomNavbar = document.getElementById("bottom-navbar");
+  const creditFooter = document.getElementById("credit-footer");
+
+  if (!trigger || !icon || !bottomNavbar || !creditFooter) return;
+
+  // Toggle status
+  isFloatingMenuOpen = !isFloatingMenuOpen;
+
+  if (isFloatingMenuOpen) {
+    // SCENARIO: BUKA MENU (Sesuai permintaan: Tampilkan Navbar & Sembunyikan Footer)
+
+    // 1. Ganti Ikon dari '+' menjadi 'X'
+    icon.classList.remove("fa-bars");
+    icon.classList.add("fa-times");
+    icon.style.transform = "";
+
+    // 2. Tampilkan Navbar (Menu Bawah)
+    bottomNavbar.classList.remove("opacity-0");
+    bottomNavbar.classList.add("opacity-100");
+
+    // 3. Sembunyikan Footer (credit-footer)
+    creditFooter.classList.add("opacity-0", "pointer-events-none");
+    creditFooter.classList.remove("opacity-100", "pointer-events-auto");
+  } else {
+    // SCENARIO: TUTUP MENU (Kembalikan ke kondisi awal)
+
+    // 1. Ganti Ikon dari 'X' menjadi '+'
+    icon.classList.remove("fa-times");
+    icon.classList.add("fa-bars");
+
+    // 2. Sembunyikan Navbar (Menu Bawah)
+    bottomNavbar.classList.remove("opacity-100");
+    bottomNavbar.classList.add("opacity-0");
+
+    // 3. Tampilkan Footer (credit-footer)
+    creditFooter.classList.remove("opacity-0", "pointer-events-none");
+    creditFooter.classList.add("opacity-100", "pointer-events-auto");
+  }
+}
+window.toggleFloatingMenu = toggleFloatingMenu;
+
+async function copyToClipboard(textToCopy, buttonId) {
   const button = document.getElementById(buttonId);
   if (!button) return;
+
+  // Membersihkan teks: menghapus spasi, koma, dsb., agar hanya angka
+  const cleanedText = textToCopy.replace(/[-\s,]/g, "");
   const originalText = button.innerHTML;
 
-  // Feedback visual
-  button.innerHTML = '<i class="fas fa-check mr-1"></i> Tersalin!';
-  button.classList.add("text-green-500");
+  const showFeedback = () => {
+    // Feedback visual
+    button.innerHTML = '<i class="fas fa-check mr-1"></i> Tersalin!';
+    button.classList.add("text-green-500");
 
-  // Kembalikan teks tombol
-  setTimeout(() => {
-    button.innerHTML = originalText;
-    button.classList.remove("text-green-500");
-  }, 2000);
+    // Kembalikan teks tombol
+    setTimeout(() => {
+      button.innerHTML = originalText;
+      button.classList.remove("text-green-500");
+    }, 2000);
+  };
+
+  try {
+    // 1. Coba Clipboard API (Modern)
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(cleanedText);
+      showFeedback();
+      return;
+    }
+
+    // 2. Fallback jika Clipboard API gagal atau tidak didukung
+    throw new Error("Fallback required");
+  } catch (err) {
+    // Fallback: execCommand (deprecated, tetapi berfungsi di browser lama/iframe)
+    const tempInput = document.createElement("input");
+    tempInput.value = cleanedText;
+    document.body.appendChild(tempInput);
+
+    tempInput.select();
+    tempInput.setSelectionRange(0, 99999);
+
+    document.execCommand("copy");
+    document.body.removeChild(tempInput);
+
+    showFeedback();
+    console.warn("Menggunakan fallback copyToClipboard.");
+  }
 }
+
+window.copyToClipboard = copyToClipboard;
 
 function openModal(modalId) {
   const modal = document.getElementById(modalId);
@@ -165,119 +180,17 @@ function displayGuestName() {
 
   if (displayElement) {
     // Default text jika tidak ada nama di URL
-    displayElement.innerText = guestName || "Kawanku";
+    displayElement.innerText = guestName || "Tamu Undangan";
   }
-}
-
-// ====================================================================
-// C. FUNGSI RENDERING DATA DARI CONFIG
-// ====================================================================
-
-function renderEvents() {
-  if (typeof UNDANGAN_CONFIG === "undefined" || !UNDANGAN_CONFIG.events) return;
-  const container = document.getElementById("events-container");
-  if (!container) return;
-
-  container.innerHTML = UNDANGAN_CONFIG.events
-    .map((event, index) => {
-      const mapButton = event.mapLink
-        ? `
-					<a
-						href="${event.mapLink}"
-						target="_blank"
-						class="mt-4 inline-block bg-accent text-white text-sm py-2 px-4 rounded-full hover:shadow-lg transition-shadow"
-					>
-						<i class="fas fa-map-marked-alt mr-2"></i> Lihat Peta
-					</a>
-				`
-        : "";
-
-      const animationClass =
-        index === 0 ? "animated-content is-visible" : "animated-content";
-
-      return `
-					<div class="bg-gray-50 p-6 rounded-xl shadow-md ${animationClass}" data-index="${index}">
-						<h3 class="font-accent text-3xl color-accent mb-3">${event.type}</h3>
-						<p class="text-gray-700 mb-2">${event.date}</p>
-						<p class="text-lg font-semibold text-[var(--color-dark)] mb-4">${event.time}</p>
-						<div class="border-t border-gray-200 pt-3">
-							<p class="text-sm">${event.location}</p>
-							${mapButton}
-						</div>
-					</div>
-				`;
-    })
-    .join("");
-}
-
-function renderGifts() {
-  if (typeof UNDANGAN_CONFIG === "undefined" || !UNDANGAN_CONFIG.gifts) return;
-  const container = document.getElementById("gifts-container");
-  if (!container) return;
-
-  container.innerHTML = UNDANGAN_CONFIG.gifts
-    .map((gift, index) => {
-      const copyButtonId = `copy-rek-${index}`;
-
-      return `
-					<div class="bg-white p-6 rounded-xl shadow-lg animated-content" data-index="${index}">
-						<h3 class="text-xl font-bold color-accent mb-2">${gift.bank}</h3>
-						<p class="text-sm">Atas Nama: ${gift.name}</p>
-						<p id="rekening-${index}" class="text-2xl font-mono text-[var(--color-dark)] my-3">
-							${gift.number}
-						</p>
-						<button
-							id="${copyButtonId}"
-							onclick="copyToClipboard('${gift.number}', '${copyButtonId}')"
-							class="mt-2 text-sm text-gray-600 bg-gray-100 py-1 px-3 rounded-full hover:bg-gray-200 transition-colors"
-						>
-							<i class="fas fa-copy mr-1"></i> Salin Nomor
-						</button>
-					</div>
-				`;
-    })
-    .join("");
-}
-
-function renderModalGiftDetails() {
-  if (
-    typeof UNDANGAN_CONFIG === "undefined" ||
-    !UNDANGAN_CONFIG.gifts ||
-    UNDANGAN_CONFIG.gifts.length === 0
-  )
-    return;
-  const modalDetailContainer = document.getElementById("modal-gift-detail");
-  const modalCopyButton = document.getElementById("modal-copy-rek-btn");
-  const firstGift = UNDANGAN_CONFIG.gifts[0]; // Ambil data rekening pertama untuk modal
-
-  if (!modalDetailContainer || !modalCopyButton || !firstGift) return;
-
-  modalDetailContainer.innerHTML = `
-			<p class="font-bold">Bank ${firstGift.bank}</p>
-			<p class="text-xl font-mono my-1">${firstGift.number}</p>
-			<p class="text-sm">a/n ${firstGift.name}</p>
-		`;
-
-  // Tambahkan event listener baru untuk tombol Salin di modal
-  // Penting: menggunakan removeEventListener/addEventListener untuk mencegah duplikasi listener
-  const newCopyHandler = (e) => {
-    e.stopPropagation();
-    copyAndClose(firstGift.number, "modal-copy-rek-btn", "gift-modal");
-  };
-
-  // Hapus listener lama jika ada (cara aman)
-  const oldCopyHandler = modalCopyButton.onclick;
-  if (oldCopyHandler) {
-    modalCopyButton.onclick = null; // Menghapus event handler inline
-  }
-
-  // Tambahkan listener baru
-  modalCopyButton.onclick = newCopyHandler;
 }
 
 // ====================================================================
 // D. FUNGSI KONTROL MUSIK
 // ====================================================================
+
+let globalUpdatePauseIcon;
+let globalUpdateMuteIcon;
+let globalIsPlaying = false;
 
 function initializeMusicControl() {
   const music = document.getElementById("background-music");
@@ -285,10 +198,10 @@ function initializeMusicControl() {
   const muteButton = document.getElementById("music-mute-button");
   const pauseIcon = document.getElementById("pause-icon");
   const muteIcon = document.getElementById("mute-icon");
-  let isPlaying = false;
 
   if (!music || !pauseButton || !muteButton || !pauseIcon || !muteIcon) return;
 
+  // Mendefinisikan fungsi update dan menyimpannya ke variabel global
   function updatePauseIcon(playing) {
     if (playing) {
       pauseIcon.classList.remove("fa-play");
@@ -309,13 +222,17 @@ function initializeMusicControl() {
     }
   }
 
+  // Assign ke variabel global agar bisa diakses di luar fungsi ini (di DOMContentLoaded)
+  globalUpdatePauseIcon = updatePauseIcon;
+  globalUpdateMuteIcon = updateMuteIcon;
+
   function autoPlayAfterInteraction() {
-    if (!isPlaying && music) {
+    if (!globalIsPlaying && music) {
       music.volume = 0.5;
       music
         .play()
         .then(() => {
-          isPlaying = true;
+          globalIsPlaying = true;
           updatePauseIcon(true);
           updateMuteIcon(music.muted);
         })
@@ -350,7 +267,7 @@ function initializeMusicControl() {
       music
         .play()
         .then(() => {
-          isPlaying = true;
+          globalIsPlaying = true;
           updatePauseIcon(true);
         })
         .catch((error) => {
@@ -359,7 +276,7 @@ function initializeMusicControl() {
         });
     } else {
       music.pause();
-      isPlaying = false;
+      globalIsPlaying = false;
       updatePauseIcon(false);
     }
   });
@@ -547,15 +464,119 @@ function handlePreloader() {
 }
 
 // ====================================================================
+// H. INJEKSI DATA KONFIGURASI STATIS (FIX TEMPLATING)
+// ====================================================================
+function injectConfigData() {
+  // Pastikan UNDANGAN_CONFIG tersedia secara global
+  if (typeof UNDANGAN_CONFIG === "undefined") {
+    console.error("Configuration data (UNDANGAN_CONFIG) is not available.");
+    return;
+  }
+  const config = UNDANGAN_CONFIG;
+
+  // Helper untuk mendapatkan inisial
+  const initials = `${config.brideName[0]} & ${config.groomName[0]}`;
+
+  // --- PRELOADER & FOOTER ---
+  const initialsDisplayEl = document.getElementById("initials-display");
+  if (initialsDisplayEl) {
+    initialsDisplayEl.innerText = initials;
+  }
+
+  const footerInitialsEl = document.getElementById("footer-initials");
+  if (footerInitialsEl) {
+    footerInitialsEl.innerText = initials;
+  }
+
+  // --- COVER SECTION (HEADER) ---
+  const brideNameCoverEl = document.getElementById("bride-name-cover-display");
+  const groomNameCoverEl = document.getElementById("groom-name-cover-display");
+  if (brideNameCoverEl) {
+    brideNameCoverEl.innerText = config.brideName;
+  }
+  if (groomNameCoverEl) {
+    groomNameCoverEl.innerText = config.groomName;
+  }
+
+  // Tanggal
+  const dateDisplayEl = document.getElementById("date-display");
+  if (dateDisplayEl) {
+    dateDisplayEl.innerText = config.date;
+  }
+
+  // --- QUOTE SECTION ---
+  const quoteTextEl = document.getElementById("quote-text");
+  const quoteSourceEl = document.getElementById("quote-source");
+  if (quoteTextEl && config.quote && config.quote.text) {
+    quoteTextEl.innerText = config.quote.text;
+  }
+  if (quoteSourceEl && config.quote && config.quote.source) {
+    quoteSourceEl.innerText = config.quote.source;
+  }
+
+  // --- BRIDE/GROOM PROFILE SECTION (Revisi Logika FullName) ---
+  const groomFullNameEl = document.getElementById("groom-full-name");
+  const groomNicknameEl = document.getElementById("groom-nickname");
+  const brideFullNameEl = document.getElementById("bride-full-name");
+  const brideNicknameEl = document.getElementById("bride-nickname");
+
+  // Jika config.groomFullName tidak didefinisikan (null/undefined), gunakan config.groomName sebagai fallback
+  const finalGroomFullName = config.groomFullName || config.groomName;
+  const finalBrideFullName = config.brideFullName || config.brideName;
+
+  if (groomFullNameEl) {
+    groomFullNameEl.innerText = finalGroomFullName;
+  }
+  if (groomNicknameEl) {
+    groomNicknameEl.innerText = config.groomName; // Selalu gunakan nama panggilan
+  }
+  if (brideFullNameEl) {
+    brideFullNameEl.innerText = finalBrideFullName;
+  }
+  if (brideNicknameEl) {
+    brideNicknameEl.innerText = config.brideName; // Selalu gunakan nama panggilan
+  }
+
+  // --- DETAIL ORANG TUA ---
+  const brideParentEl = document.getElementById("bride-parent-display");
+  const groomParentEl = document.getElementById("groom-parent-display");
+
+  if (brideParentEl) {
+    brideParentEl.innerText = `${config.brideParent.father} & ${config.brideParent.mother}`;
+  }
+  if (groomParentEl) {
+    groomParentEl.innerText = `${config.groomParent.father} & ${config.groomParent.mother}`;
+  }
+
+  // --- MODAL FISIK ---
+  const physicalModalAddressEl = document.getElementById(
+    "modal-physical-address"
+  );
+  if (physicalModalAddressEl) {
+    physicalModalAddressEl.innerText = config.physicalGift.address;
+  }
+
+  // Update Tombol Salin Alamat Fisik di Modal
+  const addressToCopy = `Penerima: ${config.physicalGift.name}. No. Telp: ${config.physicalGift.phone}. Alamat: ${config.physicalGift.address}`;
+  const copyAddressButton = document.getElementById("alamat-fisik-btn");
+  if (copyAddressButton) {
+    // Karena menggunakan event handler inline, kita hanya perlu memastikan teks yang disalin benar
+    copyAddressButton.setAttribute(
+      "onclick",
+      `copyAndClose('${addressToCopy}', 'alamat-fisik-btn', 'modal-fisik')`
+    );
+  }
+}
+
+// ====================================================================
 // G. INISIALISASI UTAMA (DOMContentLoaded)
 // ====================================================================
 
 document.addEventListener("DOMContentLoaded", () => {
   // 1. Render data dinamis dari config ke HTML
   renderEvents();
-  renderGifts();
-
-  // 2. INJEKSI DATA STATIS (Perbaikan error ada di dalam fungsi ini sekarang)
+  injectGiftModalData();
+  // 2. INJEKSI DATA STATIS
   injectConfigData();
 
   mobileWrapper = document.getElementById("mobile-wrapper");
@@ -563,6 +584,14 @@ document.addEventListener("DOMContentLoaded", () => {
   const openButton = document.getElementById("open-button");
   const fullscreenTarget = document.getElementById("fullscreen-container");
   const musicControls = document.getElementById("floating-music-controls");
+  const music = document.getElementById("background-music");
+  const collapseButton = document.getElementById("navbar-collapse-button");
+  const creditFooter = document.getElementById("credit-footer");
+
+  if (bottomNavbar)
+    bottomNavbar.classList.add("transition-all", "duration-500");
+  if (creditFooter)
+    creditFooter.classList.add("transition-all", "duration-500");
 
   if (!mobileWrapper || !bottomNavbar || !openButton) {
     console.error(
@@ -574,11 +603,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // 3. Tampilkan Nama Tamu & Kontrol Musik
   displayGuestName();
   initializeMusicControl();
+  initializeFloatingMenu();
 
   // 4. Mulai Preloader (Sekarang lebih tangguh!)
   handlePreloader();
 
-  // 5. INISIALISASI INTERSECTION OBSERVER
+  // 5. INISIALISASI INTERSECTION OBSERVER (HANYA UNTUK NAVIGASI & ORNAMEN)
   const observerOptions = {
     root: mobileWrapper,
     rootMargin: "0px",
@@ -598,34 +628,84 @@ document.addEventListener("DOMContentLoaded", () => {
 
         section.classList.add("is-active");
 
-        // Trigger ornament animation on natural scroll
+        // Trigger ornament animation on natural scroll (TETAP ADA)
         triggerOrnamentAnimation(section);
+      }
+      if (entry.target.id === "closing") {
+        const trigger = document.getElementById("floating-menu-trigger");
+        const menu = document.getElementById("floating-menu");
 
-        // Memicu entry animasi slide-up (animated-content)
-        section.querySelectorAll(".animated-content").forEach((el) => {
-          el.classList.add("is-visible");
-        });
+        if (entry.isIntersecting) {
+          // Sesi Penutup Terlihat: Sembunyikan Bottom Navbar & Tampilkan Trigger
 
-        // LOGIKA KHUSUS: Navbar Transisi dan Footer
-        if (sectionId === "closing" && creditFooter) {
-          bottomNavbar.classList.remove("navbar-bottom");
-          bottomNavbar.classList.add("navbar-top");
+          // 1. COLLAPSE: Sembunyikan Bottom Navbar Penuh
+          bottomNavbar.classList.remove(
+            "translate-y-0",
+            "opacity-100",
+            "pointer-events-auto"
+          );
+          bottomNavbar.classList.add("opacity-0", "pointer-events-none");
+
+          // Jika menu sedang terbuka, tutup dulu sebelum navbar hilang
+          if (isFloatingMenuOpen) {
+            toggleFloatingMenu();
+          }
+
+          // 2. Tampilkan Trigger (AssistiveTouch)
+          trigger.classList.remove("opacity-0", "pointer-events-none");
+          trigger.classList.add("opacity-100", "pointer-events-auto");
+
+          // 3. Tampilkan Footer
           creditFooter.classList.remove("opacity-0", "pointer-events-none");
           creditFooter.classList.add("opacity-100", "pointer-events-auto");
-        }
-      } else {
-        section.classList.remove("is-active");
+        } else {
+          // Keluar dari Sesi Penutup: Tampilkan Bottom Navbar & Sembunyikan Trigger
 
-        // LOGIKA KHUSUS: Navbar Transisi dan Footer
-        if (sectionId === "closing" && creditFooter) {
-          bottomNavbar.classList.remove("navbar-top");
-          bottomNavbar.classList.add("navbar-bottom");
+          // 1. Tampilkan Navbar Penuh
+          bottomNavbar.classList.remove("opacity-0", "pointer-events-none");
+          bottomNavbar.classList.add(
+            "translate-y-0",
+            "opacity-100",
+            "pointer-events-auto"
+          );
+
+          // 2. Sembunyikan Trigger (dan pastikan menu tertutup)
+          if (isFloatingMenuOpen) {
+            toggleFloatingMenu();
+          }
+          trigger.classList.remove("opacity-100", "pointer-events-auto");
+          trigger.classList.add("opacity-0", "pointer-events-none");
+
+          // 3. Sembunyikan Footer
           creditFooter.classList.remove("opacity-100", "pointer-events-auto");
           creditFooter.classList.add("opacity-0", "pointer-events-none");
         }
       }
     });
   }, observerOptions);
+
+  const floatingMenuItems = document.querySelectorAll("#floating-menu a");
+  floatingMenuItems.forEach((item) => {
+    item.addEventListener("click", function (e) {
+      e.preventDefault();
+
+      // Tutup menu segera
+      toggleFloatingMenu();
+
+      // Dapatkan target ID dari href
+      const targetId = this.getAttribute("href").substring(1);
+      const targetElement = document.getElementById(targetId);
+      const mobileWrapper = document.getElementById("mobile-wrapper");
+
+      if (targetElement && mobileWrapper) {
+        // Scroll ke section
+        mobileWrapper.scrollTo({
+          top: targetElement.offsetTop,
+          behavior: "smooth",
+        });
+      }
+    });
+  });
 
   // 6. LISTENER TOMBOL BUKA UNDANGAN (Slide Up Logic)
   openButton.addEventListener("click", function () {
@@ -639,10 +719,20 @@ document.addEventListener("DOMContentLoaded", () => {
       musicControls.classList.add("opacity-100");
     }
 
-    document
-      .getElementById("background-music")
-      .play()
-      .catch((e) => console.error("Music play blocked:", e));
+    // --- PERBAIKAN: Memutar musik dan memastikan ikon diperbarui ---
+    if (music) {
+      music
+        .play()
+        .then(() => {
+          // Hanya jika pemutaran berhasil, perbarui status dan ikon
+          globalIsPlaying = true;
+          if (globalUpdatePauseIcon) {
+            globalUpdatePauseIcon(true);
+          }
+        })
+        .catch((e) => console.error("Music play blocked:", e));
+    }
+    // --- AKHIR PERBAIKAN ---
 
     // Launch fullscreen only if user grants permission
     if (isMobile && fullscreenTarget) {
