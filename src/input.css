@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Aleo:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
 @import url("./themes/fonts/java/style.css");
 @import url("./themes/fonts/laraboyok/style.css");
@@ -20,10 +20,11 @@
   --z-index-cover-content: 500;
   --z-index-overlay: 101;
 
+  --font-body: "Lora", serif;
   --font-nama: "Lora", serif;
-  --font-base: "Lora", serif;
   --font-accent: "Laraboyok", serif;
   --font-latin: "Javassoul", serif;
+  --font-latin2: "Great Vibes", cursive;
 }
 
 @keyframes pulse_shadow {
@@ -122,6 +123,9 @@
 }
 .font-latin {
   font-family: var(--font-latin);
+}
+.font-latin2 {
+  font-family: var(--font-latin2);
 }
 .font-nama {
   font-family: var(--font-nama);
@@ -376,7 +380,7 @@ body {
 
 /* Styling Mempelai */
 .frame-mempelai {
-  background-image: url("./asset/images/frame-jawa.png");
+  background-image: url("/src/themes/foto/frame-jawa.png");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
