@@ -1,6 +1,6 @@
 const UNDANGAN_CONFIG = {
   guestNameDefault: "Tamu Undangan",
-  musicUrl: "./src/themes/music/latar.mp3",
+  musicUrl: "https://aethersub.store/asset/Music/latar.mp3",
 
   brideName: "Tia",
   groomName: "Yoga",
@@ -8,21 +8,21 @@ const UNDANGAN_CONFIG = {
   groomFullName: "Yoga Saputra",
 
   // Nama Orang Tua
-  brideFatherName: "Bima",
-  brideMotherName: "Indah",
-  groomFatherName: "Satria",
-  groomMotherName: "Ayu",
+  brideFatherName: "Carsono (Alm)",
+  brideMotherName: "Ina Siti Rokhimah",
+  groomFatherName: "Slamet Sujarwo",
+  groomMotherName: "Rasumi",
 
   // --- TANGGAL & WAKTU UTAMA (Untuk cover dan acara) ---
-  dateDisplay: "Sabtu, 25 Januari 2025",
-  akadDayDisplay: "Minggu",
-  akadDateDisplay: "25.05.25",
-  akadTimeDisplay: "Pukul 08:00 WIB",
-  akadLocation: "Masjid Raya At-Taqwa, Jakarta",
+  dateDisplay: "Jum'at, 23 Januari 2026",
+  akadDayDisplay: "Jum'at",
+  akadDateDisplay: "23.01.26",
+  akadTimeDisplay: "Pukul 13:00 WIB",
+  akadLocation: "Kediaman Mempelai Wanita",
 
   // --- WA RSVP CONFIGURATION (BARU DITAMBAHKAN) ---
   // Nomor WA penerima konfirmasi RSVP (Contoh: 628123456789)
-  whatsappNumber: "628123456789",
+  whatsappNumber: "6285171140818",
   // Template pesan WA dengan placeholder yang akan diganti di data-injector.js
   whatsappRsvpTemplate:
     "Halo [GUEST_NAME], saya konfirmasi kehadiran. Status: [STATUS]. Jumlah: [COUNT] orang.\n\n[MESSAGE]",

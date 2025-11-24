@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Generator Link Undangan — Pernikahan</title>
+
+    <meta
+      name="description"
+      content="Undangan pernikahan. Klik untuk membuka undangan."
+    />
+    <meta property="og:title" content="Undangan Pernikahan" />
+    <meta name="twitter:title" content="Undangan Pernikahan" />
+    <meta
+      property="og:description"
+      content="Undangan pernikahan. Kami menantikan kehadiran Anda."
+    />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <style>
+      :root {
+        --card: #0f1724;
+        --muted: #9aa4b2;
+        --accent: #d1b09b;
+        --accent-600: #b89374;
+        --success: #16a34a;
+      }
+      html,
+      body {
+        height: 100%;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+        background: linear-gradient(180deg, #05060a 0%, #071026 100%);
+        color: #e6eef8;
+      }
+      .card {
+        box-shadow: 0 6px 20px rgba(3, 7, 18, 0.7),
+          0 2px 6px rgba(2, 6, 12, 0.6);
+      }
+      .btn-primary {
+        background-image: linear-gradient(
+          90deg,
+          var(--accent),
+          var(--accent-600)
+        );
+      }
+      .focus-ring:focus {
+        outline: 3px solid rgba(209, 176, 155, 0.18);
+        outline-offset: 2px;
+      }
+      textarea[readonly] {
+        background: transparent;
+      }
+    </style>
+  </head>
+
+  <body class="min-h-screen flex items-center justify-center p-6">
+    <main
+      class="w-full max-w-2xl card bg-[color:var(--card)] rounded-2xl p-6 md:p-10 border border-transparent"
+      role="main"
+    >
+      <header class="flex items-center gap-4 mb-6">
+        <div
+          class="rounded-full bg-gradient-to-br from-[#112033] to-[#0b1626] p-3 flex items-center justify-center text-2xl"
+        >
+          <i class="fas fa-ring text-[color:var(--accent)]"></i>
+        </div>
+        <div>
+          <h1 class="text-2xl md:text-3xl font-semibold">
+            Pembuat Tautan Undangan
+          </h1>
+          <p class="text-sm text-[color:var(--muted)] mt-1">
+            Untuk undangan pernikahan — buat tautan per nama & share cepat ke
+            WhatsApp
+          </p>
+        </div>
+      </header>
+
+      <section class="space-y-6">
+        <div>
+          <label
+            for="base-url"
+            class="text-sm font-medium text-[color:var(--muted)]"
+          >
+            1. URL Dasar (Alamat Undangan Anda)
+          </label>
+          <input
+            id="base-url"
+            type="url"
+            inputmode="url"
+            class="mt-2 w-full p-3 bg-transparent border border-gray-700 rounded-lg focus-ring"
+            placeholder="Misal: https://nama-proyek-anda.vercel.app/"
+            value="https://domain-anda.com/"
+          />
+        </div>
+
+        <div>
+          <label
+            for="guest-name"
+            class="text-sm font-medium text-[color:var(--muted)]"
+          >
+            2. Masukkan Nama Tamu
+          </label>
+          <input
+            id="guest-name"
+            type="text"
+            class="mt-2 w-full p-3 bg-transparent border border-gray-700 rounded-lg focus-ring"
+            placeholder="Contoh: Keluarga Besar Budi Wijaya"
+          />
+        </div>
+
+        <!-- SLUG HIDDEN NOW -->
+        <input id="slug" type="hidden" />
+
+        <div>
+          <label
+            for="bride-groom"
+            class="text-sm font-medium text-[color:var(--muted)]"
+          >
+            3. Nama Mempelai
+          </label>
+          <input
+            id="bride-groom"
+            type="text"
+            class="mt-2 w-full p-3 bg-transparent border border-gray-700 rounded-lg focus-ring"
+            placeholder="Contoh: Budi & Sari"
+          />
+        </div>
+
+        <div>
+          <label
+            for="wa-template"
+            class="text-sm font-medium text-[color:var(--muted)]"
+          >
+            4. Template Pesan WhatsApp (bisa diedit)
+          </label>
+          <textarea
+            id="wa-template"
+            rows="6"
+            class="mt-2 w-full p-3 bg-transparent border border-gray-700 rounded-lg focus-ring text-sm"
+          >
+Assalamualaikum / Halo *{NAME}* 🤍
+
+Dengan penuh kebahagiaan,
+kami mengundang Bapak/Ibu/Saudara/i
+untuk hadir pada acara pernikahan kami .
+
+Silakan buka undangan digital pada tautan berikut:
+{LINK}
+
+Merupakan suatu kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan untuk hadir dan memberikan doa restu. 🙏✨
+
+Kami yang berbahagia
+— *{COUPLE}* 
+
+
+`Mohon maaf perihal undangan hanya dibagikan melalui pesan ini`</textarea
+          >
+
+          <p class="text-xs text-[color:var(--muted)] mt-2">
+            Gunakan <code>{NAME}</code>, <code>{LINK}</code>, dan
+            <code>{COUPLE}</code> sebagai placeholder.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <button
+            id="generate-button"
+            class="btn-primary text-black font-semibold py-3 px-4 rounded-lg shadow-sm hover:opacity-95 focus-ring flex items-center justify-center gap-2"
+          >
+            <i class="fas fa-magic"></i> Buat Tautan Undangan
+          </button>
+
+          <button
+            id="save-template"
+            class="border border-gray-700 text-[color:var(--accent)] font-semibold py-3 px-4 rounded-lg hover:bg-[rgba(209,176,155,0.04)] focus-ring flex items-center justify-center gap-2"
+          >
+            <i class="fas fa-save"></i> Simpan Template
+          </button>
+        </div>
+      </section>
+
+      <section
+        id="result-container"
+        class="mt-8 p-5 rounded-xl bg-gradient-to-b from-[rgba(255,255,255,0.02)] to-transparent border border-gray-800 hidden"
+      >
+        <h3 class="text-lg font-medium mb-3">Tautan Siap:</h3>
+
+        <label class="text-sm text-[color:var(--muted)]"
+          >Tautan yang dihasilkan</label
+        >
+
+        <textarea
+          id="generated-link"
+          readonly
+          rows="2"
+          class="w-full p-3 bg-transparent border border-transparent rounded-md text-sm text-[color:var(--accent)]"
+        ></textarea>
+
+        <div class="flex gap-3 mt-3">
+          <button
+            id="copy-button"
+            class="w-1/2 bg-[color:var(--success)] hover:opacity-95 font-medium py-2 px-3 rounded-lg focus-ring flex items-center justify-center gap-2"
+          >
+            <i class="fas fa-copy"></i> Salin Tautan
+          </button>
+
+          <button
+            id="open-button"
+            class="w-1/2 border border-gray-700 text-[color:var(--accent)] py-2 px-3 rounded-lg hover:bg-[rgba(209,176,155,0.04)] focus-ring flex items-center justify-center gap-2"
+          >
+            <i class="fas fa-external-link-alt"></i> Buka Tautan
+          </button>
+        </div>
+
+        <p
+          id="copy-feedback"
+          class="text-sm text-[color:var(--success)] text-center mt-2 opacity-0 transition-opacity"
+        >
+          <i class="fas fa-check-circle mr-1"></i> Tautan berhasil disalin ke
+          clipboard!
+        </p>
+
+        <div class="mt-4">
+          <label class="text-sm text-[color:var(--muted)]"
+            >Template Pesan WhatsApp (Preview)</label
+          >
+
+          <textarea
+            id="wa-template-preview"
+            rows="6"
+            class="mt-2 w-full p-3 bg-transparent border border-gray-700 rounded-lg focus-ring text-sm"
+            readonly
+          ></textarea>
+
+          <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button
+              id="wa-share-button"
+              class="bg-[#25D366] hover:opacity-95 text-black font-semibold py-2 px-4 rounded-lg flex items-center justify-center gap-2 focus-ring"
+            >
+              <i class="fab fa-whatsapp"></i> Share ke WhatsApp
+            </button>
+
+            <button
+              id="wa-copy-message-button"
+              class="border border-gray-700 text-[color:var(--accent)] py-2 px-4 rounded-lg hover:bg-[rgba(209,176,155,0.04)] focus-ring flex items-center justify-center gap-2"
+            >
+              <i class="fas fa-comment-dots"></i> Salin Pesan
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      function slugify(text) {
+        return String(text || "")
+          .toLowerCase()
+          .trim()
+          .normalize("NFKD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "");
+      }
+
+      async function copyToClipboard(text) {
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+            return true;
+          }
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          ta.style.position = "absolute";
+          ta.style.left = "-9999px";
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+          return true;
+        } catch {
+          return false;
+        }
+      }
+
+      const baseUrlInput = document.getElementById("base-url");
+      const guestNameInput = document.getElementById("guest-name");
+      const slugInput = document.getElementById("slug");
+      const brideGroomInput = document.getElementById("bride-groom");
+      const waTemplateInput = document.getElementById("wa-template");
+
+      const generateButton = document.getElementById("generate-button");
+      const saveTemplateButton = document.getElementById("save-template");
+
+      const resultContainer = document.getElementById("result-container");
+      const generatedLinkTA = document.getElementById("generated-link");
+      const waPreview = document.getElementById("wa-template-preview");
+
+      const copyButton = document.getElementById("copy-button");
+      const openButton = document.getElementById("open-button");
+      const copyFeedback = document.getElementById("copy-feedback");
+
+      const waShareButton = document.getElementById("wa-share-button");
+      const waCopyMessageButton = document.getElementById(
+        "wa-copy-message-button"
+      );
+
+      // Load saved
+      try {
+        const savedBase = localStorage.getItem("invite_base_url");
+        if (savedBase) baseUrlInput.value = savedBase;
+
+        const savedTemplate = localStorage.getItem("invite_wa_template");
+        if (savedTemplate) waTemplateInput.value = savedTemplate;
+      } catch {}
+
+      // NEW: SLUG AUTO FROM COUPLE
+      function generateSlugFromCouple() {
+        const couple = brideGroomInput.value.trim();
+        let s = slugify(couple);
+        if (!s) s = "undangan-manten";
+        slugInput.value = s;
+      }
+
+      brideGroomInput.addEventListener("input", generateSlugFromCouple);
+      generateSlugFromCouple();
+
+      function normalizeBase(url) {
+        return String(url || "")
+          .trim()
+          .replace(/\s+/g, "")
+          .replace(/\/+$/, "");
+      }
+
+      function buildMessage(tpl, name, link, couple) {
+        return tpl
+          .replaceAll("{NAME}", name)
+          .replaceAll("{LINK}", link)
+          .replaceAll("{COUPLE}", couple || "");
+      }
+
+      function showResultArea() {
+        resultContainer.classList.remove("hidden");
+      }
+
+      generateButton.addEventListener("click", () => {
+        const base = normalizeBase(baseUrlInput.value);
+        const guest = guestNameInput.value.trim();
+        const couple = brideGroomInput.value.trim();
+        const template = waTemplateInput.value;
+
+        let slug = slugInput.value.trim();
+        if (!slug) slug = "undangan-manten";
+
+        if (!base || !guest) {
+          alert("Mohon isi URL Dasar dan Nama Tamu.");
+          return;
+        }
+
+        try {
+          localStorage.setItem("invite_base_url", baseUrlInput.value);
+          localStorage.setItem("invite_wa_template", waTemplateInput.value);
+        } catch {}
+
+        const finalLink = `${base}/${slug}?to=${encodeURIComponent(guest)}`;
+        const message = buildMessage(template, guest, finalLink, couple);
+
+        generatedLinkTA.value = finalLink;
+        waPreview.value = message;
+
+        showResultArea();
+        copyFeedback.style.opacity = "0";
+      });
+
+      copyButton.addEventListener("click", async () => {
+        const ok = await copyToClipboard(generatedLinkTA.value);
+        if (ok) {
+          copyFeedback.style.opacity = "1";
+          setTimeout(() => (copyFeedback.style.opacity = "0"), 2500);
+        }
+      });
+
+      openButton.addEventListener("click", () => {
+        window.open(generatedLinkTA.value, "_blank");
+      });
+
+      waShareButton.addEventListener("click", () => {
+        const msg = waPreview.value;
+        const url = "https://wa.me/?text=" + encodeURIComponent(msg);
+        window.open(url, "_blank");
+      });
+
+      waCopyMessageButton.addEventListener("click", async () => {
+        const ok = await copyToClipboard(waPreview.value);
+        if (ok) {
+          copyFeedback.textContent = "Pesan berhasil disalin ke clipboard!";
+          copyFeedback.style.opacity = "1";
+          setTimeout(() => {
+            copyFeedback.innerHTML =
+              '<i class="fas fa-check-circle mr-1"></i> Tautan berhasil disalin ke clipboard!';
+            copyFeedback.style.opacity = "0";
+          }, 1800);
+        }
+      });
+
+      saveTemplateButton.addEventListener("click", () => {
+        try {
+          localStorage.setItem("invite_wa_template", waTemplateInput.value);
+          alert("Template pesan disimpan di browser.");
+        } catch {
+          alert("Gagal menyimpan template.");
+        }
+      });
+
+      guestNameInput.focus();
+    </script>
+  </body>
+</html>
