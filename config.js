@@ -18,23 +18,23 @@ const UNDANGAN_CONFIG = {
   akadDayDisplay: "Jum'at",
   akadDateDisplay: "23.01.26",
   akadTimeDisplay: "Pukul 13:00 WIB",
-  akadLocation: "Kediaman Mempelai Wanita",
+  // Alamat Tekstual yang akan ditampilkan
+  akadLocation: "Dusun Klesem, RT25/08, GunungJaya, Belik, Pemalang",
 
-  // --- WA RSVP CONFIGURATION (BARU DITAMBAHKAN) ---
+  // Link untuk Countdown
+  countdownTargetDate: "Jan 23, 2026 13:00:00", // Format: Month Day, Year HH:MM:SS
+
+  // --- WA RSVP CONFIGURATION ---
   // Nomor WA penerima konfirmasi RSVP (Contoh: 628123456789)
   whatsappNumber: "6285171140818",
-  // Template pesan WA dengan placeholder yang akan diganti di data-injector.js
+  // Template pesan WA dengan placeholder
   whatsappRsvpTemplate:
     "Halo [GUEST_NAME], saya konfirmasi kehadiran. Status: [STATUS]. Jumlah: [COUNT] orang.\n\n[MESSAGE]",
 
-  // --- LINK LOKASI & KALENDER ---
-  // Link Google Maps (Untuk tombol umum di sesi Acara)
-  locationMapsUrl: "https://maps.app.goo.gl/ContohLinkGoogleMaps",
-  // Link Google Calendar untuk disimpan tamu
+  // --- MAPS CONFIGURATION (BARU) ---
   calendarLink:
-    "https://calendar.google.com/event?action=TEMPLATE&text=Pernikahan+Rama+%26+Sinta&dates=20250125T040000Z/20250125T070000Z&details=Pernikahan+Sinta+Dewi+dan+Rama+Wijaya&location=Ballroom+Bimasakti",
-  // Link Waze
-  wazeLink: "https://waze.com/ul?ll=-6.2000,106.8000&navigate=yes&zoom=10",
+    "https://calendar.google.com/event?action=TEMPLATE&text=Pernikahan+Tia+%26+Yoga&dates=20260123T060000Z/20260123T090000Z&details=Pernikahan+Tia+Rokhimah+dan+Yoga+Saputra&location=Dusun+Klesem,+Belik,+Pemalang",
+  wazeLink: "https://waze.com/ul?ll=-7.1234,109.4321&navigate=yes&zoom=10",
 
   // --- QUOTE ---
   quote: {
@@ -42,45 +42,36 @@ const UNDANGAN_CONFIG = {
     source: "QS. Ar-Rum: 21",
   },
 
-  // --- KADO/GIFT (Informasi Bank Utama) ---
-  bankName: "BCA",
-  bankAccount: "1234 567 890",
-  bankRecipient: "Sinta Dewi",
-
   // Alamat Fisik
-  physicalAddress: "Jl. Bima Sakti No. 10",
-  physicalCity: "Jakarta",
-  physicalZip: "12345",
-  contactNumber: "0812 3456 7890",
+  physicalAddress: "Dk Klesem, RT25/08, GunungJaya, Belik, Pemalang",
+  physicalCity: "Jawa Tengah",
+  physicalZip: "52356",
+  contactNumber: "0851 7114 0818",
+  bankRecipient: "Tia Rokhimah",
 
-  // --- DATA STRUKTURAL (Untuk fungsi renderEvents dan renderGifts) ---
-  events: [
-    {
-      type: "Akad Nikah",
-      date: "Sabtu, 25 Januari 2025",
-      time: "Pukul 08:00 WIB",
-      location: "Masjid Raya At-Taqwa, Jakarta",
-      mapLink: "https://maps.app.goo.gl/ContohLinkMasjid",
-    },
-    {
-      type: "Resepsi",
-      date: "Sabtu, 25 Januari 2025",
-      time: "Pukul 11:00 - 14:00 WIB",
-      location: "Ballroom Bimasakti, Grand Hotel, Jakarta",
-      mapLink: "https://maps.app.goo.gl/ContohLinkResepsi",
-    },
-  ],
-
+  // Bank Tambahan (Array Gifts)
   gifts: [
     {
       bank: "MANDIRI",
-      name: "Alhikmah Abadi",
       number: "1310012345678",
+      name: "Yoga Saputra",
     },
     {
       bank: "BRI",
-      name: "Indah Permata",
       number: "08901234567890",
+      name: "Tia Rokhimah",
     },
+  ],
+
+  locationMapsUrl: "https://maps.app.goo.gl/JxGnFRvewacvZiBk8",
+  googleMapsEmbedUrl:
+    "https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d1184.2778167850392!2d109.3764659268553!3d-7.153596896371059!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sid!2sid!4v1764042119400!5m2!1sid!2sid",
+  locationName: "Dk.Klesem Gunung Jaya",
+  locationFullAddress:
+    "Dk Klesem, RT25/08, GunungJaya, Belik, Pemalang, Jawa Tengah",
+
+  sponsors: [
+    "./src/themes/foto/sponsor1.png",
+    "./src/themes/foto/sponsor2.png",
   ],
 };

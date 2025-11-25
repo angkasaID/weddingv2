@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
 @import url("./themes/fonts/java/style.css");
 @import url("./themes/fonts/laraboyok/style.css");
@@ -11,6 +11,8 @@
   --inv-bg: #f7f7f7;
   --inv-base: #49312b;
   --inv-accent: #b88821;
+  --inv-accent2: #c6915a;
+  --color-text-default: #49312b;
   --inv-border: #f4ecdd;
   --menu-bg: #cdd7e2;
   --menu-inactive: #265875;
@@ -20,11 +22,54 @@
   --z-index-cover-content: 500;
   --z-index-overlay: 101;
 
-  --font-body: "Lora", serif;
-  --font-nama: "Lora", serif;
+  --font-defaut: "Inter", sans-serif;
+  --font-dekor-1: "Lora", serif;
   --font-accent: "Laraboyok", serif;
   --font-latin: "Javassoul", serif;
   --font-latin2: "Great Vibes", cursive;
+}
+
+.font-default {
+  font-family: var(--font-default);
+  font-optical-sizing: auto;
+}
+.font-dekor-1 {
+  font-family: var(--font-dekor-1);
+  font-optical-sizing: auto;
+}
+.font-dekor-2 {
+  font-family: var(--font-latin2);
+}
+.font-accent {
+  font-family: var(--font-accent);
+}
+.font-latin-jawa {
+  font-family: var(--font-latin);
+}
+
+/* 2. DEFINISI SKEMA WARNA 
+ Berdasarkan tema 'Jawa Biru' dan 'Rose Gold' (color-accent)
+*/
+.color-accent {
+  color: var(--inv-accent2);
+}
+
+.text-color-base {
+  color: var(--color-text-default);
+}
+.text-color-accent {
+  color: var(--inv-accent);
+}
+.btn-utama {
+  background-color: var(--inv-accent);
+}
+.text-btn {
+  color: var(--btn-color);
+}
+body {
+  overflow: hidden;
+  font-family: var(--font-default);
+  color: var(--color-text-default);
 }
 
 @keyframes pulse_shadow {
@@ -75,32 +120,26 @@
 }
 
 .nav-item .text-xs {
-  /* Transisi untuk properti opacity, height, dan margin */
   transition: opacity 300ms, height 300ms, margin 300ms;
-
   opacity: 1;
   height: 16px;
   line-height: 16px;
-
-  /* Pastikan overflow disembunyikan agar teks tidak bocor saat height mengecil */
   overflow: hidden;
 }
 
-/* 2. Sembunyikan Teks saat HOVER ATAU AKTIF */
 .nav-item:hover .text-xs,
 .nav-item.active-nav-style .text-xs {
   opacity: 0;
   height: 0;
 }
 
-/* 3. Scale Icon saat AKTIF */
 .nav-item.active-nav-style {
   transform: scale(1.5);
 }
 
 /* 4. Ganti Warna Icon saat AKTIF */
 .nav-item.active-nav-style i {
-  color: #c6915a; /* Pastikan ini warna aksen yang Anda inginkan */
+  color: var(--inv-accent);
 }
 .btn-float {
   height: 40px;
@@ -113,38 +152,6 @@
   background-color: var(--inv-accent);
   border-color: var(--inv-accent);
   color: var(--btn-color);
-}
-
-.font-base {
-  font-family: var(--font-base);
-}
-.font-accent {
-  font-family: var(--font-accent);
-}
-.font-latin {
-  font-family: var(--font-latin);
-}
-.font-latin2 {
-  font-family: var(--font-latin2);
-}
-.font-nama {
-  font-family: var(--font-nama);
-}
-
-.text-color-base {
-  color: var(--inv-base);
-}
-.text-color-accent {
-  color: var(--inv-accent);
-}
-.btn-utama {
-  background-color: var(--inv-accent);
-}
-.text-btn {
-  color: var(--btn-color);
-}
-body {
-  overflow: hidden;
 }
 
 .btn-float {
@@ -395,17 +402,6 @@ body {
   border-radius: 50px 50px 0 0;
   overflow: hidden;
   transform: translateY(-14px);
-}
-
-/* 2. DEFINISI SKEMA WARNA 
- Berdasarkan tema 'Jawa Biru' dan 'Rose Gold' (color-accent)
-*/
-.color-accent {
-  /* Rose Gold atau warna aksen yang menawan */
-  color: #c6915a; /* Contoh: Warna coklat keemasan/rose gold */
-}
-.text-navy-modern {
-  color: #2d3a50; /* Warna biru gelap / navy modern */
 }
 
 /* 3. STYLING KHUSUS UNTUK TANGGAL & HARI 

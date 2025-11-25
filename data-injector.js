@@ -16,6 +16,62 @@ function injectConfigData() {
     guestName = decodeURIComponent(guestName.replace(/\+/g, " ")).trim();
   }
   // --------------------------------------------------
+  // ===============================
+  // SPONSOR DINAMIS
+  // ===============================
+  (function loadSponsors() {
+    const container = document.getElementById("sponsor-container");
+    if (!container) return;
+
+    const sponsors = UNDANGAN_CONFIG.sponsors || [];
+
+    sponsors.forEach((src, index) => {
+      const wrapper = document.createElement("div");
+      wrapper.className = "flex flex-col items-center";
+
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = `Sponsor ${index + 1}`;
+      img.className =
+        "w-40 h-auto opacity-80 hover:opacity-100 transition duration-300";
+      img.onerror = function () {
+        this.src = `https://placehold.co/200x100/F4ECDD/B88821?text=Sponsor+${
+          index + 1
+        }`;
+      };
+
+      wrapper.appendChild(img);
+      container.appendChild(wrapper);
+    });
+  })();
+
+  // ===============================
+  // SECTION MAPS (Dinamis)
+  // ===============================
+  const mapsIframe = document.getElementById("maps-iframe");
+  const mapsTitleEl = document.getElementById("maps-title");
+  const mapsAddressEl = document.getElementById("maps-address");
+  const mapsButtonEl = document.getElementById("maps-button");
+
+  // iFrame Embed
+  if (mapsIframe && config.googleMapsEmbedUrl) {
+    mapsIframe.src = config.googleMapsEmbedUrl;
+  }
+
+  // Judul Lokasi
+  if (mapsTitleEl && config.locationName) {
+    mapsTitleEl.innerText = config.locationName;
+  }
+
+  // Alamat Lokasi
+  if (mapsAddressEl && config.locationFullAddress) {
+    mapsAddressEl.innerText = config.locationFullAddress;
+  }
+
+  // Tombol Buka Maps
+  if (mapsButtonEl && config.locationMapsUrl) {
+    mapsButtonEl.href = config.locationMapsUrl;
+  }
 
   // --- PRELOADER & FOOTER ---
   const initialsDisplayEl = document.getElementById("initials-display");
@@ -61,7 +117,7 @@ function injectConfigData() {
     brideNicknameEl.innerText = config.brideName;
   }
   if (coupleNamesEl) {
-    coupleNamesEl.innerText = `${config.brideName} & ${config.groomName}`;
+    coupleNamesEl.innerText = `${config.brideName}  |  ${config.groomName}`;
   }
   if (footerInitialsEl) {
     footerInitialsEl.innerText = initials;
