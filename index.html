@@ -4,33 +4,33 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#e0dbce" />
+    <title>Undangan Pernikahan</title>
     <meta
       name="description"
       content="Undangan pernikahan Tia dan Yoga. Dengan kerendahan hati kami mengundang Anda untuk hadir dalam acara pernikahan kami."
     />
     <meta name="author" content="Tia Rokhimah & Yoga Saputra" />
+    <meta name="robots" content="noindex" />
+    <meta name="google" content="notranslate" />
+    <meta name="color-scheme" content="light only" />
 
     <!-- OG META -->
     <meta property="og:type" content="website" />
-    <meta
-      property="og:title"
-      content="Pernikahan Tia & Yoga | 23 Januari 2026"
-    />
-    <meta
-      property="og:description"
-      content="Dengan penuh rasa syukur, kami mengundang Anda untuk hadir pada hari bahagia kami. Klik untuk membuka undangan."
-    />
+    <meta property="og:title" content="Pernikahan Tia & Yoga" />
+    <meta property="og:description" content="Tia Rokhimah & Yoga Saputra" />
     <meta
       property="og:image"
-      content="https://wedding.aethersub.store/asset/images/og-image.jpg"
+      content="https://wedding.aethersub.store/asset/images/og-image.png"
     />
     <meta property="og:url" content="https://wedding.aethersub.store" />
-    <meta property="og:site_name" content="Undangan Tia & Yoga" />
+    <meta property="og:site_name" content="The Wedding Tia & Yoga" />
     <meta property="og:image:type" content="image/jpeg" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-
-    <title>Undangan Pernikahan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lora:ital,wght@0,400..700;1,400..700&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- Icons -->
     <link
@@ -82,7 +82,7 @@
         class="modal-content w-full max-w-sm transform scale-95 transition-all"
       >
         <div class="bg-white rounded-2xl shadow-2xl p-6 text-center">
-          <div class="text-5xl text-color-accent mb-4">
+          <div class="text-5xl color-accent-2 mb-4">
             <i class="fas fa-exclamation-triangle"></i>
           </div>
 
@@ -120,20 +120,20 @@
     <!-- Preloader -->
     <div
       id="preloader"
-      class="fixed inset-0 z-[200] flex flex-col justify-center items-center bg-blur transition-opacity duration-500"
+      class="fixed inset-0 z-[200] flex flex-col justify-center items-center bg-(--inv-bg) transition-opacity duration-500"
     >
       <h1
         id="initials-display"
-        class="font-accent text-5xl text-color-accent mb-4 animate-pulse"
+        class="font-accent text-5xl color-accent-2 mb-4 animate-pulse"
       >
         <!-- Injected by JS -->
       </h1>
 
-      <p class="mb-6 font-default">Mempersiapkan Undangan...</p>
+      <p class="mb-6 font-default color-accent-2">Mempersiapkan Undangan...</p>
 
       <div class="relative w-12 h-12">
         <div
-          class="w-12 h-12 rounded-full border-4 border-gray-300 border-t-(--color-accent) animate-spin-slow"
+          class="w-12 h-12 rounded-full border-4 border-(--inv-accent) border-t-(--inv-base) animate-spin-slow"
         ></div>
       </div>
     </div>
@@ -399,17 +399,15 @@
                   <div class="mb-2 text-lg font-dekor-1">Undangan Manten</div>
                   <div
                     id="bride-nickname"
-                    class="color-accent font-latin-jawa"
+                    class="color-accent-2 font-latin-jawa"
                     style="font-size: 80px"
                   >
                     Mempelai Wanita
                   </div>
-                  <div class="font-latin-jawa mb-2" style="font-size: 30px">
-                    &amp;
-                  </div>
+                  <div class="font-accent mb-2 text-5xl">&amp;</div>
                   <div
                     id="groom-nickname"
-                    class="color-accent mb-2 font-latin-jawa"
+                    class="color-accent-2 mb-2 font-latin-jawa"
                     style="font-size: 80px"
                   >
                     Nama Mempelai Pria
@@ -655,7 +653,7 @@
 
               <div
                 data-animation-class="animate__zoomIn"
-                class="flex items-center justify-center mb-2 mx-auto relative ornament-item animate__slower"
+                class="flex items-center justify-center mb-4 mx-auto relative ornament-item animate__slower"
                 style="
                   height: 112px;
                   width: 65px;
@@ -689,7 +687,7 @@
                 </div>
               </div>
 
-              <div class="w-full flex items-center justify-center">
+              <div class="w-full flex items-center justify-center mt-2">
                 <div
                   data-animation-class="animate__fadeInLeft"
                   class="text-center ornament-item animate__slower"
@@ -706,7 +704,7 @@
 
                 <div
                   data-animation-class="animate__fadeInUp"
-                  class="px-2 font-latin-jawa text-6xl ornament-item animate__slower"
+                  class="px-2 font-accent text-5xl ornament-item animate__slower"
                 >
                   &amp;
                 </div>
@@ -1374,7 +1372,7 @@
                 <div class="color-accent font-weight-bold text-base">
                   ✤ Kediaman Wanita ✤
                 </div>
-                <div id="akad-location" class="max-w-2xs text-base">
+                <div id="akad-location" class="max-w-2xs font-dekor-1">
                   Default alamat<br />Dukuh Pete blok galur
                 </div>
               </div>
@@ -1759,7 +1757,7 @@
             <div class="content-layer text-center p-6 max-w-sm mx-auto">
               <h3
                 data-animation-class="animate__fadeInDown"
-                class="ornament-item text-3xl font-accent text-color-accent border-b border-rose-gold pb-2 mb-4 inline-block"
+                class="ornament-item text-3xl font-accent color-accent-2 border-b border-rose-gold pb-2 mb-4 inline-block"
               >
                 Kehadiran
               </h3>
@@ -1949,7 +1947,7 @@
             <div class="content-layer text-center space-y-6 px-6">
               <h3
                 data-animation-class="animate__fadeInDown"
-                class="text-3xl font-accent text-color-accent border-b border-rose-gold pb-2 mb-4 inline-block animate__slower ornament-item"
+                class="text-3xl font-accent color-accent-2 border-b border-rose-gold pb-2 mb-4 inline-block animate__slower ornament-item"
               >
                 Kado Pernikahan
               </h3>
@@ -2017,6 +2015,114 @@
             />
 
             <!-- Ornament Bawah (Center Flower) -->
+            <div
+              data-animation-class="animate__fadeInBottomLeft"
+              class="frame-bl absolute bottom-0 left-0 ornament-item animate__slow"
+              style="animation-delay: 2.5s"
+            >
+              <div
+                class="animate-left"
+                style="transform: translate(-29%, -85%)"
+              >
+                <img
+                  class="w-100"
+                  src="./asset/images/bl-1.webp"
+                  alt="frame"
+                  style="transform-origin: bottom left"
+                />
+              </div>
+            </div>
+
+            <div
+              data-animation-class="animate__fadeInBottomLeft"
+              class="frame-bl absolute bottom-0 left-0 ornament-item animate__slow"
+              style="animation-delay: 2.2s"
+            >
+              <div
+                class="animate-left"
+                style="transform: translate(-27%, -87%)"
+              >
+                <img
+                  class="w-100"
+                  src="./asset/images/sinta.webp"
+                  alt="frame"
+                  style="transform-origin: bottom left; animation-delay: 100ms"
+                />
+              </div>
+            </div>
+
+            <div
+              data-animation-class="animate__fadeInBottomLeft"
+              class="frame-bl absolute bottom-0 left-0 ornament-item animate__slow"
+              style="animation-delay: 2s"
+            >
+              <div
+                class="animate-left"
+                style="transform: translate(-16%, -70%)"
+              >
+                <img
+                  class="w-100"
+                  src="./asset/images/bl-3.webp"
+                  alt="frame"
+                  style="transform-origin: bottom left; animation-delay: 300ms"
+                />
+              </div>
+            </div>
+
+            <div
+              data-animation-class="animate__fadeInBottomRight"
+              class="frame-br absolute bottom-0 right-0 ornament-item animate__slow"
+              style="animation-delay: 2.5s"
+            >
+              <div
+                class="animate-right"
+                style="transform: translate(29%, -85%)"
+              >
+                <img
+                  class="w-100"
+                  src="./asset/images/br-1.webp"
+                  alt="frame"
+                  style="transform-origin: bottom right"
+                />
+              </div>
+            </div>
+
+            <div
+              data-animation-class="animate__fadeInBottomRight"
+              class="frame-br absolute bottom-0 right-0 ornament-item animate__slow"
+              style="animation-delay: 2.2s"
+            >
+              <div
+                class="animate-right"
+                style="transform: translate(27%, -87%)"
+              >
+                <img
+                  class="w-100"
+                  src="./asset/images/rama.webp"
+                  alt="frame"
+                  style="transform-origin: bottom right; animation-delay: 100ms"
+                />
+              </div>
+            </div>
+
+            <div
+              data-animation-class="animate__fadeInBottomRight"
+              class="frame-br absolute bottom-0 right-0 ornament-item animate__slow"
+              style="animation-delay: 2s"
+            >
+              <div
+                class="animate-right"
+                style="transform: translate(16%, -70%)"
+              >
+                <img
+                  class="w-100"
+                  src="./asset/images/br-3.webp"
+                  alt="frame"
+                  style="transform-origin: bottom right; animation-delay: 300ms"
+                />
+              </div>
+            </div>
+
             <div
               class="ornamen-bawah right-0 bottom-0 w-full md:w-11/12 absolute z-0"
               style="transform: translate(0, 0)"
@@ -2143,7 +2249,7 @@
               <!-- Judul -->
               <h3
                 data-animation-class="animate__fadeInDown"
-                class="text-3xl font-accent text-color-accent border-b border-rose-gold pb-2 mb-6 inline-block ornament-item animate__slower"
+                class="text-3xl font-accent color-accent-2 border-b border-rose-gold pb-2 mb-6 inline-block ornament-item animate__slower"
               >
                 Terimakasih
               </h3>
@@ -2379,7 +2485,7 @@
 
               <div class="p-4 bg-gray-100 rounded-md border border-gray-200">
                 <img
-                  src="./asset/images/qris_placeholder.webp"
+                  src="./asset/images/qris.jpeg"
                   id="qris-image"
                   onerror="this.src='https://placehold.co/200x200/2D3A50/C6915A?text=QRIS'"
                   alt="QRIS Code"
