@@ -6,9 +6,11 @@
     <meta name="theme-color" content="#e0dbce" />
     <meta
       name="description"
-      content="Undangan pernikahan Tia dan Yoga,Dengan kerendahan hati kami mengundang anda untuk hadir dalam acara pernikahan kami"
+      content="Undangan pernikahan Tia dan Yoga. Dengan kerendahan hati kami mengundang Anda untuk hadir dalam acara pernikahan kami."
     />
     <meta name="author" content="Tia Rokhimah & Yoga Saputra" />
+
+    <!-- OG META -->
     <meta property="og:type" content="website" />
     <meta
       property="og:title"
@@ -25,11 +27,12 @@
     <meta property="og:url" content="https://wedding.aethersub.store" />
     <meta property="og:site_name" content="Undangan Tia & Yoga" />
     <meta property="og:image:type" content="image/jpeg" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    <meta property="og:image:width" content="300" />
+    <meta property="og:image:height" content="300" />
 
     <title>Undangan Pernikahan</title>
 
+    <!-- Icons -->
     <link
       rel="apple-touch-icon"
       sizes="180x180"
@@ -48,6 +51,8 @@
       href="./asset/icon/favicon-16x16.png"
     />
     <link rel="icon" href="./asset/icon/favicon.ico" />
+
+    <!-- Libraries -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
@@ -57,11 +62,15 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
     />
 
-    <link rel="stylesheet" href="./src/output.css" class="css" />
+    <!-- Tailwind Output -->
+    <link rel="stylesheet" href="./src/output.css" />
+
+    <!-- Config Global -->
     <script src="/config.js"></script>
   </head>
 
   <body class="font-base text-color-base">
+    <!-- Browser Compatibility Modal -->
     <div
       id="compatibility-modal"
       class="modal fixed inset-0 z-[300] hidden opacity-0 flex justify-center items-center p-4"
@@ -70,19 +79,22 @@
       aria-modal="true"
     >
       <div
-        class="modal-content transform scale-95 transition-all w-full max-w-sm"
+        class="modal-content w-full max-w-sm transform scale-95 transition-all"
       >
         <div class="bg-white rounded-2xl shadow-2xl p-6 text-center">
-          <div class="color-accent text-5xl mb-4">
+          <div class="text-5xl text-color-accent mb-4">
             <i class="fas fa-exclamation-triangle"></i>
           </div>
+
           <h3 class="text-xl font-bold text-gray-900 mb-3" id="modal-title">
             Perhatian Kompatibilitas Browser
           </h3>
+
           <p class="text-sm mb-4">
             Browser yang Anda gunakan mungkin tidak sepenuhnya kompatibel atau
             kurang mendukung fitur-fitur modern (seperti audio).
           </p>
+
           <div
             class="text-left bg-red-50 p-3 rounded-2xl border border-red-200 mb-5"
           >
@@ -92,13 +104,12 @@
             <ul
               id="compatibility-error-list"
               class="list-disc list-inside text-red-600 text-xs space-y-1"
-            >
-              <!-- Error list will be injected here -->
-            </ul>
+            ></ul>
           </div>
+
           <button
             onclick="closeModal('compatibility-modal')"
-            class="w-full bg-[#C6915A] text-white font-bold py-2 rounded-2xl hover:bg-[#a67d4e] transition duration-200"
+            class="w-full bg-[#C6915A] text-white font-bold py-2 rounded-2xl hover:bg-[#a67d4e] transition"
           >
             Tetap Lanjutkan (Risiko Ditanggung)
           </button>
@@ -106,30 +117,28 @@
       </div>
     </div>
 
+    <!-- Preloader -->
     <div
       id="preloader"
       class="fixed inset-0 z-[200] flex flex-col justify-center items-center bg-blur transition-opacity duration-500"
     >
       <h1
         id="initials-display"
-        class="font-accent text-5xl color-accent mb-4 animate-pulse"
+        class="font-accent text-5xl text-color-accent mb-4 animate-pulse"
       >
-        <!-- Data akan diisi oleh JS -->
+        <!-- Injected by JS -->
       </h1>
-      <p class="mb-6 font-defaut">Mempersiapkan Undangan...</p>
 
-      <!-- Spinner Container (Simple CSS Loader) -->
+      <p class="mb-6 font-default">Mempersiapkan Undangan...</p>
+
       <div class="relative w-12 h-12">
         <div
-          class="w-12 h-12 rounded-full border-4 border-t-4 border-gray-300 border-t-[var(--color-accent)] animate-spin-slow"
+          class="w-12 h-12 rounded-full border-4 border-gray-300 border-t-(--color-accent) animate-spin-slow"
         ></div>
       </div>
-      <!-- End Spinner -->
     </div>
 
-    <!-- End Preloader -->
     <audio id="background-music" loop preload="auto">
-      <!-- Kode Ditangani JS-->
       Your browser does not support the audio element.
     </audio>
 
