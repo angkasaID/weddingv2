@@ -17,13 +17,20 @@ function injectConfigData() {
   }
   // --------------------------------------------------
   // ===============================
-  // SPONSOR DINAMIS
+  // SPONSOR DINAMIS + RESPONSIF
   // ===============================
   (function loadSponsors() {
     const container = document.getElementById("sponsor-container");
     if (!container) return;
 
     const sponsors = UNDANGAN_CONFIG.sponsors || [];
+
+    // Tentukan jumlah kolom responsif
+    if (sponsors.length >= 3) {
+      container.classList.add("grid-cols-2");
+    } else {
+      container.classList.add("grid-cols-1");
+    }
 
     sponsors.forEach((src, index) => {
       const wrapper = document.createElement("div");
@@ -33,9 +40,11 @@ function injectConfigData() {
       img.src = src;
       img.alt = `Sponsor ${index + 1}`;
       img.className =
-        "w-40 h-auto opacity-80 hover:opacity-100 transition duration-300";
+        "w-36 h-auto opacity-80 hover:opacity-100 transition duration-300";
+      // w-36 → sedikit lebih kecil dari sebelumnya agar grid terlihat rapi
+
       img.onerror = function () {
-        this.src = `https://placehold.co/200x100/F4ECDD/B88821?text=Sponsor+${
+        this.src = `https://placehold.co/180x90/F4ECDD/B88821?text=Sponsor+${
           index + 1
         }`;
       };
