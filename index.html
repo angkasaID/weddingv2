@@ -2553,29 +2553,45 @@
           </div>
         </div>
 
+        <!-- MODAL RSVP + CHAT ROOM WA -->
         <div
           id="rsvp-form-modal"
-          class="modal fixed inset-0 z-[300] hidden opacity-0 flex justify-center items-center p-4 transition-all duration-300"
-          aria-labelledby="modal-title"
+          class="modal fixed inset-0 z-[300] hidden flex justify-center items-center p-4 bg-black/30 overflow-y-auto"
           role="dialog"
           aria-modal="true"
         >
           <div
-            class="modal-content transform scale-95 transition-all w-full max-w-sm"
+            class="modal-content transform scale-95 transition-all w-full max-w-md"
           >
             <div
-              class="bg-white rounded-2xl shadow-2xl p-6 text-center"
+              class="bg-white rounded-2xl shadow-2xl p-6 text-center relative"
               style="border: 2px solid var(--inv-accent)"
             >
-              <div class="color-accent text-3xl font-accent mb-4">
+              <h2 class="color-accent text-3xl font-accent mb-2">
                 Detail Kehadiran
-              </div>
+              </h2>
               <p class="text-sm mb-5">
-                Isi formulir singkat ini, dan data akan dikirim melalui
-                WhatsApp.
+                Isi formulir singkat ini, dan pesan akan muncul langsung di chat
+                room.
               </p>
 
+              <!-- FORM -->
               <div class="space-y-4 text-left">
+                <div>
+                  <label
+                    for="rsvp-name-modal"
+                    class="block text-sm font-bold mb-1"
+                  >
+                    Nama Anda: <span class="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="rsvp-name-modal"
+                    class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-color-accent focus:border-color-accent sm:text-sm"
+                    placeholder="Nama Anda"
+                  />
+                </div>
+
                 <div>
                   <label
                     for="rsvp-status-modal"
@@ -2585,7 +2601,7 @@
                   </label>
                   <select
                     id="rsvp-status-modal"
-                    class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-color-accent focus:border-color-accent sm:text-sm"
+                    class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-color-accent focus:border-color-accent sm:text-sm"
                   >
                     <option value="Hadir">Ya, saya akan hadir</option>
                     <option value="Tidak Hadir">
@@ -2628,18 +2644,34 @@
                 </div>
               </div>
 
+              <!-- BUTTONS -->
               <button
-                id="send-rsvp-wa-btn-modal"
-                class="w-full mt-6 px-4 py-3 text-sm font-bold text-btn btn-utama rounded-2xl transition duration-150"
+                id="send-rsvp-btn-modal"
+                class="w-full mt-6 px-4 py-3 text-sm font-bold text-white bg-lime-600 hover:bg-lime-700 rounded-2xl transition duration-150"
               >
                 <i class="fab fa-whatsapp mr-2"></i> Kirim Konfirmasi
               </button>
 
               <button
                 onclick="closeModal('rsvp-form-modal')"
-                class="mt-3 text-xs hover: block mx-auto"
+                class="mt-3 text-xs hover:block mx-auto"
               >
                 Batal
+              </button>
+
+              <!-- CHAT ROOM STYLE -->
+              <div
+                id="rsvp-messages-container"
+                class="mt-6 max-h-64 overflow-y-auto p-3 bg-gray-50 rounded-lg border border-gray-200"
+              >
+                <div id="rsvp-messages" class="flex flex-col space-y-2"></div>
+              </div>
+
+              <button
+                id="load-more-btn"
+                class="mt-2 text-sm text-lime-600 hover:underline"
+              >
+                Lihat lebih banyak
               </button>
             </div>
           </div>
@@ -2662,6 +2694,183 @@
         </div>
       </div>
     </div>
+    <!-- FIREBASE + JS RSVP -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+    <script>
+      // ================================
+      // 1. KONFIGURASI FIREBASE
+      // ================================
+      const firebaseConfig = {
+        apiKey: "AIzaSyCDZ3zzCfugHEqXH-6pTpSjmO3ZHiuQlpQ", // Ganti API Key Firebase-mu
+        authDomain: "undangan-aethersub.firebaseapp.com",
+        databaseURL:
+          "https://undangan-aethersub-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "undangan-aethersub",
+      };
+
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.database();
+
+      const formBtn = document.getElementById("send-rsvp-btn-modal");
+      const messagesDiv = document.getElementById("rsvp-messages");
+      const nameInput = document.getElementById("rsvp-name-modal");
+      const loadMoreBtn = document.getElementById("load-more-btn");
+
+      // ================================
+      // 2. PREFILL NAMA DARI URL
+      // ================================
+      const urlParams = new URLSearchParams(window.location.search);
+      const guestName = urlParams.get("rsvp-greeting-name");
+      if (guestName) nameInput.value = decodeURIComponent(guestName);
+
+      // ================================
+      // 3. SUBMIT FORM & PUSH KE FIREBASE
+      // ================================
+      formBtn.addEventListener("click", () => {
+        const name = nameInput.value.trim() || "Tamu";
+        const status = document.getElementById("rsvp-status-modal").value;
+        const count = document.getElementById("rsvp-count-modal").value;
+        const message = document.getElementById("rsvp-message-modal").value;
+
+        if (!name) return alert("Nama harus diisi");
+        if (!count) return alert("Isi jumlah tamu minimal 0");
+
+        db.ref("rsvp").push({
+          name,
+          status,
+          count,
+          message,
+          timestamp: Date.now(),
+        });
+
+        // Reset form (kecuali nama)
+        document.getElementById("rsvp-status-modal").value = "Hadir";
+        document.getElementById("rsvp-count-modal").value = 1;
+        document.getElementById("rsvp-message-modal").value = "";
+      });
+
+      // ================================
+      // 4. TAMPILKAN PESAN TERAKHIR (CHAT ROOM)
+      // ================================
+      let allMessages = [];
+      let visibleCount = 6;
+
+      db.ref("rsvp")
+        .orderByChild("timestamp")
+        .on("value", (snapshot) => {
+          const data = snapshot.val() || {};
+          allMessages = Object.values(data).sort(
+            (a, b) => a.timestamp - b.timestamp
+          );
+          renderMessages();
+        });
+
+      function renderMessages() {
+        messagesDiv.innerHTML = "";
+
+        const messagesToShow = allMessages.slice(-visibleCount).reverse();
+
+        messagesToShow.forEach((data) => {
+          const isHadir = data.status === "Hadir";
+          const wrapper = document.createElement("div");
+
+          wrapper.className = `
+      flex items-end mb-3 
+      ${isHadir ? "justify-start" : "justify-end"} 
+      opacity-0 translate-y-3
+    `;
+
+          // AVATAR DEFAULT (inisial nama)
+          const avatar = document.createElement("div");
+          const initials = data.name.charAt(0).toUpperCase();
+          avatar.innerText = initials;
+          avatar.className = `
+      w-8 h-8 rounded-full flex items-center justify-center
+      text-white font-semibold shadow 
+      bg-gray-400 flex-shrink-0
+    `;
+
+          // Waktu
+          const time = new Date(data.timestamp);
+          const hh = time.getHours().toString().padStart(2, "0");
+          const mm = time.getMinutes().toString().padStart(2, "0");
+
+          // BUBBLE
+          const bubble = document.createElement("div");
+          bubble.className = `
+      relative px-4 py-2 rounded-lg shadow max-w-[75%] w-fit break-words
+      ${
+        isHadir
+          ? "bg-lime-100 text-left rounded-bl-none"
+          : "bg-red-100 text-right rounded-br-none"
+      }
+    `;
+
+          bubble.innerHTML = `
+      <div class="text-xs text-gray-500 font-semibold mb-1">
+        ${data.name} • ${hh}:${mm}
+      </div>
+      <div class="text-sm mb-1">${
+        data.message || "<i>Tidak ada pesan</i>"
+      }</div>
+      <div class="text-xs text-gray-600">Status: ${data.status}</div>
+    `;
+
+          // BUBBLE TAIL (ekor WA)
+          const tail = document.createElement("div");
+          tail.className = `
+      absolute bottom-0 w-3 h-3
+      ${isHadir ? "-left-2 bg-lime-100" : "-right-2 bg-red-100"}
+      clip-path-[polygon(0_0,100%_100%,0_100%)]
+    `;
+
+          bubble.appendChild(tail);
+
+          // SUSUNAN (kiri: avatar → bubble, kanan: bubble → avatar)
+          if (isHadir) {
+            wrapper.appendChild(avatar);
+            wrapper.appendChild(bubble);
+          } else {
+            wrapper.appendChild(bubble);
+            wrapper.appendChild(avatar);
+          }
+
+          messagesDiv.appendChild(wrapper);
+
+          // ANIMASI
+          requestAnimationFrame(() => {
+            wrapper.style.transition = "all 0.25s ease";
+            wrapper.style.opacity = 1;
+            wrapper.style.transform = "translateY(0)";
+          });
+        });
+
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      }
+
+      loadMoreBtn.addEventListener("click", () => {
+        visibleCount += 6;
+        renderMessages();
+      });
+
+      // ================================
+      // 5. HAPUS PESAN OTOMATIS 24 JAM
+      // ================================
+      function cleanupOldMessages() {
+        const now = Date.now();
+        db.ref("rsvp").once("value", (snapshot) => {
+          const data = snapshot.val() || {};
+          Object.entries(data).forEach(([key, msg]) => {
+            if (now - msg.timestamp > 24 * 60 * 60 * 1000) {
+              db.ref("rsvp/" + key).remove();
+            }
+          });
+        });
+      }
+      setInterval(cleanupOldMessages, 60 * 60 * 1000);
+      cleanupOldMessages();
+    </script>
     <script src="./jQuery.js"></script>
     <script src="/app.js"></script>
     <script src="/data-injector.js"></script>

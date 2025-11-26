@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pesan & Doa Tamu - AetherSub</title>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100">
+    <!-- HEADER -->
+    <header
+      class="bg-white shadow p-4 text-center font-bold text-lg text-lime-700"
+    >
+      Pesan & Doa Tamu
+    </header>
+
+    <!-- CHAT ROOM CONTAINER -->
+    <div
+      class="max-w-xl mx-auto mt-6 p-4 bg-white rounded-xl shadow border border-gray-200"
+    >
+      <div
+        id="rsvp-messages-container"
+        class="max-h-[70vh] overflow-y-auto p-3 bg-gray-50 rounded-lg border border-gray-200"
+      >
+        <div id="rsvp-messages" class="flex flex-col space-y-3"></div>
+      </div>
+
+      <button
+        id="load-more-btn"
+        class="mt-3 text-sm text-lime-700 hover:underline mx-auto block"
+      >
+        Lihat pesan sebelumnya
+      </button>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="text-center text-xs text-gray-500 mt-6 mb-4">
+      © AetherSub — RSVP Realtime Chat
+    </footer>
+
+    <script>
+      // ================================
+      // 1. FIREBASE CONFIG
+      // ================================
+      const firebaseConfig = {
+        apiKey: "AIzaSyCDZ3zzCfugHEqXH-6pTpSjmO3ZHiuQlpQ",
+        authDomain: "undangan-aethersub.firebaseapp.com",
+        databaseURL:
+          "https://undangan-aethersub-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "undangan-aethersub",
+      };
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.database();
+
+      const messagesDiv = document.getElementById("rsvp-messages");
+      const loadMoreBtn = document.getElementById("load-more-btn");
+
+      let allMessages = [];
+      let visibleCount = 20;
+
+      // ================================
+      // 2. AMBIL & TAMPILKAN DATA
+      // ================================
+      db.ref("rsvp")
+        .orderByChild("timestamp")
+        .on("value", (snapshot) => {
+          const data = snapshot.val() || {};
+          allMessages = Object.values(data).sort(
+            (a, b) => a.timestamp - b.timestamp
+          );
+          renderMessages();
+        });
+
+      // ================================
+      // 3. RENDER CHAT UI
+      // ================================
+      function renderMessages() {
+        messagesDiv.innerHTML = "";
+
+        const shown = allMessages.slice(-visibleCount);
+
+        shown.forEach((data) => {
+          const isHadir = data.status === "Hadir";
+
+          const wrapper = document.createElement("div");
+          wrapper.className = `
+      flex items-end gap-2
+      ${isHadir ? "justify-start" : "justify-end"}
+    `;
+
+          // Avatar
+          const avatar = document.createElement("div");
+          avatar.className = `
+      w-9 h-9 rounded-full bg-gray-400 text-white flex items-center justify-center
+      font-semibold shadow
+    `;
+          avatar.innerText = data.name.charAt(0).toUpperCase();
+
+          // Time
+          const t = new Date(data.timestamp);
+          const hh = t.getHours().toString().padStart(2, "0");
+          const mm = t.getMinutes().toString().padStart(2, "0");
+
+          // Bubble
+          const bubble = document.createElement("div");
+          bubble.className = `
+      relative px-4 py-2 rounded-lg shadow max-w-[70%] 
+      break-words text-sm
+      ${
+        isHadir
+          ? "bg-lime-100 text-left rounded-bl-none"
+          : "bg-red-100 text-right rounded-br-none"
+      }
+    `;
+
+          bubble.innerHTML = `
+      <div class="text-xs text-gray-600 font-semibold mb-1">
+        ${data.name} • ${hh}:${mm}
+      </div>
+      <div class="mb-1">${data.message || "<i>Tidak ada pesan</i>"}</div>
+      <div class="text-xs text-gray-600">Status: ${data.status}</div>
+    `;
+
+          // Tail
+          const tail = document.createElement("div");
+          tail.className = `
+      absolute bottom-0 w-3 h-3 
+      ${isHadir ? "-left-2 bg-lime-100" : "-right-2 bg-red-100"}
+      clip-path-[polygon(0_0,100%_100%,0_100%)]
+    `;
+          bubble.appendChild(tail);
+
+          // Susunan kiri/kanan
+          if (isHadir) {
+            wrapper.appendChild(avatar);
+            wrapper.appendChild(bubble);
+          } else {
+            wrapper.appendChild(bubble);
+            wrapper.appendChild(avatar);
+          }
+
+          messagesDiv.appendChild(wrapper);
+        });
+
+        // Scroll ke paling bawah
+        const container = document.getElementById("rsvp-messages-container");
+        container.scrollTop = container.scrollHeight;
+      }
+
+      // ================================
+      // 4. LOAD MORE
+      // ================================
+      loadMoreBtn.addEventListener("click", () => {
+        visibleCount += 20;
+        renderMessages();
+      });
+
+      // ================================
+      // 5. AUTO DELETE OLD MESSAGES
+      // ================================
+      function cleanupOldMessages() {
+        const now = Date.now();
+        db.ref("rsvp").once("value", (snap) => {
+          const data = snap.val() || {};
+          Object.entries(data).forEach(([key, msg]) => {
+            if (now - msg.timestamp > 24 * 60 * 60 * 1000) {
+              db.ref("rsvp/" + key).remove();
+            }
+          });
+        });
+      }
+      cleanupOldMessages();
+      setInterval(cleanupOldMessages, 60 * 60 * 1000);
+    </script>
+  </body>
+</html>
